@@ -125,29 +125,30 @@ st.markdown("""
 
 # Estado interno da sessão para gerenciar os cliques de Câmera/Arquivo
 if "modo_captura" not in st.session_state:
-    st.session_state.modo_captura = None# 2. Renderização da Interface Visual Superior Clonada com o Novo Nome
+    st.session_state.modo_captura = None
+
+# 2. Renderização da Interface Visual Superior Clonada com o Novo Nome
 st.markdown("""
     <div class='top-bar'>
         <a href='#' class='btn-sair'>[→ Sair</a>
     </div>
     <div class='panel-container'>
         <div class='brand-logo'>IA Trader<span>🤖</span>Pro</div>
-        <div class='headline-text'>Envia o gráfico e descubra se existe uma oportunidade agora</div>
+        <div class='headline-text'>Envie o gráfico e descubra se existe uma oportunidade agora</div>
     </div>
 """, unsafe_allow_html=True)
 
-# 1. Cria o campo direto na tela principal (sem sidebar)
+# 3. Campo da API Key centralizado na tela principal
 api_key = st.text_input(
     "Insira sua Gemini API Key para inicializar:", 
     type="password", 
     key="gemini_api_key"
 )
 
-# 2. Verifica se a chave foi digitada (com o texto corrigido para a tela principal)
+# Verifica se a chave foi informada
 if not api_key:
     st.warning("Chave de API ausente. Insira sua Gemini API Key no campo acima para inicializar.")
     st.stop()
-
 
 # Seletor de entrada por botões vazados lado a lado
 col1, col2 = st.columns(2)
@@ -173,7 +174,7 @@ elif st.session_state.modo_captura == "arquivo":
 
 # Preview da Imagem Carregada na Tela
 if image_to_analyze:
-    st.image(image_to_analyze, caption="Gráfico M1 Pronto para Scanner", use_container_width=True)
+    st.image(image_to_analyze, caption="Gráfico M1 Pronto para Scanner", width=380)
 
 # Define o estilo visual do botão principal baseado na presença da imagem
 classe_botao = "active-btn" if image_to_analyze else "action-container"
@@ -182,32 +183,36 @@ st.markdown(f"<div class='{classe_botao}'>", unsafe_allow_html=True)
 executar = st.button("DETECTAR ENTRADA")
 st.markdown("</div>", unsafe_allow_html=True)
 
-# ---> ADICIONE ESTA LINHA ABAIXO PARA ATIVAR O CLIQUE DO BOTÃO
+# Execução da análise quando o botão for clicado
 if executar:
-    with st.spinner("IA aplicando filtros máximos de volatilidade e padrões técnicos..."):
-        prompt = """
-        [SYSTEM_ROLE]
-        Você é um robô de trading institucional de alta performance, projetado para operar com frieza absoluta e precisão cirúrgica. Sua inteligência é calibrada para aplicar o MÁXIMO DE FILTROS TÉCNICOS simultâneos, ignorando ruídos de mercado e rastreando estritamente a ENTRADA PERFEITA. 
-        Sua missão é escanear a imagem enviada, cruzar rigorosamente todos os dados gráficos e calcular uma taxa de assertividade extrema focada em vitórias consistentes (WIN).
+    if not image_to_analyze:
+        st.error("Por favor, ative a câmera ou envie uma foto do gráfico antes de rodar a detecção.")
+    else:
+        with st.spinner("IA aplicando filtros máximos de volatilidade e padrões técnicos..."):
+            try:
+                # 4. Inicializa o cliente do Gemini com o novo padrão da biblioteca utilizando a chave minúscula
+                client = genai.Client(api_key=api_key)
+                
+                # Definição completa e correta do Prompt institucional
+                prompt = """
+                [SYSTEM_ROLE]
+                Você é um robô de trading institucional de alta performance, projetado para operar com frieza absoluta e precisão cirúrgica. Sua inteligência é calibrada para aplicar o MÁXIMO DE FILTROS TÉCNICOS simultâneos, ignorando ruídos de mercado e rastreando estritamente a ENTRADA PERFEITA. 
+                Sua missão é escanear a imagem enviada, cruzar rigorosamente todos os dados gráficos e calcular uma taxa de assertividade extrema focada em vitórias consistentes (WIN).
 
-        [OPERATIONAL_PARAMETERS]
-        - CRITÉRIO DE FILTRO MÁXIMO: Aplique o pente fino mais rigoroso combinando a direção da EMA 10, exaustão do RSI 14, volume implícito por tamanho de corpo, rejeição extrema de pavios e zonas de preço. 
-        - TRAVA DE ASSERTIVIDADE EXTREMA: Você está proibido de enviar sinais com taxas genéricas ou baixas. Suas entradas válidas devem se enquadrar estritamente na faixa de 80% a 99% de assertividade matemática ponderada. 
-        - FILTRO DE ABORTO: Se a confluência de todos os fatores técnicos não atingir o patamar mínimo de 80% de certeza devido a qualquer inconsistência ou falta de clareza no print, você deve classificar a OPÇÃO como [ABORTAR OPERAÇÃO - ALTO RISCO] para blindar a banca contra o Loss.
+                [OPERATIONAL_PARAMETERS]
+                - CRITÉRIO DE FILTRO MÁXIMO: Aplique o pente fino mais rigoroso combinando a direção da EMA 10, exaustão do RSI 14, volume implícito por tamanho de corpo, rejeição extrema de pavios e zonas de preço. 
+                - TRAVA DE ASSERTIVIDADE EXTREMA: Você está proibido de enviar sinais com taxas genéricas ou baixas. Suas entradas válidas devem se enquadrar estritamente na faixa de 80% a 99% de assertividade matemática ponderada. 
+                - FILTRO DE ABORTO: Se a confluência de todos os fatores técnicos não atingir o patamar mínimo de 80% de certeza devido a qualquer inconsistência ou falta de clareza no print, você deve classificar a OPÇÃO como [ABORTAR OPERAÇÃO - ALTO RISCO] para blindar a banca contra o Loss.
 
-        [MARKET_STATE_ADAPTATION]
-        Você deve identificar e adaptar seus filtros matemáticos dependendo do estado dinâmico do gráfico apresentado no print:1. GRÁFICO PARADO (Baixa Volatilidade / Sem Volume): Se os corpos das velas forem muito pequenos, sem pavios expressivos e com movimentação travada, ative filtros para evitar falsos rompimentos. Foque estritamente em regiões milimétricas de Suporte e Resistência horizontais, padrões de reversão de exaustão (Doji, Harami/Mulher Grávida) e estique o tempo de espera do Sincro-Cronograma.
-        2. GRÁFICO VOLÁTIL (Alta Volatilidade / Movimentação Rápida): Se o gráfico apresentar pavios longos de rejeição, velas expressivas de força ou velas seguidas da mesma cor (Fluxo Forte), recalibre seus pesos para ler a velocidade. Priorize a retração milimétrica na extremidade dos pavios (Pin Bar, Martelo), fluxo de continuidade a favor de Marubozu de rompimento de LTA/LTB e encurte o tempo de espera do clique para pegar o início exato do movimento.
+                [MARKET_STATE_ADAPTATION]
+                Você deve identificar e adaptar seus filtros matemáticos dependendo do estado dinâmico do gráfico apresentado no print:
+                1. GRÁFICO PARADO (Baixa Volatilidade / Sem Volume): Se os corpos das velas forem muito pequenos, sem pavios expressivos e com movimentação travada, ative filtros para evitar falsos rompimentos. Foque estritamente em regiões milimétricas de Suporte e Resistência horizontais, padrões de reversão de exaustão (Doji, Harami/Mulher Grávida) e estique o tempo de espera do Sincro-Cronograma.
+                2. GRÁFICO VOLÁTIL (Alta Volatilidade / Movimentação Rápida): Se o gráfico apresentar pavios longos de rejeição, velas expressivas de força ou velas seguidas da mesma cor (Fluxo Forte), recalibre seus pesos para ler a velocidade. Priorize a retração milimétrica na extremidade dos pavios (Pin Bar, Martelo), fluxo de continuidade a favor de Marubozu de rompimento de LTA/LTB e encurte o tempo de espera do clique para pegar o início exato do movimento.
 
-        [VARIABLE_TIME_LOGIC_RULES]
-        Você deve ler o relógio atual presente na imagem enviada e calcular de forma DINÂMICA E VARIÁVEL o momento do clique futuro e sua respectiva expiração seguindo rigorosamente esta lógica:
-        - NÃO use um tempo fixo de espera. O tempo de espera até o clique deve VARIAR de acordo com a análise do gráfico.
-        - CRITÉRIOS DE VARIAÇÃO DE TEMPO:
-          1. Cor e Sequência das Velas: Se houver uma sequência forte da mesma cor (fluxo), o clique pode ser mais próximo (ex: 1 a 2 minutos à frente).
-          2. Volume e Tamanho das Velas: Velas grandes e cheias (alto volume) indicam movimentos rápidos. Diminua o tempo de espera. Velas pequenas e espremidas indicam lentidão, aumente o tempo de espera.
-          3. Quantidade e Tamanho de Pavios: Muitos pavios longos indicam alta volatilidade e rejeição (retração). O tempo de espera deve ser calculado exatamente para quando o preço atingir a extremidade do pavio anterior.
-          4. Regiões de Suporte, Resistência e Tendência: Calcule a distância atual do preço até a zona traçada (seja suporte/resistência horizontal ou LTA/LTB de tendência). Se o preço estiver longe, aumente o tempo de espera. Se estiver muito perto, o clique deve ser projetado de forma cirúrgica.
-        """
-        
-        # O código que envia o prompt para o modelo (ex: response = client.models.generate_content...) deve continuar logo aqui abaixo, também com 8 espaços de recuo!
-
+                [VARIABLE_TIME_LOGIC_RULES]
+                Você deve ler o relógio atual presente na imagem enviada e calcular de forma DINÂMICA E VARIÁVEL o momento do clique futuro e sua respectiva expiração seguindo rigorosamente esta lógica:
+                - NÃO use um tempo fixo de espera. O tempo de espera até o clique deve VARIAR de acordo com a análise do gráfico.
+                - CRITÉRIOS DE VARIAÇÃO DE TEMPO:
+                  1. Cor e Sequência das Velas: Se houver uma sequência forte da mesma cor (fluxo), o clique pode ser mais próximo (ex: 1 a 2 minutos à frente).
+                  2. Volume e Tamanho das Velas: Velas grandes e cheias (alto volume) indicam movimentos rápidos. Diminua o tempo de espera. Velas pequenas e espremidas indicam lentidão, aumente o tempo de espera.
+                  3. Quantidade e Tamanho de Pavios: Muitos pavios longos indicam alta volatilidade e rejeição (retração). O tempo de espera deve ser calculado exatamente para quando o preço atingir a extremidade do pavio anterior.
