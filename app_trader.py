@@ -125,8 +125,7 @@ st.markdown("""
 
 # Estado interno da sessão para gerenciar os cliques de Câmera/Arquivo
 if "modo_captura" not in st.session_state:
-    st.session_state.modo_captura = None
-    # 2. Renderização da Interface Visual Superior Clonada
+    st.session_state.modo_captura = None# 2. Renderização da Interface Visual Superior Clonada
 st.markdown("""
     <div class='top-bar'>
         <a href='#' class='btn-sair'>[→ Sair</a>
@@ -195,8 +194,7 @@ if executar:
             - FILTRO DE ABORTO: Se a confluência de todos os fatores técnicos não atingir o patamar mínimo de 80% de certeza devido a qualquer inconsistência ou falta de clareza no print, você deve classificar a OPÇÃO como [ABORTAR OPERAÇÃO - ALTO RISCO] para blindar a banca contra o Loss.
 
             [MARKET_STATE_ADAPTATION]
-            Você deve identificar e adaptar seus filtros matemáticos dependendo do estado dinâmico do gráfico apresentado no print:
-            1. GRÁFICO PARADO (Baixa Volatilidade / Sem Volume): Se os corpos das velas forem muito pequenos, sem pavios expressivos e com movimentação travada, ative filtros para evitar falsos rompimentos. Foque estritamente em regiões milimétricas de Suporte e Resistência horizontais, padrões de reversão de exaustão (Doji, Harami/Mulher Grávida) e estique o tempo de espera do Sincro-Cronograma.
+            Você deve identificar e adaptar seus filtros matemáticos dependendo do estado dinâmico do gráfico apresentado no print:1. GRÁFICO PARADO (Baixa Volatilidade / Sem Volume): Se os corpos das velas forem muito pequenos, sem pavios expressivos e com movimentação travada, ative filtros para evitar falsos rompimentos. Foque estritamente em regiões milimétricas de Suporte e Resistência horizontais, padrões de reversão de exaustão (Doji, Harami/Mulher Grávida) e estique o tempo de espera do Sincro-Cronograma.
             2. GRÁFICO VOLÁTIL (Alta Volatilidade / Movimentação Rápida): Se o gráfico apresentar pavios longos de rejeição, velas expressivas de força ou velas seguidas da mesma cor (Fluxo Forte), recalibre seus pesos para ler a velocidade. Priorize a retração milimétrica na extremidade dos pavios (Pin Bar, Martelo), fluxo de continuidade a favor de Marubozu de rompimento de LTA/LTB e encurte o tempo de espera do clique para pegar o início exato do movimento.
 
             [VARIABLE_TIME_LOGIC_RULES]
