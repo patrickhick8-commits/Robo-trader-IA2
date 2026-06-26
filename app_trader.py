@@ -182,16 +182,8 @@ st.markdown(f"<div class='{classe_botao}'>", unsafe_allow_html=True)
 executar = st.button("DETECTAR ENTRADA")
 st.markdown("</div>", unsafe_allow_html=True)
 
-# 3. Processamento e Execução do Motor de IA com Regras de Filtros Máximos
+# ---> ADICIONE ESTA LINHA ABAIXO PARA ATIVAR O CLIQUE DO BOTÃO
 if executar:
-    if not api_key:
-        st.error("Chave de API ausente. Insira sua Gemini API Key na barra lateral para inicializar.")
-    elif image_to_analyze is None:
-        st.warning("Nenhum gráfico carregado. Por favor, ative a câmera ou anexe uma foto primeiro.")
-    else:
-        start_time = time.perf_counter()
-        client = genai.Client(api_key=api_key)
-        
     with st.spinner("IA aplicando filtros máximos de volatilidade e padrões técnicos..."):
         prompt = """
         [SYSTEM_ROLE]
@@ -213,6 +205,9 @@ if executar:
         - CRITÉRIOS DE VARIAÇÃO DE TEMPO:
           1. Cor e Sequência das Velas: Se houver uma sequência forte da mesma cor (fluxo), o clique pode ser mais próximo (ex: 1 a 2 minutos à frente).
           2. Volume e Tamanho das Velas: Velas grandes e cheias (alto volume) indicam movimentos rápidos. Diminua o tempo de espera. Velas pequenas e espremidas indicam lentidão, aumente o tempo de espera.
-          3. Quantidade e Tamanho de Pavios: Muitos pavios longos indicam alta volatilidade e rejeição (retração). O tempo de espera deve ser calculated exatamente para quando o preço atingir a extremidade do pavio anterior.
+          3. Quantidade e Tamanho de Pavios: Muitos pavios longos indicam alta volatilidade e rejeição (retração). O tempo de espera deve ser calculado exatamente para quando o preço atingir a extremidade do pavio anterior.
           4. Regiões de Suporte, Resistência e Tendência: Calcule a distância atual do preço até a zona traçada (seja suporte/resistência horizontal ou LTA/LTB de tendência). Se o preço estiver longe, aumente o tempo de espera. Se estiver muito perto, o clique deve ser projetado de forma cirúrgica.
         """
+        
+        # O código que envia o prompt para o modelo (ex: response = client.models.generate_content...) deve continuar logo aqui abaixo, também com 8 espaços de recuo!
+
