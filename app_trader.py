@@ -4,7 +4,7 @@ from PIL import Image
 import time
 
 # 1. Configuração da Página e Ocultação OBRIGATÓRIA do Streamlit Padrão
-st.set_page_config(page_title="IA TraderPRO - AI Trader Pro", page_icon="🤖", layout="centered")
+st.set_page_config(page_title="IA TraderPro - Sistema de Elite", page_icon="🤖", layout="centered")
 
 # CSS Customizado Avançado para Clonar o Design da Segunda Tela
 st.markdown("""
@@ -125,13 +125,13 @@ st.markdown("""
 
 # Estado interno da sessão para gerenciar os cliques de Câmera/Arquivo
 if "modo_captura" not in st.session_state:
-    st.session_state.modo_captura = None# 2. Renderização da Interface Visual Superior Clonada
+    st.session_state.modo_captura = None# 2. Renderização da Interface Visual Superior Clonada com o Novo Nome
 st.markdown("""
     <div class='top-bar'>
         <a href='#' class='btn-sair'>[→ Sair</a>
     </div>
     <div class='panel-container'>
-        <div class='brand-logo'>Aut<span>🤖</span>Gain</div>
+        <div class='brand-logo'>IA Trader<span>🤖</span>Pro</div>
         <div class='headline-text'>Envia o gráfico e descubra se existe uma oportunidade agora</div>
     </div>
 """, unsafe_allow_html=True)
@@ -182,7 +182,7 @@ if executar:
         start_time = time.perf_counter()
         client = genai.Client(api_key=API_KEY)
         
-    with st.spinner("IA aplicando filtros máximos de volatilidade e padrões técnicos..."):
+        with st.spinner("IA aplicando filtros máximos de volatilidade e padrões técnicos..."):
             prompt = """
             [SYSTEM_ROLE]
             Você é um robô de trading institucional de alta performance, projetado para operar com frieza absoluta e precisão cirúrgica. Sua inteligência é calibrada para aplicar o MÁXIMO DE FILTROS TÉCNICOS simultâneos, ignorando ruídos de mercado e rastreando estritamente a ENTRADA PERFEITA. 
@@ -205,4 +205,3 @@ if executar:
               2. Volume e Tamanho das Velas: Velas grandes e cheias (alto volume) indicam movimentos rápidos. Diminua o tempo de espera. Velas pequenas e espremidas indicam lentidão, aumente o tempo de espera.
               3. Quantidade e Tamanho de Pavios: Muitos pavios longos indicam alta volatilidade e rejeição (retração). O tempo de espera deve ser calculado exatamente para quando o preço atingir a extremidade do pavio anterior.
               4. Regiões de Suporte, Resistência e Tendência: Calcule a distância atual do preço até a zona traçada (seja suporte/resistência horizontal ou LTA/LTB de tendência). Se o preço estiver longe, aumente o tempo de espera. Se estiver muito perto, o clique deve ser projetado de forma cirúrgica.
-            """
