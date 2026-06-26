@@ -184,7 +184,7 @@ st.markdown("</div>", unsafe_allow_html=True)
 
 # 3. Processamento e Execução do Motor de IA com Regras de Filtros Máximos
 if executar:
-    if not API_KEY:
+    if not api_key:
         st.error("Chave de API ausente. Insira sua Gemini API Key na barra lateral para inicializar.")
     elif image_to_analyze is None:
         st.warning("Nenhum gráfico carregado. Por favor, ative a câmera ou anexe uma foto primeiro.")
