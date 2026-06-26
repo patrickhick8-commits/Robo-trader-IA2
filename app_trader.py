@@ -136,8 +136,18 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
-# Chave de API inserida estrategicamente na sidebar para manter a tela limpa
-API_KEY = st.sidebar.text_input("Configuração - Gemini API Key:", type="password")
+# 1. Cria o campo direto na tela principal (sem sidebar)
+api_key = st.text_input(
+    "Insira sua Gemini API Key para inicializar:", 
+    type="password", 
+    key="gemini_api_key"
+)
+
+# 2. Verifica se a chave foi digitada (com o texto corrigido para a tela principal)
+if not api_key:
+    st.warning("Chave de API ausente. Insira sua Gemini API Key no campo acima para inicializar.")
+    st.stop()
+
 
 # Seletor de entrada por botões vazados lado a lado
 col1, col2 = st.columns(2)
