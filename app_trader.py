@@ -2,9 +2,20 @@ import streamlit as st
 from google import genai
 from PIL import Image
 import time
+import streamlit as st
 
-# Veja se você encontra algo assim no seu arquivo:
-api_key = st.text_input("Digite sua API Key:", type="password")
+st.title("Robô Trader IA")
+
+# Altere para st.text_input para forçar o campo na tela principal
+api_key = st.text_input(
+    "Insira sua Gemini API Key para inicializar:", 
+    type="password", 
+    key="gemini_api_key"
+)
+
+if not api_key:
+    st.warning("Chave de API ausente. Insira sua Gemini API Key acima para inicializar.")
+    st.stop()
 
 # 1. Configuração da Página e Ocultação OBRIGATÓRIA do Streamlit Padrão
 st.set_page_config(page_title="IA TraderPro - Sistema de Elite", page_icon="🤖", layout="centered")
