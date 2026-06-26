@@ -190,7 +190,7 @@ if executar:
         st.warning("Nenhum gráfico carregado. Por favor, ative a câmera ou anexe uma foto primeiro.")
     else:
         start_time = time.perf_counter()
-        client = genai.Client(api_key=API_KEY)
+        client = genai.Client(api_key=api_key)
         
     with st.spinner("IA aplicando filtros máximos de volatilidade e padrões técnicos..."):
         prompt = """
