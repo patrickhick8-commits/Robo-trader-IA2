@@ -4,7 +4,7 @@ from PIL import Image
 import time
 
 # 1. Configuração da Página e Ocultação OBRIGATÓRIA do Streamlit Padrão
-st.set_page_config(page_title="AutoGain - AI Trader Pro", page_icon="🤖", layout="centered")
+st.set_page_config(page_title="IA TraderPRO - AI Trader Pro", page_icon="🤖", layout="centered")
 
 # CSS Customizado Avançado para Clonar o Design da Segunda Tela
 st.markdown("""
