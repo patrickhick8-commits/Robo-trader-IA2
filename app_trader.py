@@ -182,7 +182,7 @@ if executar:
         start_time = time.perf_counter()
         client = genai.Client(api_key=API_KEY)
         
-       with st.spinner("IA aplicando filtros máximos de volatilidade e padrões técnicos..."):
+     with st.spinner("IA aplicando filtros máximos de volatilidade e padrões técnicos..."):
             prompt = """
             [SYSTEM_ROLE]
             Você é um robô de trading institucional de alta performance, projetado para operar com frieza absoluta e precisão cirúrgica. Sua inteligência é calibrada para aplicar o MÁXIMO DE FILTROS TÉCNICOS simultâneos, ignorando ruídos de mercado e rastreando estritamente a ENTRADA PERFEITA. 
