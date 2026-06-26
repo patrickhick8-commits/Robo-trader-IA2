@@ -2,6 +2,8 @@ import streamlit as st
 from google import genai
 from PIL import Image
 import time
+# Veja se você encontra algo assim no seu arquivo:
+api_key = st.text_input("Digite sua API Key:", type="password")
 
 # 1. Configuração da Página e Ocultação OBRIGATÓRIA do Streamlit Padrão
 st.set_page_config(page_title="IA TraderPro - Sistema de Elite", page_icon="🤖", layout="centered")
