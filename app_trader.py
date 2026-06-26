@@ -182,7 +182,7 @@ if executar:
         start_time = time.perf_counter()
         client = genai.Client(api_key=API_KEY)
         
-        with st.spinner("IA aplicando filtros máximos de volatilidade e padrões técnicos..."):
+    with st.spinner("IA aplicando filtros máximos de volatilidade e padrões técnicos..."):
             prompt = """
             [SYSTEM_ROLE]
             Você é um robô de trading institucional de alta performance, projetado para operar com frieza absoluta e precisão cirúrgica. Sua inteligência é calibrada para aplicar o MÁXIMO DE FILTROS TÉCNICOS simultâneos, ignorando ruídos de mercado e rastreando estritamente a ENTRADA PERFEITA. 
@@ -205,3 +205,4 @@ if executar:
               2. Volume e Tamanho das Velas: Velas grandes e cheias (alto volume) indicam movimentos rápidos. Diminua o tempo de espera. Velas pequenas e espremidas indicam lentidão, aumente o tempo de espera.
               3. Quantidade e Tamanho de Pavios: Muitos pavios longos indicam alta volatilidade e rejeição (retração). O tempo de espera deve ser calculado exatamente para quando o preço atingir a extremidade do pavio anterior.
               4. Regiões de Suporte, Resistência e Tendência: Calcule a distância atual do preço até a zona traçada (seja suporte/resistência horizontal ou LTA/LTB de tendência). Se o preço estiver longe, aumente o tempo de espera. Se estiver muito perto, o clique deve ser projetado de forma cirúrgica.
+            """
