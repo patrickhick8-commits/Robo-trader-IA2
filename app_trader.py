@@ -114,7 +114,6 @@ st.markdown("""
         letter-spacing: 1px !important;
         margin-top: 20px !important;
         cursor: pointer !important;
-        box-shadow: 0px 4px 15px rgba(0, 191, 165, 0.4) !important;
     }
     .active-btn div.stButton > button:hover {
         background-color: #00a68f !important;
