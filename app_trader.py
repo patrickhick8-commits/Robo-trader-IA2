@@ -29,6 +29,9 @@ if API_KEY:
               # =========================================================================
 # 🎛️ CONTROLE NATIVO DE DESEMPENHO (WIN / LOSS) - INTEGRADO VIA GITHUB
 # =========================================================================
+# =========================================================================
+# 🎛️ CONTROLE NATIVO DE DESEMPENHO (WIN / LOSS) - INTEGRADO VIA GITHUB
+# =========================================================================
 st.sidebar.title("📊 Painel de Performance")
 
 # Inicializa as variáveis na memória se não existirem
