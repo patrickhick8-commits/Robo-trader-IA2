@@ -28,7 +28,7 @@ if API_KEY:
                 
                 # Prompt avançado de visão computacional para leitura de candlesticks e cálculo de taxa de acerto
                 prompt = """
-               # =========================================================================
+             # =========================================================================
 # 🎛️ CONTROLE NATIVO DE DESEMPENHO (WIN / LOSS) - INTEGRADO VIA GITHUB
 # =========================================================================
 st.sidebar.title("📊 Painel de Performance")
@@ -95,8 +95,7 @@ Analise o desequilíbrio, a movimentação do preço e o fluxo de ordens (Order 
 [PROTOCOLO DE PERFORMANCE VISUAL - MEMÓRIA DE SESSÃO]{texto_correcao_dinamica}
 
 Retorne estritamente neste formato markdown limpo:
-PORCENTAGEM DE ACERTO DA ENTRADA: [Ex: 96% - EXTREMA CONFLUÊNCIA]
-HORARIO DO CLIQUE (ENTRADA): [HH:MM:00 exato]
+PORCENTAGEM DE ACERTO DA ENTRADA: [Ex: 96% - EXTREMA CONFLUÊNCIA]HORARIO DO CLIQUE (ENTRADA): [HH:MM:00 exato]
 TEMPO DE EXPIRACAO: 1 Minuto (Fechamento na mesma vela)
 HORARIO DE FECHAMENTO: [HH:MM+1:00]
 DIRECAO DA ORDEM: [COMPRA / VENDA / ABORTAR OPERAÇÃO]
