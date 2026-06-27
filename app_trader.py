@@ -26,10 +26,7 @@ if API_KEY:
         if st.button("🚀 EXECUTAR ANÁLISE AVANÇADA DE SINAL"):
             with st.spinner("IA escaneando padrões de velas, volume e mercado..."):
                 
-                # Prompt avançado de visão computacional para leitura de candlesticks e cálculo de taxa de acerto
-              
-        
-# =========================================================================
+              # =========================================================================
 # 🎛️ CONTROLE NATIVO DE DESEMPENHO (WIN / LOSS) - INTEGRADO VIA GITHUB
 # =========================================================================
 st.sidebar.title("📊 Painel de Performance")
