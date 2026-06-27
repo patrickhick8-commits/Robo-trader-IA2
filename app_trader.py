@@ -31,6 +31,9 @@ if API_KEY:
              # =========================================================================
 # 🎛️ CONTROLE NATIVO DE DESEMPENHO (WIN / LOSS) - INTEGRADO VIA GITHUB
 # =========================================================================
+# =========================================================================
+# 🎛️ CONTROLE NATIVO DE DESEMPENHO (WIN / LOSS) - INTEGRADO VIA GITHUB
+# =========================================================================
 st.sidebar.title("📊 Painel de Performance")
 
 # Inicializa as variáveis na memória se não existirem
@@ -82,9 +85,10 @@ if st.session_state["feedback_trader"] != "":
     st.sidebar.info("Status registrado para a próxima análise!")
 
 # =========================================================================
-# 🧠 PROMPT MESTRE CONFIGURADO COM A VARIÁVEL DE AUTO-AJUSTE
+# 🧠 PROMPT MESTRE (FORMATO BLINDADO ANTI-ERRO DE ASPAS)
 # =========================================================================
-prompt = f"""
+import inspect
+prompt = inspect.cleandoc(f"""
 [ORDER_FLOW_&_PURE_CANDLE_VOLUME]
 Analise o desequilíbrio, a movimentação do preço e o fluxo de ordens (Order Flow) de forma 100% implícita e exclusiva na anatomia visual das velas, SEM depender de indicadores de volume na tela:
 - VOLUME POR CORPO E MOVIMENTAÇÃO: Avalie o volume financeiro real injetado pelo tamanho e expansão do corpo dos candles. Velas expressivas confirmam volume institucional empurrando o mercado.
@@ -108,5 +112,4 @@ DIAGNOSTICO INSTITUCIONAL DE SINAL (PRICE ACTION & FILTROS DE SEGURANÇA):
 - Absorcao e Pressao por Pavios: [O que a pressão dos pavios revelou sobre o volume oculto de defesa]
 - Filtro de Segurança RSI: [Status técnico da linha do RSI para confluência]
 Seja frio, direto e puramente matemático.
-"""
-ra ativar o modo de análise avançada.")
+""")
