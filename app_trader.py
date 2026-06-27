@@ -28,7 +28,7 @@ if API_KEY:
                 
                 # Prompt avançado de visão computacional para leitura de candlesticks e cálculo de taxa de acerto
                 prompt = """
-             # =========================================================================
+        
 # =========================================================================
 # 🎛️ CONTROLE NATIVO DE DESEMPENHO (WIN / LOSS) - INTEGRADO VIA GITHUB
 # =========================================================================
