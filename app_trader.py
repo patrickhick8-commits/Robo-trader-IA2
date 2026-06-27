@@ -28,44 +28,84 @@ if API_KEY:
                 
                 # Prompt avançado de visão computacional para leitura de candlesticks e cálculo de taxa de acerto
                 prompt = """
-                Você é um robô de trading institucional de alta performance, especialista em Price Action puro, análise de fluxo de ordens (Order Flow) e análise técnica visual para Opções Binárias (M1).
-                Sua missão é analisar minuciosamente a imagem enviada com foco absoluto na anatomia das velas e nas métricas do mercado para projetar um clique de 2 a 5 minutos no futuro com expiração para a mesma vela.
+               # =========================================================================
+# 🎛️ CONTROLE NATIVO DE DESEMPENHO (WIN / LOSS) - INTEGRADO VIA GITHUB
+# =========================================================================
+st.sidebar.title("📊 Painel de Performance")
 
-                Analise as seguintes variáveis visuais na imagem:
-                1. ANATOMIA DAS VELAS: Cor das últimas 5 velas (verde/vermelha), tamanho do corpo (velas expressivas ou sem força) e presença de pavios (pavio longo em cima = rejeição de alta; pavio longo embaixo = rejeição de baixa; sem pavio = força total).
-                2. MOMENTO DO GRÁFICO: Identifique se o mercado está em Tendência de Alta (topos e fundos ascendentes), Tendência de Baixa (topos e fundos descendentes) ou Lateralizado/Consolidado.
-                3. INDICADORES E VOLUME: Verifique o RSI (14, 70/30) e as barras de Volume na parte inferior (Volume crescente valida o movimento, volume decrescente indica exaustão).
-                4. TAXA DE ASSERTIVIDADE: Calcule uma porcentagem matemática aproximada de acerto para a entrada (0% a 100%) baseada na confluência dos fatores acima (ex: se a tendência apoia o RSI e o padrão de vela, a porcentagem é alta).
+# Inicializa as variáveis na memória se não existirem
+if "feedback_trader" not in st.session_state:
+    st.session_state["feedback_trader"] = ""
+if "tipo_loss" not in st.session_state:
+    st.session_state["tipo_loss"] = ""
 
-                Retorne o diagnóstico estruturado estritamente neste formato markdown limpo e destacado:
+# Desenha os botões lado a lado na barra lateral
+col_win, col_loss = st.sidebar.columns(2)
 
-                🎯 PORCENTAGEM DE ACERTO DA ENTRADA: [Ex: 87%] (Escreva bem grande e destacado)
+with col_win:
+    if st.button("🟢 WIN", key="btn_win_sidebar", use_container_width=True):
+        st.session_state["feedback_trader"] = (
+            "\n- VALIDAÇÃO: OPERAÇÃO ANTERIOR FINALIZADA EM WIN! "
+            "A leitura implícita de fluxo e as defesas de pavio se confirmaram. Mantenha os filtros."
+        )
+        st.session_state["tipo_loss"] = ""
 
-                ⏰ HORÁRIO DO CLIQUE (ENTRADA): [Defina o horário HH:MM:00 exato entre 2 a 5 minutos à frente do print]
-                ⏳ TEMPO DE EXPIRAÇÃO: 1 Minuto (Para fechar na mesma vela do clique)
-                🏁 HORÁRIO DE FECHAMENTO: [HH:MM+1:00]
-                🟥🟩 DIREÇÃO DA ORDEM: [COMPRA / VENDA / NEUTRO]
+with col_loss:
+    if st.button("🔴 LOSS", key="btn_loss_sidebar", use_container_width=True):
+        st.session_state["feedback_trader"] = "RECALIBRAR"
 
-                🧠 ESTRATÉGIA: [FLUXO DE VELA ou REVERSÃO DE TENDÊNCIA]
-                📊 CONTEXTO DO MERCADO: [Mencione se está em TENDÊNCIA DE ALTA, TENDÊNCIA DE BAIXA ou LATERAL]
+# Exibe o menu de seleção se o trader clicar em LOSS
+if st.session_state["feedback_trader"] == "RECALIBRAR":
+    cenario_selecionado = st.sidebar.selectbox(
+        "Qual foi a falha do mercado?",
+        ["Selecione o motivo...", "1. Tendência (Falso Rompimento / Exaustão)", "2. Lateralização (Rompimento inesperado)"],
+        key="select_loss_sidebar"
+    )
+    
+    if "1." in cenario_selecionado:
+        st.session_state["tipo_loss"] = (
+            "\n- PROTOCOLO DE AUTO-CORREÇÃO: LOSS EM TENDÊNCIA! "
+            "A vela sofreu exaustão imediata ou falso rompimento. "
+            "Para a próxima análise, ignore fluxos se a vela não tiver o dobro do tamanho médio das anteriores."
+        )
+    elif "2." in cenario_selecionado:
+        st.session_state["tipo_loss"] = (
+            "\n- PROTOCOLO DE AUTO-CORREÇÃO: LOSS EM MERCADO LATERAL! "
+            "A região de suporte/resistência falhou e foi rompida com forte volume. "
+            "Para a próxima análise, ignore defesas fracas por pavios e siga o rompimento real."
+        )
 
-                🔍 DETALHAMENTO ANATÔMICO (O QUE A IA VIU):
-                - Anatomia das Velas: [Descreva a cor predominante, se o tamanho dos corpos está diminuindo/aumentando e o que os pavios indicam]
-                - Comportamento do Volume: [Descreva se as barras de volume estão subindo ou caindo nas últimas velas]
-                - Situação do RSI: [Indique a posição visual da linha do RSI]
-Seja extremamente frio, preciso e direto na resposta. Velocidade e precisão salvam bancas.
-                """
-                
-                try:
-                    # Executa o modelo flash com suporte a leitura avançada de imagem
-                    response = client.models.generate_content(
-                        model='gemini-2.5-flash',
-                        contents=[image, prompt]
-                    )
-                    st.success("Análise Avançada Concluída com Sucesso!")
-                    st.markdown(response.text)
-                    
-                except Exception as e:
-                    st.error(f"Erro no processamento visual da IA: {e}")
-else:
-    st.info("👈 Insira sua Gemini API Key na barra lateral para ativar o modo de análise avançada.")
+# Define o texto final que vai para o prompt da Gemini
+texto_correcao_dinamica = st.session_state["tipo_loss"] if st.session_state["feedback_trader"] == "RECALIBRAR" else st.session_state["feedback_trader"]
+
+if st.session_state["feedback_trader"] != "":
+    st.sidebar.info("Status registrado para a próxima análise!")
+
+# =========================================================================
+# 🧠 PROMPT MESTRE CONFIGURADO COM A VARIÁVEL DE AUTO-AJUSTE
+# =========================================================================
+prompt = f"""
+[ORDER_FLOW_&_PURE_CANDLE_VOLUME]
+Analise o desequilíbrio, a movimentação do preço e o fluxo de ordens (Order Flow) de forma 100% implícita e exclusiva na anatomia visual das velas, SEM depender de indicadores de volume na tela:
+- VOLUME POR CORPO E MOVIMENTAÇÃO: Avalie o volume financeiro real injetado pelo tamanho e expansão do corpo dos candles. Velas expressivas confirmam volume institucional empurrando o mercado.
+- DEFESA E ABSORÇÃO POR PAVIOS: Avalie o volume de agressão contrária pelo tamanho dos pavios. Pavios longos in zonas críticas indicam rejeição em massa, absorção de ordens e virada iminente no fluxo.
+
+[TIME_RULES] Leia o relógio atual no print. Projete o momento do clique de entrada de forma cirúrgica para acontecer entre 2 a 5 velas (minutos) depois do print. A expiração DEVE ser de 1 minuto para fechar exatamente no final da mesma vela de entrada (WIN no candle indicado).
+
+[PROTOCOLO DE PERFORMANCE VISUAL - MEMÓRIA DE SESSÃO]{texto_correcao_dinamica}
+
+Retorne estritamente neste formato markdown limpo:
+🎯 PORCENTAGEM DE ACERTO DA ENTRADA: [Ex: 96% - EXTREMA CONFLUÊNCIA]⏰ HORÁRIO DO CLIQUE (ENTRADA): [HH:MM:00 exato]
+⏳ TEMPO DE EXPIRAÇÃO: 1 Minuto (Fechamento na mesma vela)
+🏁 HORÁRIO DE FECHAMENTO: [HH:MM+1:00]
+🟥🟩 DIREÇÃO DA ORDEM: [COMPRA / VENDA / ABORTAR OPERAÇÃO]
+🌐 MODO DE MERCADO DETECTADO: [MERCADO ABERTO ou MERCADO OTC]
+🧠 ESTRATÉGIA CORRETA APLICADA: [Ex: ALGORITMO DE FLUXO OTC ou REVERSÃO EM SUPORTE TRADICIONAL]
+
+🔍 DIAGNÓSTICO INSTITUCIONAL DE SINAL (PRICE ACTION & FILTROS DE SEGURANÇA):
+- Leitura de Falsos Rompimentos/Pullbacks: [Explique por que o cenário atual é seguro e não se trata de uma armadilha ou falso movimento]
+- Filtragem de Ruído e Volume por Corpo: [Análise da clareza e direção real do fluxo das velas]
+- Absorção e Pressão por Pavios: [O que a pressão dos pavios revelou sobre o volume oculto de defesa]
+- Filtro de Segurança RSI: [Status técnico da linha do RSI para confluência]
+Seja frio, direto e puramente matemático.
+"""ativar o modo de análise avançada.")
