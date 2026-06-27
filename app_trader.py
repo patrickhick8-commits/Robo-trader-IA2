@@ -27,7 +27,7 @@ if API_KEY:
             with st.spinner("IA escaneando padrões de velas, volume e mercado..."):
                 
                 # Prompt avançado de visão computacional para leitura de candlesticks e cálculo de taxa de acerto
-                prompt = """
+              
         
 # =========================================================================
 # 🎛️ CONTROLE NATIVO DE DESEMPENHO (WIN / LOSS) - INTEGRADO VIA GITHUB
