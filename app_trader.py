@@ -29,8 +29,6 @@ if API_KEY:
                 # Prompt avançado de visão computacional para leitura de candlesticks e cálculo de taxa de acerto
                 prompt = """
              # =========================================================================
-# 🎛️ CONTROLE NATIVO DE DESEMPENHO (WIN / LOSS) - INTEGRADO VIA GITHUB
-# =========================================================================
 # =========================================================================
 # 🎛️ CONTROLE NATIVO DE DESEMPENHO (WIN / LOSS) - INTEGRADO VIA GITHUB
 # =========================================================================
@@ -85,31 +83,33 @@ if st.session_state["feedback_trader"] != "":
     st.sidebar.info("Status registrado para a próxima análise!")
 
 # =========================================================================
-# 🧠 PROMPT MESTRE (FORMATO BLINDADO ANTI-ERRO DE ASPAS)
+# 🧠 PROMPT MESTRE (FORMATO SEGURO SEM MODELO DE ASPAS TRIPLAS LONGAS)
 # =========================================================================
-import inspect
-prompt = inspect.cleandoc(f"""
-[ORDER_FLOW_&_PURE_CANDLE_VOLUME]
-Analise o desequilíbrio, a movimentação do preço e o fluxo de ordens (Order Flow) de forma 100% implícita e exclusiva na anatomia visual das velas, SEM depender de indicadores de volume na tela:
-- VOLUME POR CORPO E MOVIMENTAÇÃO: Avalie o volume financeiro real injetado pelo tamanho e expansão do corpo dos candles. Velas expressivas confirmam volume institucional empurrando o mercado.
-- DEFESA E ABSORÇÃO POR PAVIOS: Avalie o volume de agressão contrária pelo tamanho dos pavios. Pavios longos em zonas críticas indicam rejeição em massa, absorção de ordens e virada iminente no fluxo.
+linhas_prompt = [
+    "[ORDER_FLOW_&_PURE_CANDLE_VOLUME]",
+    "Analise o desequilíbrio, a movimentação do preço e o fluxo de ordens (Order Flow) de forma 100% implícita e exclusiva na anatomia visual das velas, SEM depender de indicadores de volume na tela:",
+    "- VOLUME POR CORPO E MOVIMENTAÇÃO: Avalie o volume financeiro real injetado pelo tamanho e expansão do corpo dos candles. Velas expressivas confirmam volume institucional empurrando o mercado.",
+    "- DEFESA E ABSORÇÃO POR PAVIOS: Avalie o volume de agressão contrária pelo tamanho dos pavios. Pavios longos em zonas críticas indicam rejeição em massa, absorção de ordens e virada iminente no fluxo.",
+    "",
+    "[TIME_RULES] Leia o relógio atual no print. Projete o momento do clique de entrada de forma cirúrgica para acontecer entre 2 a 5 velas (minutos) depois do print. A expiração DEVE ser de 1 minuto para fechar exatamente no final da mesma vela de entrada (WIN no candle indicado).",
+    "",
+    f"[PROTOCOLO DE PERFORMANCE VISUAL - MEMÓRIA DE SESSÃO]{texto_correcao_dinamica}",
+    "",
+    "Retorne estritamente neste formato markdown limpo:","PORCENTAGEM DE ACERTO DA ENTRADA: [Ex: 96% - EXTREMA CONFLUÊNCIA]",
+    "HORARIO DO CLIQUE (ENTRADA): [HH:MM:00 exato]",
+    "TEMPO DE EXPIRACAO: 1 Minuto (Fechamento na mesma vela)",
+    "HORARIO DE FECHAMENTO: [HH:MM+1:00]",
+    "DIRECAO DA ORDEM: [COMPRA / VENDA / ABORTAR OPERAÇÃO]",
+    "MODO DE MERCADO DETECTADO: [MERCADO ABERTO ou MERCADO OTC]",
+    "ESTRATEGIA CORRETA APLICADA: [Ex: ALGORITMO DE FLUXO OTC ou REVERSÃO EM SUPORTE TRADICIONAL]",
+    "",
+    "DIAGNOSTICO INSTITUCIONAL DE SINAL (PRICE ACTION & FILTROS DE SEGURANÇA):",
+    "- Leitura de Falsos Rompimentos/Pullbacks: [Explique por que o cenário atual é seguro e não se trata de uma armadilha ou falso movimento]",
+    "- Filtragem de Ruido e Volume por Corpo: [Análise da clareza e direção real do fluxo das velas]",
+    "- Absorcao e Pressao por Pavios: [O que a pressão dos pavios revelou sobre o volume oculto de defesa]",
+    "- Filtro de Segurança RSI: [Status técnico da linha do RSI para confluência]",
+    "Seja frio, direto e puramente matemático."
+]
 
-[TIME_RULES] Leia o relógio atual no print. Projete o momento do clique de entrada de forma cirúrgica para acontecer entre 2 a 5 velas (minutos) depois do print. A expiração DEVE ser de 1 minuto para fechar exatamente no final da mesma vela de entrada (WIN no candle indicado).
-
-[PROTOCOLO DE PERFORMANCE VISUAL - MEMÓRIA DE SESSÃO]{texto_correcao_dinamica}
-
-Retorne estritamente neste formato markdown limpo:
-PORCENTAGEM DE ACERTO DA ENTRADA: [Ex: 96% - EXTREMA CONFLUÊNCIA]HORARIO DO CLIQUE (ENTRADA): [HH:MM:00 exato]
-TEMPO DE EXPIRACAO: 1 Minuto (Fechamento na mesma vela)
-HORARIO DE FECHAMENTO: [HH:MM+1:00]
-DIRECAO DA ORDEM: [COMPRA / VENDA / ABORTAR OPERAÇÃO]
-MODO DE MERCADO DETECTADO: [MERCADO ABERTO ou MERCADO OTC]
-ESTRATEGIA CORRETA APLICADA: [Ex: ALGORITMO DE FLUXO OTC ou REVERSÃO EM SUPORTE TRADICIONAL]
-
-DIAGNOSTICO INSTITUCIONAL DE SINAL (PRICE ACTION & FILTROS DE SEGURANÇA):
-- Leitura de Falsos Rompimentos/Pullbacks: [Explique por que o cenário atual é seguro e não se trata de uma armadilha ou falso movimento]
-- Filtragem de Ruido e Volume por Corpo: [Análise da clareza e direção real do fluxo das velas]
-- Absorcao e Pressao por Pavios: [O que a pressão dos pavios revelou sobre o volume oculto de defesa]
-- Filtro de Segurança RSI: [Status técnico da linha do RSI para confluência]
-Seja frio, direto e puramente matemático.
-""")
+prompt = "\n".join(linhas_prompt)
+# =========================================================================
