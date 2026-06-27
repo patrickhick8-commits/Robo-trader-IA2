@@ -109,23 +109,4 @@ DIAGNOSTICO INSTITUCIONAL DE SINAL (PRICE ACTION & FILTROS DE SEGURANÇA):
 - Filtro de Segurança RSI: [Status técnico da linha do RSI para confluência]
 Seja frio, direto e puramente matemático.
 """
-  try:
-                    # Executa o modelo flash com suporte a leitura avançada de imagem
-                    response = client.models.generate_content(
-                        model='gemini-2.5-flash',
-                        contents=[image, prompt]
-                    )
-                    st.success("Análise Avançada Concluída com Sucesso!")
-                    
-                    # Sistema de som injetado para alertar a entrada no Desktop
-                    st.components.v1.html(
-                        '<audio autoplay src="https://google.com"></audio>',
-                        height=0
-                    )
-                    
-                    st.markdown(response.text)
-                    
-                except Exception as e:
-                    st.error(f"Erro no processamento visual da IA: {e}")
-else:
-    st.info("👈 Insira sua Gemini API Key na barra lateral para ativar o modo de análise avançada.")
+ra ativar o modo de análise avançada.")
