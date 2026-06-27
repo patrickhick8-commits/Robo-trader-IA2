@@ -95,7 +95,7 @@ Analise o desequilíbrio, a movimentação do preço e o fluxo de ordens (Order 
 [PROTOCOLO DE PERFORMANCE VISUAL - MEMÓRIA DE SESSÃO]{texto_correcao_dinamica}
 
 Retorne estritamente neste formato markdown limpo:
-🎯 PORCENTAGEM DE ACERTO DA ENTRADA: [Ex: 96% - EXTREMA CONFLUÊNCIA]⏰ HORÁRIO DO CLIQUE (ENTRADA): [HH:MM:00 exato]
+🎯 PORCENTAGEM DE ACERTO DA ENTRADA: [Ex: 96% - EXTREMA CONFLUÊNCIA]⏰ HORÁRIO DO CLIQUE (ENTRADA): [HH:MM+1:00 exato]
 ⏳ TEMPO DE EXPIRAÇÃO: 1 Minuto (Fechamento na mesma vela)
 🏁 HORÁRIO DE FECHAMENTO: [HH:MM+1:00]
 🟥🟩 DIREÇÃO DA ORDEM: [COMPRA / VENDA / ABORTAR OPERAÇÃO]
