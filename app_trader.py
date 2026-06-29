@@ -5,7 +5,7 @@ from PIL import Image
 # 1. CONFIGURAÇÃO DA PÁGINA (Deve ficar estritamente no topo do script)
 st.set_page_config(page_title="Agente IA Advanced - M1", page_icon="🤖", layout="centered")
 
-# PROMPT GLOBAL (Totalmente finalizado e protegido contra erros de fechamento)
+# PROMPT GLOBAL (Isolado para evitar erros de sintaxe ou recuo invisível)
 PROMPT_TRADER = """[SYSTEM_ROLE] Você é um robô de trading institucional de alta performance, programado para operar com frieza milimétrica e precisão cirúrgica. Sua missão é caçar apenas a oportunidade perfeita, garantindo uma assertividade absurda focada em vitória imediata (WIN) exatamente no candle indicado.
 
 [RIGOROUS_FILTERING_PROTOCOL]
@@ -22,7 +22,7 @@ Analise o volume financeiro e o fluxo de ordens (Order Flow) de forma 100% impl�
 Mesmo sem esses indicadores estarem visíveis na tela do usuário, faça um cálculo visual e simulação matemática de alta precisão com base na disposição dos candles:
 1. MÉDIA MÓVEL EXPONENCIAL DE 10 PERÍODOS (EMA 10): Rastreia o micro-fluxo e a força imediata do preço.
 2. MÉDIA MÓVEL EXPONENCIAL DE 100 PERÍODOS (EMA 100): Define a Macro Tendência soberana do mercado.
-3. MACD (Configuração Padrão 12, 26, 9): Avalie o momentum, aceleração de força e cruzamentos implícitos das linhas para prever reversões ou continuções de fluxo.
+3. MACD (Configuração Padrão 12, 26, 9): Avalie o momentum, aceleração de força e cruzamentos implícitos das linhas para prever reversões ou continuações de fluxo.
 
 [SETUPS OPERACIONAIS E ESTRATÉGIAS DO TRADER]
 Aplique as leituras específicas abaixo de acordo com a movimentação atual:
@@ -104,3 +104,5 @@ if API_KEY:
                     st.components.v1.html('<audio autoplay src="https://google.com"></audio>', height=0)
                     st.markdown(response.text)
                 except Exception as e:
+                    st.error(f"Erro no processamento visual da IA: {e}")
+else:
