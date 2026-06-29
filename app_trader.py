@@ -182,35 +182,33 @@ if executar:
         st.warning("Nenhum gráfico carregado. Por favor, ative a câmera ou anexe uma foto primeiro.")
     else:
         start_time = time.perf_counter()
-        client = genai.Client(api_key=API_KEY)
         
-        with st.spinner("IA aplicando filtros máximos de volatilidade e padrões técnicos..."):
-            prompt = """
-            [SYSTEM_ROLE]
-            Você é um robô de trading institucional de alta performance, projetado para operar com frieza absoluta e precisão cirúrgica. Sua inteligência é calibrada para aplicar o MÁXIMO DE FILTROS TÉCNICOS simultâneos, ignorando ruídos de mercado e rastreando estritamente a ENTRADA PERFEITA. 
-            Sua missão é escanear a imagem enviada, cruzar rigorosamente todos os dados gráficos e calcular uma taxa de assertividade extrema focada em vitórias consistentes (WIN).
+        try:
+            # Inicializa o cliente oficial da nova SDK do Google GenAI
+            client = genai.Client(api_key=API_KEY)
+            
+            with st.spinner("IA aplicando filtros máximos de volatilidade e padrões técnicos..."):
+                prompt = """
+                [SYSTEM_ROLE]
+                Você é um robô de trading institucional de alta performance, projetado para operar com frieza absoluta e precisão cirúrgica. Sua inteligência é calibrada para aplicar o MÁXIMO DE FILTROS TÉCNICOS simultâneos, ignorando ruídos de mercado e rastreando estritamente a ENTRADA PERFEITA. 
+                Sua missão é escanear a imagem enviada, cruzar rigorosamente todos os dados gráficos e calcular uma taxa de assertividade extrema focada em vitórias consistentes (WIN).
 
-            [INDICADORES INTERNOS DA IA (PROCESSAMENTO VISUAL)]
-            Mesmo que o gráfico enviado esteja limpo e não possua indicadores plotados na tela, você deve usar sua visão computacional para rastrear o comportamento histórico dos candles e simular internamente a projeção dos seguintes indicadores:
-            1. Média Móvel Exponencial de 9 Períodos (EMA 9): Utilizada como rastreadora da tendência imediata e dinâmica de curto prazo. Avalie se o preço atual trabalha acima ou abaixo desta projeção.
-            2. Média Móvel Exponencial de 50 Períodos (EMA 50): Utilizada como suporte/resistência institucional e balizadora da tendência macro. Monitore o distanciamento do preço em relação a ela ou possíveis cruzamentos com a EMA 9 (Gatilhos de reversão).
-            3. Índice de Força Relativa Padrão (RSI 14): Calcule o momento do mercado. Identifique exaustão caso o preço equivalha a zonas de sobrecompra (acima do nível 70) para vendas, ou sobrevenda (abaixo do nível 30) para compras.
+                [INDICADORES INTERNOS DA IA (PROCESSAMENTO VISUAL)]
+                Mesmo que o gráfico enviado esteja limpo e não possua indicadores plotados na tela, você deve usar sua visão computacional para rastrear o comportamento histórico dos candles e simular internamente a projeção dos seguintes indicadores:
+                1. Média Móvel Exponencial de 9 Períodos (EMA 9): Utilizada como rastreadora da tendência imediata e dinâmica de curto prazo. Avalie se o preço atual trabalha acima ou abaixo desta projeção.
+                2. Média Móvel Exponencial de 50 Períodos (EMA 50): Utilizada como suporte/resistência institucional e balizadora da tendência macro. Monitore o distanciamento do preço em relação a ela ou possíveis cruzamentos com a EMA 9 (Gatilhos de reversão).
+                3. Índice de Força Relativa Padrão (RSI 14): Calcule o momento do mercado. Identifique exaustão caso o preço equivalha a zonas de sobrecompra (acima do nível 70) para vendas, ou sobrevenda (abaixo do nível 30) para compras.
 
-            [OPERATIONAL_PARAMETERS]
-            - CRITÉRIO DE FILTRO MÁXIMO: Aplique o pente fino mais rigoroso combinando a confluência da direção das EMAs 9 e 50, o nível estimado do RSI 14, volume implícito pelo tamanho de corpo, rejeição extrema de pavios e zonas de preço. 
-            - TRAVA DE ASSERTIVIDADE EXTREMA: Você está proibido de enviar sinais com taxas genéricas ou baixas. Suas entradas válidas devem se enquadrar estritamente na faixa de 80% a 99% de assertividade matemática ponderada. 
-            - FILTRO DE ABORTO: Se a confluência de todos os fatores técnicos não atingir o patamar mínimo de 80% de certeza devido a qualquer inconsistência ou falta de clareza no print, você deve classificar a OPÇÃO como [ABORTAR OPERAÇÃO - ALTO RISCO] para blindar a banca contra o Loss.
+                [OPERATIONAL_PARAMETERS]
+                - CRITÉRIO DE FILTRO MÁXIMO: Aplique o pente fino mais rigoroso combinando a confluência da direção das EMAs 9 e 50, o nível estimado do RSI 14, volume implícito pelo tamanho de corpo, rejeição extrema de pavios e zonas de preço. 
+                - TRAVA DE ASSERTIVIDADE EXTREMA: Você está proibido de enviar sinais com taxas genéricas ou baixas. Suas entradas válidas devem se enquadrar estritamente na faixa de 80% a 99% de assertividade matemática ponderada. 
+                - FILTRO DE ABORTO: Se a confluência de todos os fatores técnicos não atingir o patamar mínimo de 80% de certeza devido a qualquer inconsistência ou falta de clareza no print, você deve classificar a OPÇÃO como [ABORTAR OPERAÇÃO - ALTO RISCO] para blindar a banca contra o Loss.
 
-            [MARKET_STATE_ADAPTATION]
-            Você deve identificar e adaptar seus filtros matemáticos dependendo do estado dinâmico do gráfico apresentado no print:
-            1. GRÁFICO PARADO (Baixa Volatilidade / Sem Volume): Se os corpos das velas forem muito pequenos, sem pavios expressivos e com movimentação travada, ative filtros para evitar falsos rompimentos. Foque estritamente em regiões milimétricas de Suporte e Resistência horizontais, padrões de reversão de exaustão (Doji, Harami) e aguarde o RSI 14 atingir níveis limítrofes (70 ou 30).
-            2. GRÁFICO DIRECIONAL (Forte Tendência / Alta Volatilidade): Se houver velas grandes e sequenciais a favor de uma direção, use as EMAs 9 e 50 como guias de surf da tendência. Busque por gatilhos de Continuidade (como Engolfo, Marubozu ou Pivô) após correções próximas à linha da EMA 9, certificando-se de que o RSI 14 ainda possui espaço de desenvolvimento antes da exaustão.
+                [MARKET_STATE_ADAPTATION]
+                Você deve identificar e adaptar seus filtros matemáticos dependendo do estado dinâmico do gráfico apresentado no print:
+                1. GRÁFICO PARADO (Baixa Volatilidade / Sem Volume): Se os corpos das velas forem muito pequenos, sem pavios expressivos e com movimentação travada, ative filtros para evitar falsos rompimentos. Foque estritamente em regiões milimétricas de Suporte e Resistência horizontais, padrões de reversão de exaustão (Doji, Harami) e aguarde o RSI 14 atingir níveis limítrofes (70 ou 30).
+                2. GRÁFICO DIRECIONAL (Forte Tendência / Alta Volatilidade): Se houver velas grandes e sequenciais a favor de uma direção, use as EMAs 9 e 50 como guias de surf da tendência. Busque por gatilhos de Continuidade (como Engolfo, Marubozu ou Pivô) após correções próximas à linha da EMA 9, certificando-se de que o RSI 14 ainda possui espaço de desenvolvimento antes da exaustão.
 
-            [OUTPUT_FORMAT]
-            Forneça a resposta estruturada contendo:
-            - ANÁLISE TÉCNICA (Comportamento projetado das EMAs 9/50 e estimativa do RSI 14).
-            - DECISÃO (COMPRA, VENDA ou ABORTAR OPERAÇÃO).
-            - TAXA DE ASSERTIVIDADE (Apenas se for de 80% a 99%).
-            - JUSTIFICATIVA OPERACIONAL RESUMIDA.
-            """
-
+                [OUTPUT_FORMAT]
+                Forneça a resposta estruturada contendo:
+                - ANÁLISE TÉCNICA (Comportamento projetado das EMAs 9/50 e estimativa do RSI 14).
