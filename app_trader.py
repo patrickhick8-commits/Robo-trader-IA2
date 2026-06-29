@@ -24,17 +24,23 @@ if API_KEY:
         
         # Botão de disparo rápido para Opções Binárias Avançado
         if st.button("🚀 EXECUTAR ANÁLISE AVANÇADA DE SINAL"):
-            with st.spinner("IA escaneando padrões de velas, volume e mercado..."):
+            with st.spinner("IA aplicando raciocínio profundo nos padrões de velas e indicadores..."):
                 
-                # Prompt avançado compacto com foco em volume por Price Action e anatomia
+                # Prompt avançado completo com foco em volume por Price Action e indicadores internos
                 prompt = """
                 [SYSTEM_ROLE] Aja como robô institucional especialista em Price Action puro, Order Flow e análise de Opções Binárias (M1). Projete a entrada entre 2 a 5 minutos no futuro com expiração para a mesma vela.
                 
+                [INDICADORES INTERNOS DA IA (PROCESSAMENTO VISUAL COGNITIVO)]
+                Mesmo que o gráfico enviado no print esteja totalmente limpo e sem indicadores na tela, você deve usar sua visão computacional avançada para rastrear o comportamento histórico do preço e projetar internamente os seguintes indicadores:
+                1. Média Móvel Exponencial de 9 Períodos (EMA 9): Rastreie a tendência imediata do preço. Avalie se as últimas velas fecham acima ou abaixo desta projeção de curto prazo.
+                2. Média Móvel Exponencial de 50 Períodos (EMA 50): Projete esta linha para determinar o suporte/resistência dinâmico institucional e a tendência macro. Identifique cruzamentos com a EMA 9 ou distanciamentos críticos (retração iminente).
+                3. Índice de Força Relativa Padrão (RSI 14): Calcule o momento do mercado. Identifique exaustão caso a força atual equivalha a zonas de sobrecompra (níveis acima de 70) para operações de venda, ou sobrevenda (níveis abaixo de 30) para operações de compra.
+
                 [CANDLE_VOLUME_ANALYSIS] Analise minuciosamente o VOLUME DO MERCADO através de duas vias simultâneas:
                 1. VOLUME POR ANATOMIA: Meça o volume implícito e a velocidade do mercado pelo tamanho do corpo dos candles (corpos expandidos = volume e força real; corpos espremidos/Dojis = falta de volume e indecisão).
                 2. REJEIÇÃO E FLUXO: Avalie o volume de absorção/rejeição pelo tamanho dos pavios (pavios longos indicam entrada massiva de volume contrário defendendo a zona) e compare a proporção corpo-pavio das últimas 5 velas.
                 
-                [OPERATIONAL_PARAMETERS] Identifique a Tendência (Alta, Baixa ou Lateral), analise as barras de volume inferiores e o RSI. Calcule a assertividade (Sinal válido estritamente de 80% a 99%, abaixo disso retorne ABORTAR OPERAÇÃO).
+                [OPERATIONAL_PARAMETERS] Identifique a Tendência (Alta, Baixa ou Lateral), combine o comportamento das barras de volume inferiores com as projeções da EMA 9, EMA 50 e o momentum do RSI 14. Calcule a assertividade (Sinal válido estritamente de 80% a 99%, abaixo disso retorne ABORTAR OPERAÇÃO).
                 
                 [TIME_RULES] Clique obrigatoriamente projetado entre 2 a 5 minutos à frente do relógio do print. Expiração rígida para 1 minuto (fechamento na mesma vela do clique).
                 
@@ -44,23 +50,25 @@ if API_KEY:
                 ⏳ TEMPO DE EXPIRAÇÃO: 1 Minuto
                 🏁 HORÁRIO DE FECHAMENTO: [HH:MM+1:00]
                 🟥🟩 DIREÇÃO DA ORDEM: [COMPRA / VENDA / NEUTRO]
-                🧠 ESTRATÉGIA: [FLUXO DE VELA ou REVERSÃO DE TENDÊNCIA]
+                🧠 ESTRATÉGIA: [CONFLUÊNCIA EMA 9/50 + RSI, FLUXO DE VELA ou REVERSÃO DE TENDÊNCIA]
                 📊 CONTEXTO DO MERCADO: [TENDÊNCIA DE ALTA, TENDÊNCIA DE BAIXA ou LATERAL]
                 
                 🔍 DETALHAMENTO ANATÔMICO (O QUE A IA VIU):
+                - Projeção Interna EMA 9/50: [Descreva a posição estimada do preço em relação à linha imaginária das médias]
+                - Projeção Interna RSI 14: [Aponte a estimativa de momento do oscilador e exaustão]
                 - Volume por Movimentação/Corpo: [Análise do volume implícito pelo tamanho das velas]
                 - Rejeição por Pavios: [O que a pressão dos pavios revelou sobre o volume de defesa]
-                - Indicadores (Volume Barras/RSI): [Situação visual das barras e da linha do RSI]
+                - Indicadores (Volume Barras/RSI): [Situação visual das barras e da linha do RSI real se visível]
                 Seja frio, preciso e direto.
                 """
                 
                 try:
-                    # Executa o modelo flash com suporte a leitura avançada de imagem
+                    # ATUALIZADO: Executa a chamada utilizando o modelo 'gemini-1.5-pro' para análise profunda
                     response = client.models.generate_content(
-                        model='gemini-2.5-flash',
+                        model='gemini-1.5-pro',
                         contents=[image, prompt]
                     )
-                    st.success("Análise Avançada Concluída com Sucesso!")
+                    st.success("Análise Avançada de Alta Precisão Concluída!")
                     
                     # Sistema de som injetado para alertar a entrada no Desktop
                     st.components.v1.html(
