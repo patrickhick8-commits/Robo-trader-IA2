@@ -73,24 +73,29 @@ if API_KEY:
                 
                 [TIME_RULES] Leia o relógio atual no print. Projete o momento do clique de entrada de forma cirúrgica para acontecer entre 2 a 5 velas (minutos) depois do print. A expiração DEVE ser de 1 minuto para fechar exatamente no final da mesma vela de entrada (WIN no candle indicado).
                 
-                Retorne estritamente neste formato markdown limpo:
-                🌐 MODO DE MERCADO DETECTADO: [MERCADO ABERTO ou MERCADO OTC]
-                🎯 PORCENTAGEM DE ACERTO DA ENTRADA: [Ex: 96% - EXTREMA CONFLUÊNCIA]
-                ⏰ HORÁRIO DO CLIQUE (ENTRADA): [HH:MM:00 exato]
-                ⏳ TEMPO DE EXPIRAÇÃO: 1 Minuto (Fechamento na mesma vela)
-                🏁 HORÁRIO DE FECHAMENTO: [HH:MM+1:00]
-                🟥🟩 DIREÇÃO DA ORDEM: [COMPRA / VENDA / ABORTAR OPERAÇÃO]
-                🧠 ESTRATÉGIA CORRETA APLICADA: [Ex: FLUXO A FAVOR DA TENDÊNCIA (EMA 10/100) ou FALSO ROMPIMENTO EM MERCADO LATERAL]
+                Retorne estritamente neste formato markdown limpo e destacado (use # e ## para títulos grandes e realce os dados vitais):
                 
-                🔍 DIAGNÓSTICO INSTITUCIONAL DE SINAL (PRICE ACTION & FILTROS DE SEGURANÇA):
-                - Leitura de Tendência (EMAs Implícitas): [Explique a posição das EMAs de 10 e 100 períodos identificadas visualmente e se o mercado está em tendência ou lateral]
-                - Identificação de Padrões de Vela e Gráficos: [Especifique qual padrão de candle ou figura de mercado aberto/OTC foi detectado no momento exato]
-                - Leitura do MACD Implícito: [Explique o momentum de força e aceleração do preço simulado pelo algoritmo do MACD]
-                - Comportamento de Rompimento / S&R: [Análise se a entrada se baseia em um rompimento real, falso rompimento, teste de S&R ou consolidação lateral]
-                - Filtragem de Ruído e Volume por Corpo: [Análise da clareza e direção real do fluxo das velas baseada nas regras do mercado detectado]
-                - Absorção e Pressão por Pavios: [O que a pressão dos pavios revelou sobre o volume oculto de defesa e preenchimento de espaço]
-                - Filtro de Segurança RSI: [Status técnico da linha do RSI para confluência - Ignorar relevância se for OTC]
+                # 🌐 MODO DE MERCADO: [MERCADO ABERTO ou MERCADO OTC]
+                ## 🎯 ASSERTIVIDADE: [Ex: 96% - EXTREMA CONFLUÊNCIA]
+                
+                ### 🚨 SINAL OPERACIONAL
+                - **🟥🟩 DIREÇÃO DA ORDEM:** [COMPRA / VENDA / ABORTAR OPERAÇÃO]
+                - **⏰ HORÁRIO DO CLIQUE (ENTRADA):** `HH:MM:00`
+                - **⏳ TEMPO DE EXPIRAÇÃO:** 1 Minuto (Fechamento na mesma vela)
+                - **🏁 HORÁRIO DE FECHAMENTO:** `HH:MM+1:00`
+                - **🧠 ESTRATÉGIA APLICADA:** [Ex: SURF DE FLUXO OTC ou REVERSÃO EM SUPORTE TRADICIONAL]
+                
+                ---
+                
+                ### 🔍 DIAGNÓSTICO INSTITUCIONAL DE SINAL
+                - **Leitura de Tendência (EMAs Implícitas):** [Explique a posição das EMAs de 10 e 100 períodos e se o mercado está em tendência ou lateral]
+                - **Identificação de Padrões de Vela e Gráficos:** [Especifique qual padrão de candle ou figura de mercado aberto/OTC foi detectado]
+                - **Leitura do MACD Implícito:** [Explique o momentum de força e aceleração do preço simulado pelo algoritmo do MACD]
+                - **Comportamento de Rompimento / S&R:** [Análise se a entrada se baseia em um rompimento real, falso rompimento, teste de S&R ou consolidação lateral]
+                - **Filtragem de Ruído e Volume por Corpo:** [Análise da clareza e direção real do fluxo das velas baseada nas regras do mercado detectado]
+                - **Absorção e Pressão por Pavios:** [O que a pressão dos pavios revealed sobre o volume oculto de defesa e preenchimento de espaço]
+                - **Filtro de Segurança RSI:** [Status técnico da linha do RSI para confluência - Ignorar relevância se for OTC]
+                
                 Seja frio, direto e puramente matemático.
                 """
                 
-                try:
