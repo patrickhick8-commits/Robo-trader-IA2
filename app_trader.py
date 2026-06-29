@@ -121,4 +121,4 @@ if API_KEY:
                     🌐 AMBIENTE DE MERCADO IDENTIFICADO: [MERCADO ABERTO ou MERCADO OTC]
                     🧠 MAPEAMENTO DO GATILHO VITORIOSO: [Descreva detalhadamente a confluência mecânica da vela que causou o WIN]
                     📊 COMPORTAMENTO ESPECÍFICO DO FLUXO: [Análise do tamanho dos corpos e posicionamento dos pavios que confirmaram o volume comprador/vendedor correto]
-                    📈 PROJETO DE REFINAMENTO (COMO SUBIR A ASSERTIVIDADE): [Crie uma diretriz estrita para que, nas próximas análises nesse mesmo tipo de mercado, o usuário filtre ainda mais e só entre se o cenário tiver exatamente esse nível de perfeição estrutural]
+                    📈 PROJETO DE REFINAMENTO (COMO SUBIR A ASSERTIVIDADE): [Crie uma diretriz estrita para que, nas próximas análises nesse mesmo tipo de mercado, o usuário filtre ainda mais e só entre se o cenário tiver exatamente esse nível de perfeição estrutural]"""
