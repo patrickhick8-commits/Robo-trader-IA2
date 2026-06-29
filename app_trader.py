@@ -33,6 +33,13 @@ if API_KEY:
                 [RIGOROUS_FILTERING_PROTOCOL]
                 Opere com rigor máximo. Você está terminantemente proibido de passar sinais com confluências fracas. Se houver o menor ruído, classifique como [ABORTAR OPERAÇÃO - ALTO RISCO]. Aceite apenas a faixa extrema de 85% a 99% de certeza matemática ponderada.
                 
+                [VOLUME_DYNAMICS_PROTOCOL]
+                Analise o volume financeiro e o fluxo de ordens (Order Flow) de forma 100% implícita e profunda através da combinação visual de quatro pilares na anatomia dos candles:
+                1. VOLUME POR COR E MOVIMENTO: Identifique se o volume comprador ou vendedor está dominando pela cor predominante nas últimas velas e pela direção de aceleração do movimento do preço.
+                2. VOLUME POR TAMANHO DO CORPO: Meça a quantidade de capital injetado. Velas grandes e cheias (Marubozu) representam alto volume e convicção institucional. Velas pequenas e espremidas representam baixo volume, indecisão e desinteresse institucional.
+                3. ABSORÇÃO E DEFESA POR PAVIOS: Avalie o tamanho dos pavios em zonas críticas. Pavios longos na parte superior indicam alto volume de rejeição e defesa vendedora (absorção de ordens de compra). Pavios longos na parte inferior indicam alto volume de defesa compradora (absorção de ordens de venda).
+                4. CONFLUÊNCIA DE VOLUME: Valide se o tamanho do corpo e o pavio estão alinhados. Exemplo: Uma vela que tenta romper um topo mas deixa um pavio gigante e corpo pequeno indica que o volume vendedor esmagou a pressão compradora, gerando um gatilho de Falso Rompimento.
+
                 [INDICADORES MATEMÁTICOS IMPLÍCITOS]
                 Mesmo sem esses indicadores estarem visíveis na tela do usuário, faça um cálculo visual e simulação matemática de alta precisão com base na disposição dos candles:
                 1. MÉDIA MÓVEL EXPONENCIAL DE 10 PERÍODOS (EMA 10): Rastreia o micro-fluxo e a força imediata do preço.
@@ -65,11 +72,6 @@ if API_KEY:
                 Aplique filtros severos para blindar a operação contra armadilhas comuns de mercado:
                 1. FILTRO DE FALSO PULLBACK: Bloqueie entradas de pullback se a vela que retorna para testar a região rompida demonstrar força extrema contrária (corpo muito grande). O pullback legítimo deve ser testado por velas de exaustão (corpos decrescentes) e deixar pavio de rejeição exatamente ao tocar a zona rompida.
                 2. FILTRO DE RUÍDO: Se as últimas 5 velas apresentarem alternância constante de cores (verde-vermelho-verde) sem direção definida ou acúmulo de Dojis seguidos, ignore o gráfico por completo e aborte a operação devido ao ruído micro do mercado.
-
-                [ORDER_FLOW_&_PURE_CANDLE_VOLUME]
-                Analise o desequilíbrio, a movimentação do preço e o fluxo de ordens (Order Flow) de forma 100% implícita e exclusiva na anatomia visual das velas, SEM depender de indicadores de volume na tela:
-                - VOLUME POR CORPO E MOVIMENTAÇÃO: Avalie o volume financeiro real injetado pelo tamanho e expansão do corpo dos candles. Velas expressivas confirmam volume institucional empurrando o mercado.
-                - DEFESA E ABSORÇÃO POR PAVIOS: Avalie o volume de agressão contrária pelo tamanho dos pavios. Pavios longos em zonas críticas indicam rejeição em massa, absorção de ordens e virada iminente no fluxo.
                 
                 [TIME_RULES] Leia o relógio atual no print. Projete o momento do clique de entrada de forma cirúrgica para acontecer entre 2 a 5 velas (minutos) depois do print. A expiração DEVE ser de 1 minuto para fechar exatamente no final da mesma vela de entrada (WIN no candle indicado).
                 
@@ -88,14 +90,5 @@ if API_KEY:
                 ---
                 
                 ### 🔍 DIAGNÓSTICO INSTITUCIONAL DE SINAL
+                - **Análise Dinâmica de Volume Oculto:** [Explique detalhadamente o volume projetado através do movimento, cor dominante, variação do tamanho dos corpos e pressão exercida pelos pavios dos últimos candles]
                 - **Leitura de Tendência (EMAs Implícitas):** [Explique a posição das EMAs de 10 e 100 períodos e se o mercado está em tendência ou lateral]
-                - **Identificação de Padrões de Vela e Gráficos:** [Especifique qual padrão de candle ou figura de mercado aberto/OTC foi detectado]
-                - **Leitura do MACD Implícito:** [Explique o momentum de força e aceleração do preço simulado pelo algoritmo do MACD]
-                - **Comportamento de Rompimento / S&R:** [Análise se a entrada se baseia em um rompimento real, falso rompimento, teste de S&R ou consolidação lateral]
-                - **Filtragem de Ruído e Volume por Corpo:** [Análise da clareza e direção real do fluxo das velas baseada nas regras do mercado detectado]
-                - **Absorção e Pressão por Pavios:** [O que a pressão dos pavios revealed sobre o volume oculto de defesa e preenchimento de espaço]
-                - **Filtro de Segurança RSI:** [Status técnico da linha do RSI para confluência - Ignorar relevância se for OTC]
-                
-                Seja frio, direto e puramente matemático.
-                """
-                
