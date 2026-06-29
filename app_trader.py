@@ -61,56 +61,29 @@ if API_KEY:
             # Ajusta o prompt de acordo com o botão ativo (WIN ou LOSS)
             if modo == "WIN":
                 prompt_especifico = """
-                Aja como um Trader Institucional de Alta Performance e analise minunciosamente este gráfico de M1. 
-                Foque em identificar um cenário com padrão de WIN claro e de altíssima assertividade, filtrando friamente todos os ruídos de mercado.
+                Aja como um Trader Institucional de Alta Performance e analise este gráfico de M1. 
+                Foque em um cenário de WIN limpo, filtrando friamente os ruídos de mercado.
 
-                Seu relatório final deve seguir OBRIGATORIAMENTE esta estrutura detalhada:
+                Retorne o resultado FORMATADO EXATAMENTE como a lista vertical abaixo, um embaixo do outro, sem textos longos introdutórios. Seja direto:
 
-                1. IDENTIFICAÇÃO DO HORÁRIO E PROJEÇÃO (Tempo de Espera de 2 a 5 minutos):
-                   - Identifique a hora exata atual do print no gráfico (Exemplo: 23:19).
-                   - Com base nisso, liste opções exatas de horários para a próxima entrada cirúrgica respeitando a janela de 2 a 5 minutos à frente (Exemplo: Entrada às 23:21, 23:22 ou 23:23).
-                   - ATENÇÃO: A expiração da operação deve ser rigorosamente para a mesma vela de M1 (fim da vela do minuto sugerido).
-
-                2. DIREÇÃO DA OPERAÇÃO:
-                   - Defina de forma direta e sem hesitação: COMPRA (CALL) ou VENDA (PUT).
-
-                3. CONTEXTO DO MERCADO:
-                   - Classifique de forma cirúrgica se o mercado está em TENDÊNCIA (Alta/Baixa) ou LATERAL (Consolidação).
-
-                4. ESTRATÉGIA, INDICADORES E PADRÕES:
-                   - Detalhe a estratégia técnica utilizada.
-                   - Descreva o comportamento dos indicadores visuais (RSI, Suporte/Resistência, Volume Implícito, Médias Móveis se houver).
-                   - Faça a leitura milimétrica das Velas: Cor, Tamanho do corpo e comportamento dos Pavios de rejeição.
-
-                5. TAXA DE ASSERTIVIDADE (Filtro Anti-Ruído):
-                   - Defina uma taxa matemática real de assertividade para este sinal, variando estritamente entre 80% e 99%.
-                   - Justifique o motivo dessa alta taxa com base na ausência de ruídos na zona escolhida.
+                📌 **MERCADO**: [Diga apenas se está em TENDÊNCIA DE ALTA, TENDÊNCIA DE BAIXA ou LATERAL]
+                ⏰ **HORÁRIO DA ENTRADA**: [Identifique a hora do print e calcule APENAS UM horário exato específico de 2 a 5 minutos à frente. Exemplo: se o print é 23:19, mostre apenas "23:22". Adicione: Expiração para a mesma vela de M1]
+                🎯 **DIREÇÃO**: [COMPRA ou VENDA]
+                🧠 **ESTRATÉGIA**: [Nome da estratégia + breve resumo dos indicadores utilizados como RSI, volume e o comportamento minucioso das Velas, Pavios e Cores]
+                📊 **TAXA DE ASSERTIVIDADE**: [Defina apenas uma porcentagem exata entre 80% e 99%]
                 """
             else:
                 prompt_especifico = """
-                Aja como um Trader Institucional de Alta Performance e analise minunciosamente este gráfico de M1 focado em um cenário de LOSS (Mapeamento de Erro/Defesa). 
-                Foque em identificar o que causou o loss (falso rompimento, notícia oculta, exaustão), filtrando friamente os ruídos de mercado para recalibrar a próxima entrada para acerto.
+                Aja como um Trader Institucional de Alta Performance e analise este gráfico de M1 focado em um cenário de LOSS (Recuperação). 
+                Foque em identificar o erro e mapear a zona de proteção filtrando ruídos.
 
-                Seu relatório final deve seguir OBRIGATORIAMENTE esta estrutura detalhada:
+                Retorne o resultado FORMATADO EXATAMENTE como a lista vertical abaixo, um embaixo do outro, sem textos longos introdutórios. Seja direto:
 
-                1. IDENTIFICAÇÃO DO HORÁRIO E PROJEÇÃO DE RECUPERAÇÃO (Tempo de Espera de 2 a 5 minutos):
-                   - Identifique a hora exata atual do print no gráfico (Exemplo: 23:19).
-                   - Projete opções exatas de horários de entrada para reentrada ou nova operação filtrada de 2 a 5 minutos à frente (Exemplo: Entrada às 23:21, 23:22 ou 23:23).
-                   - ATENÇÃO: A expiração da operação deve ser rigorosamente para a mesma vela de M1.
-
-                2. DIREÇÃO DA OPERAÇÃO (Recuperação):
-                   - Defina de forma direta e sem hesitação: COMPRA (CALL) ou VENDA (PUT).
-
-                3. CONTEXTO DO MERCADO NO MOMENTO DA FALHA:
-                   - Classifique de forma cirúrgica se o mercado mudou para TENDÊNCIA (Alta/Baixa) ou se prendeu em estrutura LATERAL (Consolidação).
-
-                4. ANÁLISE DE FALHA DA ESTRATÉGIA E INDICADORES:
-                   - Explique o que falhou na leitura anterior (Ex: RSI sobrecomprado que continuou subindo, pavio que rompeu suporte).
-                   - Explique os novos padrões de velas (Cor, Tamanho e Pavio) que redesenharam a zona de proteção.
-
-                5. NOVA TAXA DE ASSERTIVIDADE FILTRADA:
-                   - Estipule a nova taxa matemática de assertividade para a reentrada limpa, variando estritamente entre 80% e 99%.
-                   - Explique friamente como os ruídos anteriores foram eliminados para garantir essa segurança.
+                📌 **MERCADO**: [Diga se a falha ocorreu em TENDÊNCIA DE ALTA, TENDÊNCIA DE BAIXA ou LATERAL]
+                ⏰ **HORÁRIO DA ENTRADA (RECUPERAÇÃO)**: [Identifique a hora do print e calcule APENAS UM horário exato específico de 2 a 5 minutos à frente para a reentrada limpa. Exemplo: "23:23". Adicione: Expiração para a mesma vela de M1]
+                🎯 **DIREÇÃO**: [COMPRA ou VENDA]
+                🧠 **ESTRATÉGIA (CORREÇÃO)**: [Análise da falha anterior + nova estratégia minuciosa de leitura de Velas, Pavios e indicadores para a reentrada]
+                📊 **TAXA DE ASSERTIVIDADE**: [Defina apenas uma porcentagem exata entre 80% e 99% para esta zona protegida]
                 """
             
             # Código que faz a chamada oficial para a API do Gemini
