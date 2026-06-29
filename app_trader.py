@@ -2,7 +2,10 @@ import streamlit as st
 from google import genai
 from PIL import Image
 
-# PROMPT GLOBAL (Isolado no topo para evitar qualquer erro de sintaxe ou parênteses)
+# 1. CONFIGURAÇÃO DA PÁGINA (Deve ficar estritamente no topo do script)
+st.set_page_config(page_title="Agente IA Advanced - M1", page_icon="🤖", layout="centered")
+
+# PROMPT GLOBAL (Isolado para evitar erros de sintaxe ou recuo invisível)
 PROMPT_TRADER = """[SYSTEM_ROLE] Você é um robô de trading institucional de alta performance, programado para operar com frieza milimétrica e precisão cirúrgica. Sua missão é caçar apenas a oportunidade perfeita, garantindo uma assertividade absurda focada em vitória imediata (WIN) exatamente no candle indicado.
 
 [RIGOROUS_FILTERING_PROTOCOL]
@@ -12,7 +15,7 @@ Opere com rigor máximo. Você está terminantemente proibido de passar sinais c
 Analise o volume financeiro e o fluxo de ordens (Order Flow) de forma 100% implícita e profunda através da combinação visual de quatro pilares na anatomia dos candles:
 1. VOLUME POR COR E MOVIMENTO: Identifique se o volume comprador ou vendedor está dominando pela cor predominante nas últimas velas e pela direção de aceleração do movimento do preço.
 2. VOLUME POR TAMANHO DO CORPO: Meça a quantidade de capital injetado. Velas grandes e cheias (Marubozu) representam alto volume e convicção institucional. Velas pequenas e espremidas representam baixo volume, indecisão e desinteresse institucional.
-3. ABSORÇÃO E DEFESA POR PAVIOS: Avalie o tamanho dos pavios em zonas críticas. Pavios longos na parte superior indicam alto volume de rejeição e defesa vendedora (absorção de ordens de compra). Pavios longos na parte inferior indicam alto volume de defesa compradora (absorção de ordens de venda).
+3. ABSORÇÃO E DEFESA POR PAVIOS: Avalie o tamanho dos pavios in zonas críticas. Pavios longos na parte superior indicam alto volume de rejeição e defesa vendedora (absorção de ordens de compra). Pavios longos na parte inferior indicam alto volume de defesa compradora (absorção de ordens de venda).
 4. CONFLUÊNCIA DE VOLUME: Valide se o tamanho do corpo e o pavio estão alinhados. Exemplo: Uma vela que tenta romper um topo mas deixa um pavio gigante e corpo pequeno indica que o volume vendedor esmagou a pressão compradora, gerando um gatilho de Falso Rompimento.
 
 [INDICADORES MATEMÁTICOS IMPLÍCITOS]
@@ -75,9 +78,7 @@ Retorne estritamente neste formato markdown limpo e destacado (use # e ## para t
 
 Seja frio, direto e puramente matemático."""
 
-# Configuração da Página do Site
-st.set_page_config(page_title="Agente IA Advanced - M1", page_icon="🤖", layout="centered")
-
+# 2. INTERFACE DO SITE
 st.title("🤖 Agente IA Trader Pro: Análise Avançada de Candlesticks")
 st.write("Análise cirúrgica de Velas (Cor, Tamanho, Pavio), Tendência, RSI, Volume Implícito e Probabilidade em M1.")
 
@@ -106,6 +107,3 @@ if API_KEY:
                         height=0
                     )
                     st.markdown(response.text)
-                except Exception as e:
-                    st.error(f"Erro no processamento visual da IA: {e}")
-else:
