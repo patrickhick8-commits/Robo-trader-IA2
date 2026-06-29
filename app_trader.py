@@ -59,7 +59,7 @@ Retorne estritamente neste formato markdown limpo e destacado (use # e ## para t
 ## 🎯 ASSERTIVIDADE: [Ex: 96% - EXTREMA CONFLUÊNCIA]
 
 ### 🚨 SINAL OPERACIONAL
-- **🟥🟩 DIREÇÃO DA ORDEM:** [COMPRA / VENDA / ABORTAR OPERAÇÃO]
+- **🟥🟩 DIREÇÃO DA ORDEM:** [COMPRA / VENVA / ABORTAR OPERAÇÃO]
 - **⏰ HORÁRIO DO CLIQUE (ENTRADA):** `HH:MM:00`
 - **⏳ TEMPO DE EXPIRAÇÃO:** 1 Minuto (Fechamento na mesma vela)
 - **🏁 HORÁRIO DE FECHAMENTO:** `HH:MM+1:00`
@@ -104,5 +104,3 @@ if API_KEY:
                     st.components.v1.html('<audio autoplay src="https://google.com"></audio>', height=0)
                     st.markdown(response.text)
                 except Exception as e:
-                    st.error(f"Erro no processamento visual da IA: {e}")
-else:
