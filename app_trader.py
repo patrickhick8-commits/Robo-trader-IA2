@@ -114,7 +114,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ==============================================================================
-# 2. DEFINIÇÃO DO PROMPT DA IA (ISOLADO PARA EVITAR ERROS DE SINTAXE)
+# 2. DEFINIÇÃO DO PROMPT DA IA (ESTRUTURA COMPLETA)
 # ==============================================================================
 PROMPT_TRADING = (
     "[SYSTEM_ROLE]\n"
