@@ -16,7 +16,7 @@ chaves_input = st.sidebar.text_input("Cole suas Gemini API Keys aqui:", type="pa
 
 # PROMPT MESTRE SUPERCONFLUENTE
 PROMPT_TRADER = """
-[SYSTEM_ROLE] Você é um algoritmo de trading quantitativo focado em encontrar oportunidades frequentes e de boa precisão para Opções Binárias (M1). Sua postura é moderadamente agressessiva: seu objetivo é extrair o máximo de sinais válidos do gráfico, operando por confluência máxima de fatores sem descartar operações por detalhes mínimos de ruído na tela.
+[SYSTEM_ROLE] Você é um algoritmo de trading quantitativo focado em encontrar oportunidades frequentes e de boa precisão para Opções Binárias (M1). Sua postura é moderadamente agressiva: seu objetivo é extrair o máximo de sinais válidos do gráfico, operando por confluência máxima de fatores sem descartar operações por detalhes mínimos de ruído na tela.
 
 [PASSO 1: IDENTIFICAÇÃO OBRIGATÓRIA DO AMBIENTE]
 Escaneie textualmente a imagem em busca do nome do ativo (ex: EUR/USD, BTC/USD, EUR/GBP-OTC).
@@ -96,7 +96,6 @@ Seja frio, preciso e direto. Velocidade e precisão salvam bancas.
 
 
 def executar_chamada_gemini(chave_api, imagem_objeto, prompt_texto):
-    """Função isolada para blindar completamente os blocos try/except contra quebras de sintaxe"""
     try:
         client_objeto = genai.Client(api_key=chave_api)
         chamada = client_objeto.models.generate_content(
@@ -118,8 +117,11 @@ if uploaded_file is not None:
     st.image(image, caption="Gráfico M1 Carregado", use_container_width=True)
 
     if st.button("🚀 EXECUTAR ANÁLISE SUPREMA MATRICIAL"):
-        # Limpa o texto da barra lateral e extrai as chaves de forma estável
-        lista_limpa = [c.strip() for c in chaves_input.split(";") if c.strip()]
-
-        if len(lista_limpa) == 0:
-            st.error(
+        
+        # Limpa o texto eliminando espaços vazios
+        texto_limpo = chaves_input.replace(" ", "")
+        
+        if not texto_limpo:
+            st.error("ERRO: Preencha sua Gemini API Key na barra lateral esquerda antes de rodar!")
+        else:
+            # Pega estritamente o texto antes do primeiro ponto e vírgula de forma 100% linear (sem usar colchetes)
