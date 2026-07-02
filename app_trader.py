@@ -43,8 +43,7 @@ if lista_de_chaves:
                 [2. REGRA DE TEMPO CRUCIAL - PROJEÇÃO DE VELA M1]
                 - Localize visualmente o relógio oficial da plataforma dentro do print.
                 - Você deve projetar matematicamente o momento exato em que a estrutura do gráfico se confirmará. Agende o HORÁRIO DO CLIQUE (ENTRADA) estritamente entre 2 a 5 minutos no futuro em relação ao horário do print.
-                - A operação deve expirar na MESMA vela do clique. Ou seja, tempo de expiração fixo e rígido de exatamente 1 minuto.
-                - Exemplo de Cálculo: Se o relógio do print marca 15:30:12 e o padrão se confirma em 3 minutos, determine o Horário do Clique para 15:33:00 exato, com Horário de Fechamento para 15:34:00.
+                - A operation deve expirar na MESMA vela do clique. Ou seja, tempo de expiração fixo e rígido de exatamente 1 minuto.
 
                 [3. MAPEAMENTO DE FLUXO POR CORES DE VELAS e VOLUME OCULTO]
                 - FLUXO DE ALTA: Monitore blocos dominantes de velas verdes, corpos expandidos crescentes e redução de pavios superiores.
@@ -67,7 +66,7 @@ if lista_de_chaves:
                 - FILTRO MERCADO PICOTADO: Se o gráfico estiver alternando cores a cada candle (verde, vermelha, verde, vermelha), ABORTE imediatamente.
                 - FILTRO FALSO ROMPIMENTO: Velas que rompem zonas sem volume implícito (com pavio de absorção longo contra o rompimento) devem ser descartadas.
                 - REQUISITO MÍNIMO DE ENTRADA: Exija confluência tripla (Ex: Fluxo de Cor + Alinhamento de Médias + Rompimento de LTB por Vela de Força).
-                - ASSERTIVIDADE RÍGIDA: Retorne um cálculo estatístico da operação. Sinais válidos apenas entre 88% e 99%. Abaixo disso, the veredito obrigatório é OPERAÇÃO ABORTADA.
+                - ASSERTIVIDADE RÍGIDA: Retorne um cálculo estatístico da operação. Sinais válidos apenas entre 88% e 99%. Abaixo disso, o veredito obrigatório é OPERAÇÃO ABORTADA.
 
                 Retorne o diagnóstico estruturado estritamente neste formato markdown limpo e destacado:
 
@@ -95,32 +94,37 @@ if lista_de_chaves:
                 """
                 
                 sucesso = False
-                modelos_disponiveis = ['gemini-2.5-flash', 'gemini-1.5-flash']
                 
-                # Percorre cada chave colada pelo usuário na barra lateral
-                for indice_chave, chave_atual in enumerate(lista_de_chaves):
+                # Executa o loop simples por chave e motor
+                for chave_atual in lista_de_chaves:
                     if sucesso:
                         break
                         
-                    try:
-                        client = genai.Client(api_key=chave_atual)
-                        
-                        # Testa os modelos sequencialmente
-                        for nome_modelo in modelos_disponiveis:
-                            try:
-                                st.toast(f"Disparando matriz temporal com Chave #{indice_chave + 1} no motor {nome_modelo}...")
-                                
-                                response = client.models.generate_content(
-                                    model=nome_modelo,
-                                    contents=[image, prompt]
-                                )
-                                
-                                st.success(f"Análise Concluída com Sucesso! (Chave #{indice_chave + 1} | Motor: {nome_modelo})")
-                                
-                                # Sistema de som injetado para alertar a entrada no Desktop
-                                st.components.v1.html(
-                                    '<audio autoplay src="https://google.com"></audio>',
-                                    height=0
-                                )
-                                
-
+                    for nome_modelo in ['gemini-2.5-flash', 'gemini-1.5-flash']:
+                        try:
+                            st.toast(f"Analisando gráfico com o motor {nome_modelo}...")
+                            client = genai.Client(api_key=chave_atual)
+                            
+                            response = client.models.generate_content(
+                                model=nome_modelo,
+                                contents=[image, prompt]
+                            )
+                            
+                            st.success(f"Análise Concluída! Motor: {nome_modelo}")
+                            
+                            # Injeta áudio de alerta no Desktop
+                            st.components.v1.html(
+                                '<audio autoplay src="https://google.com"></audio>',
+                                height=0
+                            )
+                            
+                            st.markdown(response.text)
+                            sucesso = True
+                            break
+                        except Exception:
+                            continue
+                
+                if not sucesso:
+                    st.error("❌ Todas as chaves ou motores de IA falharam. Verifique suas chaves e o print enviado.")
+else:
+    st.info("👈 Cole suas Gemini API Keys na barra lateral (uma por linha) para ativar a Matriz Suprema de análise.")
