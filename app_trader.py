@@ -26,7 +26,7 @@ if API_KEY:
         if st.button("🚀 EXECUTAR ANÁLISE COMPLETA"):
             with st.spinner("IA identificando tipo de mercado e aplicando filtros anti-manipulação..."):
                 
-                # Prompt mestre com blindagem algorítmica assimétrica para Mercado Aberto e OTC
+                # Prompt mestre com ajuste de assertividade realista entre 80% e 96%
                 prompt = """
                 [SYSTEM_ROLE] Você é um superalgoritmo HFT de fundos soberanos e analista quantitativo focado em trading de altíssima precisão. Sua postura é de extrema frieza e ceticismo matemático. Sua missão prioritária é PRESERVAÇÃO DE CAPITAL.
 
@@ -49,14 +49,17 @@ if API_KEY:
                 Aborte imediatamente (DIREÇÃO DA ORDEM: OPERAÇÃO ABORTADA) caso detecte:
                 - Mercado em xadrez/picotado (Velas alternando cores seguidamente).
                 - Padrão de 3 ou mais Dojis/Micro-velas consecutivas (Ausência de liquidez).
-                - Se a probabilidade matemática real calculada for menor que 92%, defina o veredito como OPERAÇÃO ABORTADA e trave a porcentagem em "0% - FILTRO ATIVADO".
 
-                [PASSO 4: CRONOMETRAGEM DE EXECUÇÃO]
+                [PASSO 4: SISTEMA DE CÁLCULO E CALIBRAGEM DE ASSERTIVIDADE]
+                - Avalie rigorosamente os riscos com base no cenário gráfico e confluências encontradas.
+                - Se o cenário for elegível para operação, defina a taxa de acerto estritamente dentro da faixa de **80% a 96%**. Sinais com menos de 80% de confluência real devem ser definidos obrigatoriamente como OPERAÇÃO ABORTADA e a porcentagem travada em "0% - FILTRO ATIVADO". Nenhum sinal pode passar de 96% para evitar métricas ilusórias.
+
+                [PASSO 5: CRONOMETRAGEM DE EXECUÇÃO]
                 Verifique o relógio do print e calcule o HORÁRIO DO CLIQUE rigorosamente para uma janela futura de 2 a 5 minutos. Expiração rígida para 1 minuto (mesma vela do clique).
 
                 Retorne o diagnóstico estruturado exatamente neste formato markdown limpo e destacado:
 
-                🎯 PORCENTAGEM DE ACERTO DA ENTRADA: [Ex: 96% - Confluência OTC Filtrada. Se for Abortada, escreva '0% - FILTRO ATIVADO'] (Escreva bem grande e destacado)
+                🎯 PORCENTAGEM DE ACERTO DA ENTRADA: [Ex: 87% ou 94% - Dentro do padrão calibrado. Se for Abortada, escreva '0% - FILTRO ATIVADO'] (Escreva bem grande e destacado)
 
                 ⏰ HORÁRIO DO CLIQUE (ENTRADA): [HH:MM:00 exato projetado entre 2 a 5 minutos para o futuro]
                 ⏳ TEMPO DE EXPIRAÇÃO: 1 Minuto (Para fechar na mesma vela do clique)
@@ -71,7 +74,7 @@ if API_KEY:
                 - Filtro de Manipulação Aplicado: [Explique o comportamento do algoritmo ou dos players reais com base no ambiente identificado]
                 - Condição da Tendência Macro: [Alinhamento e direção geral do preço]
                 - Análise Estatística de Volume Oculto: [Nível de volume estimado pelo tamanho dos candles]
-                - Justificativa do Filtro Agressivo: [Argumente friamente por que essa operação é estatisticamente segura ou por que foi estritamente abortada para proteger a banca]
+                - Justificativa do Filtro Agressivo: [Argumente friamente por que essa operação se enquadra na taxa de acerto definida ou por que foi estritamente abortada para proteger a banca]
 
                 Seja extremamente frio, preciso e direto na resposta. Velocidade e precisão salvam bancas.
                 """
@@ -82,7 +85,7 @@ if API_KEY:
                         model='gemini-2.5-flash',
                         contents=[image, prompt]
                     )
-                    st.success("Análise Avançada com Proteção de Cenário Concluída!")
+                    st.success("Análise Avançada com Calibragem de Assertividade Concluída!")
                     st.markdown(response.text)
                     
                 except Exception as e:
