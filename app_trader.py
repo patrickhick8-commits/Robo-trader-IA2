@@ -3,101 +3,61 @@ from google import genai
 from PIL import Image
 
 # 1. Configuração da Página do Site Separado
-st.set_page_config(page_title="Agente IA Advanced - Volume Oculto", page_icon="🤖", layout="centered")
+st.set_page_config(page_title="Agente IA M1 - Mesma Vela", page_icon="⏱️", layout="centered")
 
-st.title("🤖 Agente IA Trader Pro: Volume por Comportamento das Velas")
-st.write("Análise de Velas, Tendência, RSI, Volume Implícito (sem indicador na tela) e Probabilidade em M1.")
+st.title("⏱️ Agente IA: Projeção de Tempo + Mesma Vela (M1)")
+st.write("Analisa o print em M1, agenda o clique para 2 a 5 minutos à frente, com expiração para a mesma vela de 1min.")
 
 # 2. Configuração da Chave da IA
 API_KEY = st.sidebar.text_input("Cole sua Gemini API Key aqui:", type="password")
 
 if API_KEY:
-    # Inicializa o cliente com a nova biblioteca oficial do Google
+    # Inicializa o cliente usando a nova biblioteca padrão do Google
     client = genai.Client(api_key=API_KEY)
 
     # 3. Campo de Upload do Print
-    uploaded_file = st.file_uploader("Arraste do print do gráfico M1 (Velas, RSI e Relógio visíveis):", type=["png", "jpg", "jpeg"])
+    uploaded_file = st.file_uploader("Arraste o print do gráfico M1 (com RSI e Relógio visíveis):", type=["png", "jpg", "jpeg"])
 
     if uploaded_file is not None:
         image = Image.open(uploaded_file)
-        st.image(image, caption="Gráfico M1 Carregado para Análise", use_container_width=True)
+        st.image(image, caption="Gráfico M1 Carregado", use_container_width=True)
         
-        # Botão de disparo rápido para Opções Binárias Avançado
-        if st.button("🚀 EXECUTAR ANÁLISE COMPLETA"):
-            with st.spinner("IA identificando tipo de mercado e aplicando filtros com janela de 1 a 5 min..."):
+        # Botão de disparo rápido para Opções Binárias
+        if st.button("🚀 CALCULAR PROJEÇÃO DE VELA M1"):
+            with st.spinner("IA calculando o minuto exato da vela alvo..."):
                 
-                # Prompt mestre ajustado com a cronometragem agressiva de 1 a 5 minutos futuros
+                # Prompt calibrado para calcular o clique futuro com expiração de 1 minuto na mesma vela
                 prompt = """
-                [SYSTEM_ROLE] Você é um superalgoritmo HFT de fundos soberanos e analista quantitativo focado em trading de altíssima precisão. Sua postura é de extrema frieza e ceticismo matemático. Sua missão prioritária é PRESERVAÇÃO DE CAPITAL.
+                Você é um robô de trading de alta frequência especialista em Opções Binárias no tempo gráfico de 1 minuto (M1).
+                Sua missão é ler o relógio do print enviado pelo usuário, analisar o RSI (14, 70/30), Fluxo e Reversão, e calcular uma projeção de tempo estrita de 2 a 5 minutos no futuro.
 
-                [PASSO 1: IDENTIFICAÇÃO OBRIGATÓRIA DO AMBIENTE]
-                Escaneie textualmente a imagem em busca do nome do ativo (ex: EUR/USD, BTC/USD, EUR/GBP-OTC).
-                - Se encontrar a sigla '-OTC' ou variações de mercado fechado da corretora, classifique como [AMBIENTE: ALGORITMO OTC].
-                - Se for um par de moedas comum sem a sigla OTC, classifique como [AMBIENTE: MERCADO ABERTO REAL].
+                REGRA DE TEMPO CRUCIAL:
+                O usuário quer que você determine um horário de clique entre 2 a 5 minutos para frente em relação ao horário do print, mas a operação deve expirar na MESMA vela do clique (ou seja, expiração de exatamente 1 minuto).
+                Exemplo: Se o print mostra 15:30 e a estrutura gráfica se confirmará em 3 minutos, determine o Horário de Entrada para as 15:33:00 e informe que a expiração será às 15:34:00 (mesma vela).
 
-                [PASSO 2: FILTROS DE TENDÊNCIA E CONFLUÊNCIA COM EMA 9 (MÉDIA MÓVEL EXPONENCIAL)]
-                - Rastreie visualmente o fluxo do preço e calcule a posição implícita ou explícita da Média Móvel Exponencial de 9 períodos (EMA 9).
-                - DIRETRIZ DE COMPRA (CALL): O preço deve estar obrigatoriamente ACIMA da EMA 9, e a média deve apresentar inclinação ascendente relevante.
-                - DIRETRIZ DE VENDA (PUT): O preço deve estar obrigatoriamente ABAIXO da EMA 9, e a média deve apresentar inclinação descendente relevante.
-                - SE A EMA 9 ESTIVER HORIZONTAL (LATERIALIZADA) OU O PREÇO ESTIVER CORTANDO A MÉDIA REPETIDAMENTE PARA CIMA E PARA BAIXO, ABORTE IMEDIATAMENTE.
+                Retorne o diagnóstico estruturado estritamente neste formato markdown limpo:
 
-                [PASSO 3: FILTROS AGRESSIVOS DE MANIPULAÇÃO POR CENÁRIO]
-
-                 SE FOR CONFIGURADO COMO MERCADO OTC:
-                 - FILTRO ANTI-CAPTURA DE LIQUIDEZ: Pavios longos em OTC NÃO significam retração segura; são armadilhas para induzir o trader de varejo a operar reversão. O algoritmo de OTC tende a continuar o movimento para quebrar essas ordens. 
-                 - REGRA OPERACIONAL EM OTC: O sinal deve buscar a continuidade a favor da inclinação da EMA 9. Foque 100% em FLUXO DE VELA DE CORPO CHEIO (Marubozu) a favor do preenchimento desses pavios (alvos de liquidez do algoritmo). Opere a favor do fluxo dominante.
-
-                 SE FOR CONFIGURADO COMO MERCADO ABERTO:
-                 - FILTRO DE EXAUSTÃO INSTITUCIONAL: Aqui os pavios longos são válidos e representam defesa real de grandes players (SMC - Order Blocks).
-                 - REGRA OPERACIONAL EM MERCADO ABERTO: Valide operações de RETRAÇÃO E REVERSÃO na mesma vela (M1) se o preço tocar extremidades exatas de Suporte/Resistência ou LTA/LTB com confluência de exaustão de volume e rejeição explícita ao testar a zona da EMA 9.
-
-                [PASSO 4: FILTRO ANTI-RUÍDO MECÂNICO GERAL]
-                Aborte imediatamente (DIREÇÃO DA ORDEM: OPERAÇÃO ABORTADA) caso detecte:
-                - Mercado em xadrez/picotado (Velas alternando cores seguidamente).
-                - Padrão de 3 ou mais Dojis/Micro-velas consecutivas (Ausência de liquidez).
-
-                [PASSO 5: SISTEMA DE CÁLCULO E CALIBRAGEM DE ASSERTIVIDADE]
-                - Avalie rigorosamente os riscos com base no cenário gráfico e confluências encontradas.
-                - Se o cenário for elegível para operação, defina a taxa de acerto estritamente dentro da faixa de **80% a 96%**. Sinais com menos de 80% de confluência real devem ser definidos obrigatoriamente como OPERAÇÃO ABORTADA e a porcentagem travada em "0% - FILTRO ATIVADO". Nenhum sinal pode passar de 96% para evitar métricas ilusórias.
-
-                [PASSO 6: CRONOMETRAGEM DE EXECUÇÃO AGRESSIVA]
-                - Localize o relógio oficial da plataforma no print. 
-                - Calcule e agende o HORÁRIO DO CLIQUE rigorosamente para uma janela futura de **1 a 5 minutos** (ex: se o relógio marca 14:30:15, a projeção pode ser para 14:31:00, 14:32:00, etc.). 
-                - A expiração deve ser rígida de exatamente 1 minuto para fechar rigorosamente na mesma vela do clique projetado.
-
-                Retorne o diagnóstico estruturado exatamente neste formato markdown limpo e destacado:
-
-                🎯 PORCENTAGEM DE ACERTO DA ENTRADA: [Ex: 89% ou 94% - Dentro do padrão calibrado. Se for Abortada, escreva '0% - FILTRO ATIVADO'] (Escreva bem grande e destacado)
-
-                ⏰ HORÁRIO DO CLIQUE (ENTRADA): [HH:MM:00 exato projetado entre 1 a 5 minutos para o futuro]
+                ⏰ HORÁRIO DO CLIQUE (ENTRADA): [Defina o horário HH:MM:00 exato no futuro, entre 2 a 5 minutos à frente do print]
                 ⏳ TEMPO DE EXPIRAÇÃO: 1 Minuto (Para fechar na mesma vela do clique)
-                🏁 HORÁRIO DE FECHAMENTO: [HH:MM:00 do fechamento real da ordem]
-                🟥🟩 DIREÇÃO DA ORDEM: [COMPRA / VENDA / OPERAÇÃO ABORTADA]
+                🏁 HORÁRIO DE FECHAMENTO DA ORDEM: [Calcule o horário exato que a vela do clique termina, ex: HH:MM+1:00]
+                🟥🟩 DIREÇÃO DA ORDEM: [COMPRA / VENDA / NEUTRO]
 
-                🧠 ESTRATÉGIA: [Ex: CONTINUIDADE DE FLUXO COM ALINHAMENTO DA EMA 9 (OTC) ou RETRAÇÃO EM ZONA DE SUPORTE COM REJEIÇÃO NA EMA 9]
-                📊 CONTEXTO DO MERCADO: [TENDÊNCIA DE ALTA / TENDÊNCIA DE BAIXA / MERCADO PICOTADO LATERAL]
+                🧠 ESTRATÉGIA PROJETADA: [FLUXO DE VELA ou REVERSÃO DE TENDÊNCIA]
+                📊 JUSTIFICATIVA DA PROJEÇÃO: Explique resumidamente o porquê o preço vai levar esse tempo exato (2 a 5 minutos) para bater na sua zona de entrada do RSI ou suporte/resistência.
 
-                🔍 DETALHAMENTO ANATÔMICO E CONFIGURAÇÃO ANTI-MANIPULAÇÃO:
-                - Ambiente Detectado: [MERCADO ABERTO ou OTC - Explique o que foi identificado na imagem]
-                - Filtro da Média Móvel (EMA 9): [Descreva a posição do preço em relação à EMA 9 e se a inclinação dela valida o movimento ou exige o aborto]
-                - Filtro de Manipulação Aplicado: [Explique o comportamento do algoritmo ou dos players reais com base no ambiente identificado]
-                - Condição da Tendência Macro: [Alinhamento e direção geral do preço]
-                - Análise Estatística de Volume Oculto: [Nível de volume estimado pelo tamanho dos candles]
-                - Justificativa do Filtro Agressivo: [Argumente friamente por que essa operação se enquadra na taxa de acerto definida ou por que foi estritamente abortada para proteger a banca]
-
-                Seja extremamente frio, preciso e direto na resposta. Velocidade e precisão salvam bancas.
+                Seja cirúrgico, rápido e extremamente direto na resposta.
                 """
                 
                 try:
-                    # Executa o modelo flash com suporte a leitura avançada de imagem
+                    # Executa a chamada usando o modelo ultra rápido 'gemini-2.5-flash'
                     response = client.models.generate_content(
                         model='gemini-2.5-flash',
                         contents=[image, prompt]
                     )
-                    st.success("Análise Avançada com Calibragem de Assertividade e EMA 9 Concluída!")
+                    st.success("Projeção de Vela Concluída!")
                     st.markdown(response.text)
                     
                 except Exception as e:
                     st.error(f"Erro no processamento visual da IA: {e}")
 else:
-    st.info("👈 Insira sua Gemini API Key na barra lateral para ativar o modo de análise avançada.")
+    st.info("👈 Insira sua Gemini API Key na barra lateral para ativar o agente.")
