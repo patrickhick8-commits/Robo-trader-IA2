@@ -93,13 +93,11 @@ Retorne o diagnóstico estruturado exatamente neste formato markdown limpo e des
 Seja frio, preciso e direto. Velocidade e precisão salvam bancas.
 """
 
-# Executa apenas se o usuário digitar algo no campo de texto da chave
-if chaves_input.strip():
-    
-    # Nova Lógica Simplificada: Extrai a primeira chave separada por ponto e vírgula sem usar colchetes perigosos
-    chave_ativa = chaves_input.split(";")[0].strip()
-    
-    # Inicializa o cliente oficial da nova SDK do Google GenAI
+# Extração de Chaves de Contingência Limpa e Segura
+chaves_filtradas = [c.strip() for c in chaves_input.split(";") if c.strip()]
+
+if chaves_filtradas:
+    chave_ativa = chaves_filtradas[0]
     client = genai.Client(api_key=chave_ativa)
     
     uploaded_file = st.file_uploader(
@@ -116,3 +114,6 @@ if chaves_input.strip():
                 try:
                     response = client.models.generate_content(
                         model='gemini-2.5-flash',
+                        contents=[image, PROMPT_TRADER]
+                    )
+                    st.success("Análise Suprema de Confluência Matricial Concluída!")
