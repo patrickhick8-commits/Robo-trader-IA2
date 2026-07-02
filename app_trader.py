@@ -38,7 +38,7 @@ Busque de forma ativa por confluências avançadas de Price Action em Suporte, R
 
 2. MATRIZ DE LATERALIDADE / CONSOLIDAÇÃO HORIZONTAL:
    - REVERSÃO E RETRAÇÃO EM SUPORTE/RESISTÊNCIA: Opere o extremo respeito de zonas horizontais nítidas de Suporte (Fundo) e Resistência (Topo). Quando o preço testar os limites com velas de perda de pressão e deixar pavios longos de rejeição, valide o clique de retração ou reversão para a mesma vela.
-   - RETRAÇÃO PELOS PAVIOS EM LATERALIDADE: Rastreie o histórico recente de pavios longos nas extremidades da consolidação. Se as velas atuais estiverem demonstrando forte rejection visual através de pavios ao tocar a barreira horizontal, valide a entrada de retração para a mesma vela.
+   - RETRAÇÃO PELOS PAVIOS EM LATERALIDADE: Rastreie o histórico recente de pavios longos nas extremidades da consolidação. Se as velas atuais estiverem demonstrando forte rejeição visual através de pavios ao tocar a barreira horizontal, valide a entrada de retração para a mesma vela.
 
 3. MATRIZ DE TENDÊNCIA (ALTA OU BAIXA) E REVERSÃO:
    - RETRAÇÃO EM TENDÊNCIA / LTA / LTB: Identifique toques em canais ou linhas de tendência inclinadas onde o preço deixa pavios longos de rejeição, operando a retração a favor do canal.
@@ -91,7 +91,7 @@ Retorne o diagnóstico estruturado exatamente neste formato markdown limpo e des
 - Avaliação de Ruído e Volatilidade: [Explique por que o cenário foi considerado aceitável para clique com filtros moderados]
 - Justificativa da Gestão de Lote: [Explique por que o lote sugerido se adequa perfeitamente a essa combinação de fatores]
 
-Seja frio, preciso e direto. Velocidade e precisão salvam bancas.
+Seja frio, preciso e direto. Velocidade e precision salvam bancas.
 """
 
 
@@ -99,8 +99,7 @@ def analisar_grafico(api_key, imagem_grafico, prompt):
     try:
         client = genai.Client(api_key=api_key)
         response = client.models.generate_content(
-            model="gemini-2.5-flash", 
-            contents=[imagem_grafico, prompt]
+            model="gemini-2.5-flash", contents=[imagem_grafico, prompt]
         )
         return response.text
     except Exception as erro:
@@ -110,8 +109,7 @@ def analisar_grafico(api_key, imagem_grafico, prompt):
 # --- AREA OPERACIONAL DO SITE ---
 
 uploaded_file = st.file_uploader(
-    "Arraste o print completo do gráfico M1 (Obrigatório conter o Relógio da Plataforma visível, Velas, RSI e Volume):",
-    type=["png", "jpg", "jpeg"],
+    "Arraste o print completo do gráfico M1:", type=["png", "jpg", "jpeg"]
 )
 
 if uploaded_file is not None:
@@ -123,7 +121,12 @@ if uploaded_file is not None:
     )
 
     if st.button("🚀 EXECUTAR ANÁLISE SUPREMA MATRICIAL"):
-        chaves_filtradas = [c.strip() for c in chaves_input.split(";") if c.strip()]
+        chaves_filtradas = [
+            c.strip() for c in chaves_input.split(";") if c.strip()
+        ]
+
         if not chaves_filtradas:
-            st.error("ERRO: Nenhuma chave foi preenchida na barra lateral!")
+            st.error("ERRO: Preencha sua Gemini API Key na barra lateral!")
         else:
+            with st.spinner("IA buscando oportunidades..."):
+                chave_ativa = chaves_filtradas[0]
