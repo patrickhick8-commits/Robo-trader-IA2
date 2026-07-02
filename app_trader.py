@@ -94,7 +94,7 @@ Retorne o diagnóstico estruturado exatamente neste formato markdown limpo e des
 Seja frio, preciso e direto. Velocidade e precisão salvam bancas.
 """
 
-# --- AREA OPERACIONAL DO SITE ---
+# --- AREA OPERACIONAL DO SITE (Fica sempre visível para evitar travamentos) ---
 
 uploaded_file = st.file_uploader(
     "Arraste o print completo do gráfico M1:", type=["png", "jpg", "jpeg"]
@@ -102,13 +102,13 @@ uploaded_file = st.file_uploader(
 
 if uploaded_file is not None:
     image = Image.open(uploaded_file)
-    st.image(
-        image,
-        caption="Gráfico M1 Carregado para Análise de Confluência Suprema",
-        use_container_width=True,
-    )
+    st.image(image, caption="Gráfico M1 Carregado", use_container_width=True)
 
-    if st.button("🚀 EXECUTAR ANÁLISE SUPREMA MATRICIAL"):
+    # O botão de disparo centralizado
+    botão_clicado = st.button("🚀 EXECUTAR ANÁLISE SUPREMA MATRICIAL")
+
+    if botão_clicado:
+        # Extrai as chaves limpando espaços e pontos e vírgulas
         lista_chaves = [c.strip() for c in chaves_input.split(";") if c.strip()]
         
         if not lista_chaves:
@@ -116,9 +116,7 @@ if uploaded_file is not None:
         else:
             with st.spinner("IA escaneando padrões e buscando oportunidades..."):
                 try:
-                    # Lógica pura e simplificada: Seleciona o primeiro elemento sem chance de erros de string
+                    # Captura a primeira chave estável de forma direta e segura
                     chave_final = lista_chaves[0]
                     
-                    client = genai.Client(api_key=chave_final)
-                    response = client.models.generate_content(
-                        model="gemini-2.5-flash", 
+                    # Inicialização direta da API
