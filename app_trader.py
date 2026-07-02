@@ -16,7 +16,7 @@ chaves_input = st.sidebar.text_input("Cole suas Gemini API Keys aqui:", type="pa
 # Transforma o texto em uma lista de chaves limpas
 lista_de_chaves = [chave.strip() for chave in chaves_input.split(";") if chave.strip()]
 
-# PROMPT MESTRE SUPERCONFLUENTE (Isolado fora dos blocos para evitar erros de indentação)
+# PROMPT MESTRE SUPERCONFLUENTE (Isolado para evitar erros de indentação)
 PROMPT_TRADER = """
 [SYSTEM_ROLE] Você é um algoritmo de trading quantitativo focado em encontrar oportunidades frequentes e de boa precisão para Opções Binárias (M1). Sua postura é moderadamente agressiva: seu objetivo é extrair o máximo de sinais válidos do gráfico, operando por confluência máxima de fatores sem descartar operações por detalhes mínimos de ruído na tela.
 
@@ -95,14 +95,13 @@ Seja frio, preciso e direto. Velocidade e precisão salvam bancas.
 """
 
 if lista_de_chaves:
-    # Seleciona a primeira chave válida da lista de contingência
     chave_ativa = lista_de_chaves[0]
-    
-    # Inicializa o cliente oficial da nova SDK do Google GenAI
     client = genai.Client(api_key=chave_ativa)
-
-    # 3. Campo de Upload do Print
-    uploaded_file = st.file_uploader("Arraste o print completo do gráfico M1 (Obrigatório conter o Relógio da Plataforma visível, Velas, RSI e Volume):", type=["png", "jpg", "jpeg"])
+    
+    uploaded_file = st.file_uploader(
+        "Arraste o print completo do gráfico M1 (Obrigatório conter o Relógio da Plataforma visível, Velas, RSI e Volume):", 
+        type=["png", "jpg", "jpeg"]
+    )
 
     if uploaded_file is not None:
         image = Image.open(uploaded_file)
@@ -111,7 +110,6 @@ if lista_de_chaves:
         if st.button("🚀 EXECUTAR ANÁLISE SUPREMA MATRICIAL"):
             with st.spinner("IA escaneando padrões e buscando oportunidades..."):
                 try:
-                    # Executa a chamada utilizando o modelo multimodal
                     response = client.models.generate_content(
                         model='gemini-2.5-flash',
                         contents=[image, PROMPT_TRADER]
@@ -122,3 +120,4 @@ if lista_de_chaves:
                     st.error(f"Erro ao processar com a chave atual: {str(e)}")
                     st.warning("Verifique suas chaves de contingência na barra lateral.")
 else:
+    st.warning("Insira pelo menos uma Gemini API Key válida na barra lateral para ativar o Agente.")
