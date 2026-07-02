@@ -94,6 +94,18 @@ Retorne o diagnóstico estruturado exatamente neste formato markdown limpo e des
 Seja frio, preciso e direto. Velocidade e precisão salvam bancas.
 """
 
+def processar_ia(chave, img, prompt):
+    """Função isolada na raiz para blindar a sintaxe contra erros de indentação"""
+    try:
+        client = genai.Client(api_key=chave)
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=[img, prompt]
+        )
+        return response.text
+    except Exception as e:
+        return f"ERRO_API: {str(e)}"
+
 # --- AREA OPERACIONAL DO SITE ---
 
 uploaded_file = st.file_uploader(
@@ -110,14 +122,6 @@ if uploaded_file is not None:
         if not texto_limpo:
             st.error("ERRO: Preencha sua Gemini API Key na barra lateral esquerda antes de rodar!")
         else:
-            # Lógica Linear Inabalável: Extrai a primeira chave de texto puro usando pop(0) de forma contínua
+            # Extração linear pura da primeira chave sem usar colchetes estruturais
             chave_operacional = texto_limpo.split(";").pop(0)
 
-            with st.spinner("IA escaneando padrões..."):
-                try:
-                    client = genai.Client(api_key=chave_operacional)
-                    response = client.models.generate_content(
-                        model="gemini-2.5-flash",
-                        contents=[image, PROMPT_TRADER]
-                    )
-                    st.success("Análise Concluída com Sucesso!")
