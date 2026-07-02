@@ -94,6 +94,7 @@ Retorne o diagnóstico estruturado exatamente neste formato markdown limpo e des
 Seja frio, preciso e direto. Velocidade e precisão salvam bancas.
 """
 
+
 def executar_chamada_gemini(chave_api, imagem_objeto, prompt_texto):
     try:
         client_objeto = genai.Client(api_key=chave_api)
@@ -103,6 +104,7 @@ def executar_chamada_gemini(chave_api, imagem_objeto, prompt_texto):
         return chamada.text
     except Exception as erro_objeto:
         return f"ERRO_GERADO: {str(erro_objeto)}"
+
 
 # --- AREA OPERACIONAL DO SITE ---
 
@@ -116,10 +118,12 @@ if uploaded_file is not None:
 
     if st.button("🚀 EXECUTAR ANÁLISE SUPREMA MATRICIAL"):
         texto_limpo = chaves_input.replace(" ", "")
-        
+
         if not texto_limpo:
-            st.error("ERRO: Preencha sua Gemini API Key na barra lateral esquerda antes de rodar!")
+            st.error(
+                "ERRO: Preencha sua Gemini API Key na barra lateral esquerda antes de rodar!"
+            )
         else:
-            chaves_lista = [c.strip() for c in texto_limpo.split(";") if c.strip()]
-            chave_operacional = chaves_lista[0]
-            
+            # Lógica 100% Linear à prova de falhas: extrai sem colchetes usando pop do Python
+            chave_operacional = texto_limpo.split(";").pop(0)
+
