@@ -13,9 +13,6 @@ st.sidebar.info("Cole suas chaves protegidas separando-as por ponto e vírgula (
 
 chaves_input = st.sidebar.text_input("Cole suas Gemini API Keys aqui:", type="password")
 
-# Transforma o texto em uma lista de chaves limpas
-lista_de_chaves = [chave.strip() for chave in chaves_input.split(";") if chave.strip()]
-
 # PROMPT MESTRE SUPERCONFLUENTE (Isolado para evitar erros de indentação)
 PROMPT_TRADER = """
 [SYSTEM_ROLE] Você é um algoritmo de trading quantitativo focado em encontrar oportunidades frequentes e de boa precisão para Opções Binárias (M1). Sua postura é moderadamente agressiva: seu objetivo é extrair o máximo de sinais válidos do gráfico, operando por confluência máxima de fatores sem descartar operações por detalhes mínimos de ruído na tela.
@@ -96,9 +93,13 @@ Retorne o diagnóstico estruturado exatamente neste formato markdown limpo e des
 Seja frio, preciso e direto. Velocidade e precisão salvam bancas.
 """
 
-if lista_de_chaves:
-    # Correção Crítica: Acessa a primeira string de chave da lista de contingência usando [0]
-    chave_ativa = lista_de_chaves[0]
+# Executa apenas se o usuário digitar algo no campo de texto da chave
+if chaves_input.strip():
+    
+    # Nova Lógica Simplificada: Extrai a primeira chave separada por ponto e vírgula sem usar colchetes perigosos
+    chave_ativa = chaves_input.split(";")[0].strip()
+    
+    # Inicializa o cliente oficial da nova SDK do Google GenAI
     client = genai.Client(api_key=chave_ativa)
     
     uploaded_file = st.file_uploader(
@@ -115,5 +116,3 @@ if lista_de_chaves:
                 try:
                     response = client.models.generate_content(
                         model='gemini-2.5-flash',
-                        contents=[image, PROMPT_TRADER]
-                    )
