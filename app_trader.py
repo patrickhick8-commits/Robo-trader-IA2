@@ -122,4 +122,5 @@ if "imagem_grafico" in st.session_state:
         
         if not texto_limpo:
             st.error("ERRO: Preencha sua Gemini API Key na barra lateral esquerda antes de rodar!")
-        else:
+        
+        if texto_limpo:
