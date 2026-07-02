@@ -32,7 +32,7 @@ Escaneie textualmente a imagem em busca do nome do ativo (ex: EUR/USD, BTC/USD, 
 Busque de forma ativa por confluências avançadas de Price Action em Suporte, Resistência (S/R horizontais) e Linhas de Tendência (LTA/LTB inclinadas). Una as dinâmicas gráficas para encontrar o ponto exato do clique:
 
 1. MATRIZ DE CONTINUIDADE DE FLUXO (IMPULSO E ANATOMIA DO CANDLE):
-   - FLUXO POR COR E IMPULSO: Monitore blocos dominantes de velas de mesma cor que demonstrem aceleração rápida e impulso direcional.
+   - FLUXO POR COR E IMPULSO: Monitore blocks dominantes de velas de mesma cor que demonstrem aceleração rápida e impulso direcional.
    - TAMANHO DO CORPO (VOLUME INSTITUCIONAL): Avalie a expansão anatômica do corpo do candle recente. Corpos grandes, sólidos e crescentes (como Marubozu ou velas de força) confirmam a urgência e a entrada de volume financeiro pesado a favor do movimento.
    - COMPORTAMENTO OPERACIONAL DE PAVIOS NO FLUXO: Se o candle de força apresentar pavios mínimos ou inexistentes na direção do movimento (pavio superior pequeno na alta ou pavio inferior pequeno na baixa), isso confirma a ausência de recuperação/absorção contrária. Opere a favor da continuidade do fluxo para o preenchimento da região.
 
@@ -105,19 +105,19 @@ if uploaded_file is not None:
     st.image(image, caption="Gráfico M1 Carregado", use_container_width=True)
 
     if st.button("🚀 EXECUTAR ANÁLISE SUPREMA MATRICIAL"):
-        # Limpa o texto eliminando espaços vazios
         texto_limpo = chaves_input.replace(" ", "")
-        
+
         if not texto_limpo:
             st.error("ERRO: Preencha sua Gemini API Key na barra lateral esquerda antes de rodar!")
         else:
-            # Separa os textos por ponto e vírgula e pega o primeiro de forma segura
-            lista_de_chaves_limpas = texto_limpo.split(";")
-            chave_operacional = lista_de_chaves_limpas[0]
+            # Lógica Linear Inabalável: Extrai a primeira chave de texto puro usando pop(0) de forma contínua
+            chave_operacional = texto_limpo.split(";").pop(0)
 
-            if not chave_operacional:
-                st.error("ERRO: A primeira chave informada está vazia ou é inválida!")
-            else:
-                with st.spinner("IA escaneando padrões..."):
-                    try:
-
+            with st.spinner("IA escaneando padrões..."):
+                try:
+                    client = genai.Client(api_key=chave_operacional)
+                    response = client.models.generate_content(
+                        model="gemini-2.5-flash",
+                        contents=[image, PROMPT_TRADER]
+                    )
+                    st.success("Análise Concluída com Sucesso!")
