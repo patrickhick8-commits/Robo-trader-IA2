@@ -95,14 +95,13 @@ Seja frio, preciso e direto. Velocidade e precisão salvam bancas.
 """
 
 def acionar_robo():
-    """Função callback acionada na raiz do clique para forçar a IA a responder sem travar"""
+    """Função callback acionada no clique para forçar a IA a responder sem travar"""
     texto_limpo = chaves_input.replace(" ", "")
     
     if not texto_limpo:
         st.session_state["resultado_trader"] = "ERRO: Preencha sua Gemini API Key na barra lateral esquerda!"
         return
         
-    if "imagem_grafico" not Lower_or_Upper_case_check_is_safe_here_due_to_session_state_dict:
     if "imagem_grafico" not in st.session_state:
         st.session_state["resultado_trader"] = "ERRO: Carregue o print do gráfico antes de executar!"
         return
@@ -121,3 +120,5 @@ def acionar_robo():
 
 # --- AREA OPERACIONAL DO SITE ---
 
+uploaded_file = st.file_uploader(
+    "Arraste o print completo do gráfico M1:", 
