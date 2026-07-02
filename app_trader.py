@@ -118,6 +118,7 @@ if uploaded_file is not None:
     st.image(image, caption="Gráfico M1 Carregado para Análise", use_container_width=True)
     
     if st.button("🚀 EXECUTAR ANÁLISE SUPREMA MATRICIAL"):
+        # Lógica linear sem blocos if/else aninhados para blindar a indentação
         if not lista_de_chaves:
             st.error("ERRO: Nenhuma chave foi preenchida na barra lateral esquerda!")
-        else:
+        
