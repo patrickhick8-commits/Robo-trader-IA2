@@ -38,7 +38,7 @@ Busque de forma ativa por confluências avançadas de Price Action em Suporte, R
 
 2. MATRIZ DE LATERALIDADE / CONSOLIDAÇÃO HORIZONTAL:
    - REVERSÃO E RETRAÇÃO EM SUPORTE/RESISTÊNCIA: Opere o extremo respeito de zonas horizontais nítidas de Suporte (Fundo) e Resistência (Topo). Quando o preço testar os limites com velas de perda de pressão e deixar pavios longos de rejeição, valide o clique de retração ou reversão para a mesma vela.
-   - RETRAÇÃO PELOS PAVIOS EM LATERALIDADE: Rastreie o histórico recente de pavios longos nas extremidades da consolidação. Se as velas atuais estiverem demonstrando forte rejeição visual através de pavios ao tocar a barreira horizontal, valide a entrada de retração para a mesma vela.
+   - RETRAÇÃO PELOS PAVIOS EM LATERALIDADE: Rastreie o histórico recente de pavios longos nas extremidades da consolidação. Se as velas atuais estiverem demonstrando forte rejection visual através de pavios ao tocar a barreira horizontal, valide a entrada de retração para a mesma vela.
 
 3. MATRIZ DE TENDÊNCIA (ALTA OU BAIXA) E REVERSÃO:
    - RETRAÇÃO EM TENDÊNCIA / LTA / LTB: Identifique toques em canais ou linhas de tendência inclinadas onde o preço deixa pavios longos de rejeição, operando a retração a favor do canal.
@@ -107,7 +107,7 @@ def analisar_grafico(api_key, imagem_grafico, prompt):
         return f"ERRO_API: {str(erro)}"
 
 
-# --- AREA OPERACIONAL DO SITE (Fica sempre visível para o usuário) ---
+# --- AREA OPERACIONAL DO SITE ---
 
 uploaded_file = st.file_uploader(
     "Arraste o print completo do gráfico M1 (Obrigatório conter o Relógio da Plataforma visível, Velas, RSI e Volume):",
@@ -122,7 +122,8 @@ if uploaded_file is not None:
         use_container_width=True,
     )
 
-    # O botão de executar agora fica SEMPRE visível quando a imagem é enviada!
     if st.button("🚀 EXECUTAR ANÁLISE SUPREMA MATRICIAL"):
-        
-        # Limpa e valida as chaves somente no momento do clique do botão
+        chaves_filtradas = [c.strip() for c in chaves_input.split(";") if c.strip()]
+        if not chaves_filtradas:
+            st.error("ERRO: Nenhuma chave foi preenchida na barra lateral!")
+        else:
