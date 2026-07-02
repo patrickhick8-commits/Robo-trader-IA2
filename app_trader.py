@@ -1,91 +1,209 @@
 import streamlit as st
 from google import genai
 from PIL import Image
+import time
 
-# 1. Configuração da Página do Site Separado
-st.set_page_config(page_title="Agente IA Advanced - Volume Oculto", page_icon="🤖", layout="centered")
+# 1. Configuração da Página e Ocultação OBRIGATÓRIA do Streamlit Padrão
+st.set_page_config(page_title="AutoGain - AI Trader Pro", page_icon="🤖", layout="centered")
 
-st.title("🤖 Agente IA Trader Pro: Volume por Comportamento das Velas")
-st.write("Análise de Velas, Tendência, RSI, Volume Implícito (sem indicador na tela) e Probabilidade em M1.")
+# CSS Customizado Avançado para Clonar o Design da Segunda Tela
+st.markdown("""
+    <style>
+    /* Fundo Totalmente Preto e Fonte Esportiva/Moderna */
+    .stApp {
+        background-color: #121212 !important;
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
+    }
+    
+    /* Oculta completamente a barra superior nativa e rodapés do Streamlit */
+    header {visibility: hidden !important;}
+    footer {visibility: hidden !important;}
+    #MainMenu {visibility: hidden !important;}
+    
+    /* Bloco Container Centralizado */
+    .panel-container {
+        text-align: center;
+        max-width: 450px;
+        margin: auto;
+        padding-top: 10px;
+    }
+    
+    /* Botão Sair Vermelho Alinhado ao Topo Direito */
+    .top-bar {
+        display: flex;
+        justify-content: flex-end;
+        width: 100%;
+        max-width: 450px;
+        margin: 0 auto 20px auto;
+    }
+    .btn-sair {
+        background-color: #d32f2f;
+        color: #ffffff;
+        padding: 8px 18px;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 14px;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    /* Título Logo Grande */
+    .brand-logo {
+        color: #ffffff;
+        font-size: 54px;
+        font-weight: 700;
+        margin-bottom: 15px;
+        letter-spacing: -1.5px;
+    }
+    .brand-logo span {
+        color: #00bfa5;
+    }
+    
+    /* Subtítulo de Comando */
+    .headline-text {
+        color: #ffffff;
+        font-size: 19px;
+        font-weight: 400;
+        line-height: 1.5;
+        margin-bottom: 35px;
+        padding: 0 15px;
+    }
 
-# 2. Configuração da Chave da IA
-API_KEY = st.sidebar.text_input("Cole sua Gemini API Key aqui:", type="password")
+    /* Modifica os botões superiores de captura para estilo vazado com borda ciano */
+    div.stButton > button {
+        background-color: transparent !important;
+        color: #ffffff !important;
+        border: 2px solid #00bfa5 !important;
+        border-radius: 8px !important;
+        width: 100% !important;
+        padding: 14px !important;
+        font-size: 16px !important;
+        font-weight: 600 !important;
+        transition: all 0.3s ease !important;
+        margin-bottom: 10px !important;
+    }
+    div.stButton > button:hover {
+        background-color: rgba(0, 191, 165, 0.1) !important;
+        border-color: #00bfa5 !important;
+        color: #ffffff !important;
+    }
 
-if API_KEY:
-    # Inicializa o cliente com a nova biblioteca oficial do Google
-    client = genai.Client(api_key=API_KEY)
+    /* Customização do Botão de Disparo Base (Cinza Escuro / Inativo) */
+    .action-container div.stButton > button {
+        background-color: #262626 !important;
+        color: #666666 !important;
+        border: none !important;
+        font-weight: 700 !important;
+        font-size: 17px !important;
+        text-transform: uppercase !important;
+        letter-spacing: 1px !important;
+        margin-top: 20px !important;
+    }
+    
+    /* Quando a imagem é injetada, o botão muda para Ciano Ativo */
+    .active-btn div.stButton > button {
+        background-color: #00bfa5 !important;
+        color: #121212 !important;
+        border: none !important;
+        font-weight: 700 !important;
+        font-size: 17px !important;
+        text-transform: uppercase !important;
+        letter-spacing: 1px !important;
+        margin-top: 20px !important;
+        cursor: pointer !important;
+        box-shadow: 0px 4px 15px rgba(0, 191, 165, 0.4) !important;
+    }
+    .active-btn div.stButton > button:hover {
+        background-color: #00a68f !important;
+        color: #121212 !important;
+    }
+    </style>
+""", unsafe_allow_html=True)
 
-    # 3. Campo de Upload do Print
-    uploaded_file = st.file_uploader("Arraste o print do gráfico M1 (Velas, RSI e Relógio visíveis):", type=["png", "jpg", "jpeg"])
+# Estado interno da sessão para gerenciar os cliques de Câmera/Arquivo
+if "modo_captura" not in st.session_state:
+    st.session_state.modo_captura = None
+# 2. Renderização da Interface Visual Superior Clonada
+st.markdown("""
+    <div class='top-bar'>
+        <a href='#' class='btn-sair'>[→ Sair</a>
+    </div>
+    <div class='panel-container'>
+        <div class='brand-logo'>Aut<span>🤖</span>Gain</div>
+        <div class='headline-text'>Envia o gráfico e descubra se existe uma oportunidade agora</div>
+    </div>
+""", unsafe_allow_html=True)
 
-    if uploaded_file is not None:
-        image = Image.open(uploaded_file)
-        st.image(image, caption="Gráfico M1 Carregado para Análise", use_container_width=True)
+# Chave de API inserida estrategicamente na sidebar para manter a tela limpa
+API_KEY = st.sidebar.text_input("Configuração - Gemini API Key:", type="password")
+
+# Seletor de entrada por botões vazados lado a lado
+col1, col2 = st.columns(2)
+with col1:
+    if st.button("📷 Ativar Câmera"):
+        st.session_state.modo_captura = "camera"
+with col2:
+    if st.button("📁 Anexar foto"):
+        st.session_state.modo_captura = "arquivo"
+
+image_to_analyze = None
+
+# Exibição Condicional da Ferramenta de Captura Selecionada
+if st.session_state.modo_captura == "camera":
+    img_camera = st.camera_input("Posicione a câmera do celular/PC no gráfico")
+    if img_camera:
+        image_to_analyze = Image.open(img_camera)
+
+elif st.session_state.modo_captura == "arquivo":
+    img_file = st.file_uploader("Selecione o arquivo de print de tela M1", type=["png", "jpg", "jpeg"])
+    if img_file:
+        image_to_analyze = Image.open(img_file)
+
+# Preview da Imagem Carregada na Tela
+if image_to_analyze:
+    st.image(image_to_analyze, caption="Gráfico M1 Pronto para Scanner", use_container_width=True)
+
+# Define o estilo visual do botão principal baseado na presença da imagem
+classe_botao = "active-btn" if image_to_analyze else "action-container"
+
+st.markdown(f"<div class='{classe_botao}'>", unsafe_allow_html=True)
+executar = st.button("DETECTAR ENTRADA")
+st.markdown("</div>", unsafe_allow_html=True)
+
+# 3. Processamento e Execução do Motor de IA com Regras de Filtros Máximos
+if executar:
+    if not API_KEY:
+        st.error("Chave de API ausente. Insira sua Gemini API Key na barra lateral para inicializar.")
+    elif image_to_analyze is None:
+        st.warning("Nenhum gráfico carregado. Por favor, ative a câmera ou anexe uma foto primeiro.")
+    else:
+        start_time = time.perf_counter()
+        client = genai.Client(api_key=API_KEY)
         
-        # Botão de disparo rápido para Opções Binárias Avançado
-        if st.button("🚀 EXECUTAR ANÁLISE COMPLETA"):
-            with st.spinner("IA escaneando padrões de velas, volume e mercado..."):
-                
-                # Prompt atualizado para mapear fluxo por cores de velas e padrões institucionais
-                prompt = """
-                Você é um robô de trading institucional de alta performance, especialista em Price Action puro, análise de fluxo de ordens (Order Flow) e análise técnica visual para Opções Binárias (M1).
-                Sua missão é analisar minuciosamente a imagem enviada com foco absoluto na anatomia das velas, cruzamento de indicadores, sequências de cores e métricas estruturais para projetar um clique de 2 a 5 minutos no futuro com expiração para a mesma vela.
+        with st.spinner("IA aplicando filtros máximos de volatilidade e padrões técnicos..."):
+            prompt = """
+            [SYSTEM_ROLE]
+            Você é um robô de trading institucional de alta performance, projetado para operar com frieza absoluta e precisão cirúrgica. Sua inteligência é calibrada para aplicar o MÁXIMO DE FILTROS TÉCNICOS simultâneos, ignorando ruídos de mercado e rastreando estritamente a ENTRADA PERFEITA. 
+            Sua missão é escanear a imagem enviada, cruzar rigorosamente todos os dados gráficos e calcular uma taxa de assertividade extrema focada em vitórias consistentes (WIN).
 
-                Analise rigorosamente as seguintes variáveis visuais e confluências na imagem:
-                1. MAPEAMENTO DE FLUXO POR CORES DE VELAS:
-                   - Fluxo de Alta: Identifique sequências dominantes de velas verdes, o tamanho crescente de seus corpos e a ausência ou diminuição de pavios superiores, indicando forte pressão compradora e urgência do mercado.
-                   - Fluxo de Baixa: Identifique sequências dominantes de velas vermelhas, corpos expandidos e a ausência ou diminuição de pavios inferiores, indicando forte pressão vendedora e domínio dos ursos.
-                   - Quebra de Fluxo: Avalie se velas de cor contrária são engolfadas ou ignoradas rapidamente, confirmando a continuação do fluxo principal.
-                2. ANATOMIA DAS VELAS E VOLUME IMPLÍCITO: Deduza o Volume de Negociação baseado no tamanho dos corpos das velas (corpos expandidos/Marubozu = alto volume; corpos espremidos/Dojis = baixo volume) e rejeição/absorção por pavios longos.
-                3. PROJEÇÃO DE INDICADORES INTERNOS: 
-                   - Média Móvel Exponencial de 9 Períodos (EMA 9): Força imediata e direção do preço a curto prazo.
-                   - Média Móvel Simples de 20 Períodos (SMA 20): Tendência média e zonas de pullback dinâmico.
-                   - Índice de Força Relativa (RSI 14): Zonas de exaustão, Sobrecompra (>70) ou Sobrevenda (<30).
-                4. ZONEAMENTO ESTRUTURAL (S/R e LTA/LTB): Identifique zonas horizontais de Suporte e Resistência, e linhas de tendência inclinadas (LTA / LTB) traçadas pelos fundos e topos do print.
-                5. PADRÕES GRÁFICOS VISUAIS: Identifique estruturas macro como OCO (Ombro-Cabeça-Ombro), Topo/Fundo Duplo, Triângulos de afunilamento, Canais ou Caixas de Acumulação que determinam a direção do fluxo.
-                6. VALIDAÇÃO DE PADRÕES DE CANDLES (VELAS):
-                   - Reversão: Identifique Martelo, Estrela da Manhã/Noite, Engolfo ou Harami exatamente quando o preço tocar em S/R, LTA ou LTB.
-                   - Fluxo e Rompimento: Identifique velas de força rompendo zonas consolidadas ou linhas de tendência, indicando continuação imediata.
+            [OPERATIONAL_PARAMETERS]
+            - CRITÉRIO DE FILTRO MÁXIMO: Aplique o pente fino mais rigoroso combinando a direção da EMA 10, exaustão do RSI 14, volume implícito por tamanho de corpo, rejeição extrema de pavios e zonas de preço. 
+            - TRAVA DE ASSERTIVIDADE EXTREMA: Você está proibido de enviar sinais com taxas genéricas ou baixas. Suas entradas válidas devem se enquadrar estritamente na faixa de 80% a 99% de assertividade matemática ponderada. 
+            - FILTRO DE ABORTO: Se a confluência de todos os fatores técnicos não atingir o patamar mínimo de 80% de certeza devido a qualquer inconsistência ou falta de clareza no print, você deve classificar a OPÇÃO como [ABORTAR OPERAÇÃO - ALTO RISCO] para blindar a banca contra o Loss.
 
-                [FILTRO DE SEGURANÇA E ACERTIVIDADE EXTREMA]
-                - Para emitir um sinal válido, exija confluência clara (Ex: Sequência de fluxo iniciada + Rompimento de padrão gráfico + Médias alinhadas).
-                - Se as velas estiverem alternando cores a cada candle (verde, vermelha, verde, vermelha) indicando um mercado sem direção e picotado, ABORTE a operação imediatamente.
-                - A taxa calculada deve refletir essa filtragem estrita (Apenas valide operações se o cálculo final resultar entre 88% e 99% de probabilidade).
+            [MARKET_STATE_ADAPTATION]
+            Você deve identificar e adaptar seus filtros matemáticos dependendo do estado dinâmico do gráfico apresentado no print:
+1. GRÁFICO PARADO (Baixa Volatilidade / Sem Volume): Se os corpos das velas forem muito pequenos, sem pavios expressivos e com movimentação travada, ative filtros para evitar falsos rompimentos. Foque estritamente em regiões milimétricas de Suporte e Resistência horizontais, padrões de reversão de exaustão (Doji, Harami/Mulher Grávida) e estique o tempo de espera do Sincro-Cronograma.
+            2. GRÁFICO VOLÁTIL (Alta Volatilidade / Movimentação Rápida): Se o gráfico apresentar pavios longos de rejeição, velas expressivas de força ou velas seguidas da mesma cor (Fluxo Forte), recalibre seus pesos para ler a velocidade. Priorize a retração milimétrica na extremidade dos pavios (Pin Bar, Martelo), fluxo de continuidade a favor de Marubozu de rompimento de LTA/LTB e encurte o tempo de espera do clique para pegar o início exato do movimento.
 
-                Retorne o diagnóstico estruturado estritamente neste formato markdown limpo e destacado:
-
-                🎯 PORCENTAGEM DE ACERTO DA ENTRADA: [Ex: 95% - Confluência Tripla Filtrada] (Escreva bem grande e destacado)
-
-                ⏰ HORÁRIO DO CLIQUE (ENTRADA): [Defina o horário HH:MM:00 exato entre 2 a 5 minutos à frente do relógio do print]
-                ⏳ TEMPO DE EXPIRAÇÃO: 1 Minuto (Para fechar na mesma vela do clique)
-                🏁 HORÁRIO DE FECHAMENTO: [HH:MM+1:00]
-                🟥🟩 DIREÇÃO DA ORDEM: [COMPRA / VENDA / OPERAÇÃO ABORTADA]
-
-                🧠 ESTRATÉGIA: [Ex: FLUXO DE CONTINUIDADE POR VELAS SEQUENCIAIS ou ROMPIMENTO DE TRIÂNGULO]
-                📊 CONTEXTO DO MERCADO: [TENDÊNCIA DE ALTA, TENDÊNCIA DE BAIXA ou LATERAL]
-
-                🔍 DETALHAMENTO ANATÔMICO E TÉCNICO (O QUE A IA VIU):
-                - Diagnóstico do Fluxo de Cores: [Descreva a dominância de cores das últimas velas e se há força direcional de alta ou baixa]
-                - Posição das Médias (EMA 9 vs SMA 20): [O cruzamento ou alinhamento das duas médias imaginárias]
-                - Situação do RSI: [Indique a posição visual da linha do RSI e nível de exaustão]
-                - Mapeamento S/R e LTA/LTB: [Como o preço está se comportando em relação às regiões fixas e inclinadas]
-                - Padrão Gráfico e de Candle Validado: [Identificação da figura de price action e o gatilho da vela de entrada]
-                - Análise Estatística de Volume Implícito: [Explique o nível de volume estimado pela anatomia/força das velas]
-                - Filtro de Proteção Ativado: [Justificativa do porquê o sinal passou no teste de segurança e não foi abortado por falta de direção clara]
-
-                Seja extremamente frio, preciso e direto na resposta. Velocidade e precisão salvam bancas.
-                """
-                
-                try:
-                    # Executa o modelo flash com suporte a leitura avançada de imagem
-                    response = client.models.generate_content(
-                        model='gemini-2.5-flash',
-                        contents=[image, prompt]
-                    )
-                    st.success("Análise Avançada Concluída com Sucesso!")
-                    st.markdown(response.text)
-                    
-                except Exception as e:
-                    st.error(f"Erro no processamento visual da IA: {e}")
-else:
-    st.info("👈 Insira sua Gemini API Key na barra lateral para ativar o modo de análise avançada.")
+            [VARIABLE_TIME_LOGIC_RULES]
+            Você deve ler o relógio atual presente na imagem enviada e calcular de forma DINÂMICA E VARIÁVEL o momento do clique futuro e sua respectiva expiração seguindo rigorosamente esta lógica:
+            - NÃO use um tempo fixo de espera. O tempo de espera até o clique deve VARIAR de acordo com a análise do gráfico.
+            - CRITÉRIOS DE VARIAÇÃO DE TEMPO:
+              1. Cor e Sequência das Velas: Se houver uma sequência forte da mesma cor (fluxo), o clique pode ser mais próximo (ex: 1 a 2 minutos à frente).
+              2. Volume e Tamanho das Velas: Velas grandes e cheias (alto volume) indicam movimentos rápidos. Diminua o tempo de espera. Velas pequenas e espremidas indicam lentidão, aumente o tempo de espera.
+              3. Quantidade e Tamanho de Pavios: Muitos pavios longos indicam alta volatilidade e rejeição (retração). O tempo de espera deve ser calculado exatamente para quando o preço atingir a extremidade do pavio anterior.
+              4. Regiões de Suporte, Resistência e Tendência: Calcule a distância atual do preço até a zona traçada (seja suporte/resistência horizontal ou LTA/LTB de tendência). Se o preço estiver longe, aumente o tempo de espera. Se estiver muito perto, o clique deve ser projetado de forma cirúrgica.
