@@ -91,20 +91,8 @@ Retorne o diagnóstico estruturado exatamente neste formato markdown limpo e des
 - Avaliação de Ruído e Volatilidade: [Explique por que o cenário foi considerado aceitável para clique com filtros moderados]
 - Justificativa da Gestão de Lote: [Explique por que o lote sugerido se adequa perfeitamente a essa combinação de fatores]
 
-Seja frio, preciso e direto. Velocidade e precision salvam bancas.
+Seja frio, preciso e direto. Velocidade e precisão salvam bancas.
 """
-
-
-def analisar_grafico(api_key, imagem_grafico, prompt):
-    try:
-        client = genai.Client(api_key=api_key)
-        response = client.models.generate_content(
-            model="gemini-2.5-flash", contents=[imagem_grafico, prompt]
-        )
-        return response.text
-    except Exception as erro:
-        return f"ERRO_API: {str(erro)}"
-
 
 # --- AREA OPERACIONAL DO SITE ---
 
@@ -121,12 +109,16 @@ if uploaded_file is not None:
     )
 
     if st.button("🚀 EXECUTAR ANÁLISE SUPREMA MATRICIAL"):
-        chaves_filtradas = [
-            c.strip() for c in chaves_input.split(";") if c.strip()
-        ]
-
-        if not chaves_filtradas:
-            st.error("ERRO: Preencha sua Gemini API Key na barra lateral!")
+        # Extrai e limpa a lista de chaves diretamente na execução
+        lista_chaves = [c.strip() for c in chaves_input.split(";") if c.strip()]
+        
+        if not lista_chaves:
+            st.error("ERRO: Preencha sua Gemini API Key na barra lateral esquerda antes de rodar!")
         else:
-            with st.spinner("IA buscando oportunidades..."):
-                chave_ativa = chaves_filtradas[0]
+            with st.spinner("IA escaneando padrões e buscando oportunidades..."):
+                try:
+                    # Captura a primeira chave estável de forma direta
+                    chave_final = lista_chaves[0]
+                    
+                    # Inicialização e chamada unificada direto na árvore principal
+                    client = genai.Client(api_key=chave_final)
