@@ -1,104 +1,125 @@
 import streamlit as st
 from google import genai
 from PIL import Image
-import time
 
 # 1. Configuração da Página do Site Separado
-st.set_page_config(page_title="Agente IA Advanced - M1 Pro", page_icon="🤖", layout="centered")
+st.set_page_config(page_title="Agente IA Advanced - Matriz Suprema", page_icon="🤖", layout="centered")
 
-st.title("🤖 Agente IA Trader Pro: Volume por Comportamento das Velas")
-st.write("Análise Avançada: Velas, Tendência, RSI, Volume Implícito, Milissegundos e Auto-Correção para M1.")
+st.title("🤖 Agente IA Trader Pro: Matriz Suprema e Projeção Temporal")
+st.write("Fusão Total: Projeção de Tempo (Mesma Vela M1), SMC, Volume Oculto, Fluxo de Cores, Médias, RSI e S/R / LTA / LTB.")
 
-# 2. Configuração da Chave da IA
-API_KEY = st.sidebar.text_input("Cole sua Gemini API Key aqui:", type="password")
+st.sidebar.markdown("### 🔑 Gerenciador de Chaves de Contingência")
+st.sidebar.info("Cole uma ou mais chaves (uma por linha) para ativar o rodízio automático antiqueda.")
 
-if API_KEY:
-    # Inicializa o cliente com a nova biblioteca oficial do Google
-    client = genai.Client(api_key=API_KEY)
+# Campo para colar várias chaves (uma por linha) para rodízio grátis
+chaves_input = st.sidebar.text_area("Cole suas Gemini API Keys aqui:", type="password", height=150)
 
+# Transforma o texto em uma lista de chaves limpas e sem espaços vazios
+lista_de_chaves = [chave.strip() for chave in chaves_input.split("\n") if chave.strip()]
+
+if lista_de_chaves:
     # 3. Campo de Upload do Print
-    uploaded_file = st.file_uploader("Arraste o print do gráfico M1 (Velas, RSI, EMA 10 e Relógio visíveis):", type=["png", "jpg", "jpeg"])
+    uploaded_file = st.file_uploader("Arraste o print completo do gráfico M1 (Obrigatório conter o Relógio da Plataforma visível, Velas, RSI e Volume):", type=["png", "jpg", "jpeg"])
 
     if uploaded_file is not None:
         image = Image.open(uploaded_file)
-        st.image(image, caption="Gráfico M1 Carregado para Análise", use_container_width=True)
+        st.image(image, caption="Gráfico M1 Carregado para Análise de Confluência Suprema", use_container_width=True)
         
         # Botão de disparo rápido para Opções Binárias Avançado
-        if st.button("🚀 EXECUTAR ANÁLISE COMPLETA"):
-            # Marca o início exato em nanossundos para calcular milissegundos reais de processamento
-            start_time = time.perf_counter()
-            
-            with st.spinner("IA escaneando padrões de velas, volume e mercado..."):
+        if st.button("🚀 EXECUTAR ANÁLISE SUPREMA MATRICIAL"):
+            with st.spinner("IA aplicando Inteligência Quântica e aplicando filtros de volatilidade..."):
                 
-                # Prompt unificado contendo todas as regras solicitadas com foco em precisão absoluta
+                # Prompt mestre unificando ABSOLUTAMENTE TODAS as estratégias, tempos e filtros de segurança
                 prompt = """
-                [SYSTEM_ROLE]
-                Você é um robô de trading institucional de alta performance, projetado para operar com frieza absoluta e precisão cirúrgica. Sua inteligência é calibrada para ignorar ruídos de mercado e rastrear estritamente a ENTRADA PERFEITA. 
-                Sua missão é escanear a imagem enviada, cruzar os dados gráficos e calcular uma taxa de assertividade extrema, focada em vitórias consistentes (WIN) e ganhos excelentes.
+                [SYSTEM_ROLE] Você é um superalgoritmo HFT (High-Frequency Trading) de fundos soberanos e analista quantitativo sênior focado em trading de altíssima precisão e mitigação rígida de risco para Opções Binárias (M1). Sua postura é extremamente fria, matemática, cética e profissional. Sua missão é extrair uma ENTRADA CIRÚRGICA de altíssima assertividade. Se o cenário for minimamente duvidoso, seu dever é ABORTAR.
 
-                [OPERATIONAL_PARAMETERS]
-                - CRITÉRIO DE FILTRO: Só execute o gatilho se houver alta probabilidade matemática de acerto. Se o cenário for duvidoso, reduza drasticamente a assertividade ou declare estado NEUTRO.
-                - TEMPO GRÁFICO: M1 (Velas de 1 minuto).
-                - INDICADORES: EMA de 10 períodos (Exponencial) e RSI (Configuração Padrão 14).
-                - PRICE ACTION & MÉTRICAS: Rejeição por tamanho de pavio (retração), fluxo de velas pelas cores, força da tendência atual, volume do mercado implícito e tamanho real do corpo da vela.
+                Analise rigorosamente as seguintes camadas visuais e macro-estratégias confluentes no print enviado:
 
-                [TIME_LOGIC_RULES]
-                Você deve ler o relógio atual presente na imagem enviada e calcular o momento do clique futuro e sua respectiva expiração seguindo rigorosamente esta lógica:
-                - O momento do clique deve ser agendado para ocorrer entre o mínimo de 2 a 5 minutos DEPOIS do horário do print.
-                - A expiração deve ser estritamente para a MESMA VELA do clique (M1 Tradicional).
-                - Exemplo Prático: Se o Print for tirado às 15:30:00, você deve projetar uma entrada futura. O comando do clique deve ser para as 15:32:00, 15:33:00, 15:34:00 ou 15:35:00. Se o clique for às 15:34:00, a expiração DEVE ser às 15:35:00 (fechamento da mesma vela).
+                [1. CLASSIFICAÇÃO DE MERCADO E COMPORTAMENTO DE PAVIOS (ABERTO VS OTC)]
+                Escaneie textualmente a imagem em busca de marcações (ex: 'EUR/USD-OTC') e analise o comportamento dos pavios junto com a movimentação:
+                - MERCADO ABERTO REAL: Dê peso máximo para REJEIÇÃO E RETRAÇÃO nos pavios. Pavios longos em zonas de suporte, resistência ou extremidades do RSI indicam forte defesa institucional e entrada de volume contrário. Busque operações de Reversão e Retração na mesma vela.
+                - ALGORÍTMO OTC (MERCADO FECHADO): Cuidado extremo com pavios longos. Em OTC, pavios longos frequentemente indicam manipulação de preço e o algoritmo tende a engolfar ou romper esses pavios nas velas seguintes para limpar as ordens dos traders de varejo. Foque 100% em FLUXO DE VELA DE CORPO CHEIO a favor do preenchimento desses pavios (alvos de liquidez).
 
-                [FEEDBACK_LOOP_ALGORITHM]
-                Filtre os pesos da sua análise com base no histórico do chat:
-                - Se o histórico recente indicar WIN, mantenha a calibração matemática e pesos atuais dos indicadores.
-                - Se o histórico recente indicar LOSS, mude seu comportamento imediatamente através de um processo de Auto-Análise de Erro. Identifique qual indicador ou padrão de Price Action falhou anteriormente e crie uma restrição técnica temporária nesta resposta atual, ajustando os pesos matemáticos para calibrar a precisão e garantir o WIN nesta nova imagem.
+                [2. REGRA DE TEMPO CRUCIAL - PROJEÇÃO DE VELA M1]
+                - Localize visualmente o relógio oficial da plataforma dentro do print.
+                - Você deve projetar matematicamente o momento exato em que a estrutura do gráfico se confirmará. Agende o HORÁRIO DO CLIQUE (ENTRADA) estritamente entre 2 a 5 minutos no futuro em relação ao horário do print.
+                - A operação deve expirar na MESMA vela do clique. Ou seja, tempo de expiração fixo e rígido de exatamente 1 minuto.
+                - Exemplo de Cálculo: Se o relógio do print marca 15:30:12 e o padrão se confirma em 3 minutos, determine o Horário do Clique para 15:33:00 exato, com Horário de Fechamento para 15:34:00.
+
+                [3. MAPEAMENTO DE FLUXO POR CORES DE VELAS e VOLUME OCULTO]
+                - FLUXO DE ALTA: Monitore blocos dominantes de velas verdes, corpos expandidos crescentes e redução de pavios superiores.
+                - FLUXO DE BAIXA: Monitore blocos dominantes de velas vermelhas, corpos expandidos e redução de pavios inferiores.
+                - VOLUME IMPLÍCITO: Deduza a urgência institucional pelo tamanho anatômico das velas (Marubozu = volume institucional; Dojis/corpos espremidos = ausência de liquidez e alto risco).
+
+                [4. PROJEÇÃO DE INDICADORES INTERNOS]
+                Mesmo que não estejam plotados na imagem, calcule mentalmente com base na sequência histórica de fechamento:
+                - EMA 9 (Exponencial de 9): Força imediata e direção do preço a curtíssimo prazo.
+                - SMA 20 (Simples de 20): Tendência média e zonas de Pullback dinâmico.
+                - EMA 50 (Exponencial de 50): Tendência macro do ativo e suporte/resistência institucional de peso.
+                - RSI 14 (Índice de Força Relativa): Rastreie exaustão em zonas de Sobrecompra (>70) ou Sobrevenda (<30).
+
+                [5. ESTRUTURA SMC & ZONEAMENTO GEOMÉTRICO]
+                - Identifique quebras de estrutura recentes (BOS - Break of Structure ou CHOCH - Change of Character).
+                - Identifique as zonas horizontais de Suporte e Resistência, junto com linhas inclinadas de LTA e LTB.
+                - Rastreie padrões gráficos macro na tela (Topos/Fundos Duplos, OCO, Canais, Triângulos ou Acumulações).
+
+                [6. FILTROS DE SEGURANÇA E REGRAS EXTREMAS]
+                - FILTRO MERCADO PICOTADO: Se o gráfico estiver alternando cores a cada candle (verde, vermelha, verde, vermelha), ABORTE imediatamente.
+                - FILTRO FALSO ROMPIMENTO: Velas que rompem zonas sem volume implícito (com pavio de absorção longo contra o rompimento) devem ser descartadas.
+                - REQUISITO MÍNIMO DE ENTRADA: Exija confluência tripla (Ex: Fluxo de Cor + Alinhamento de Médias + Rompimento de LTB por Vela de Força).
+                - ASSERTIVIDADE RÍGIDA: Retorne um cálculo estatístico da operação. Sinais válidos apenas entre 88% e 99%. Abaixo disso, o veredito obrigatório é OPERAÇÃO ABORTADA.
 
                 Retorne o diagnóstico estruturado estritamente neste formato markdown limpo e destacado:
-🎯 PORCENTAGEM DE ACERTO DA ENTRADA: [Ex: 94%] 🔥 ENTRADA DE ALTA ASSERTIVIDADE (WIN) 🔥
 
-                --------------------------------------------------------------------------------
-                📊 RELATÓRIO DE GATILHO GERADO PELA IA (FRIEZAE PRECISÃO EXTREMA)
-                --------------------------------------------------------------------------------
-                • CONTEXTO ATUAL DO MERCADO: [Tendência de Alta / Tendência de Baixa / Mercado Lateral / Fluxo Forte]
-                • OPERAÇÃO: [COMPRA (CALL) ou VENDA (PUT)]
-                • ASSERTIVIDADE MATEMÁTICA: [X]% (Métrica calculada com rigor institucional)
-                • ESTRATÉGIA IDENTIFICADA: [Fluxo / Reversão / Rompimento de Região com Pullback através do Pavio, Tamanho da Vela, Força da Tendência e Volume / Tendência]
+                🎯 PORCENTAGEM DE ACERTO DA ENTRADA: [Ex: 97% - Matriz Suprema Cadenciada] (Escreva destacado e em tamanho grande)
 
-                ⏱️ SINCRO-CRONOGRAMA (Tempo de espera de 2 a 5 minutos):
-                  ├── Horário do Seu Print: [HH:MM:SS]
-                  ├── Momento Exato do Clique Perfeito: [HH:MM:00] <-- (Aguarde com frieza e clique neste minuto exato)
-                  └── Horário de Expiração: [HH:MM:00] <-- (Mesma vela de M1 / Fechamento de 1 minuto para Vitória)
+                ⏰ HORÁRIO DO CLIQUE (ENTRADA): [HH:MM:00 exato projetado entre 2 a 5 minutos para o futuro com base no relógio do print]
+                ⏳ TEMPO DE EXPIRAÇÃO: 1 Minuto (Para fechar na mesma vela do clique)
+                🏁 HORÁRIO DE FECHAMENTO DA ORDEM: [Calcule o horário exato que a vela do clique termina, ex: HH:MM+1:00]
+                🟥🟩 DIREÇÃO EXATA DA ORDEM: [COMPRA / VENDA / OPERAÇÃO ABORTADA]
 
-                ⚡ DESEMPENHO DO SISTEMA:
-                  └── Tempo de Execução do Algoritmo: {{LATENCY_PLACEHOLDER}} ms (Cálculo de processamento em milissegundos)
+                🧠 ESTRATÉGIA COMBINADA: [Ex: RETRAÇÃO EM SUPORTE HISTÓRICO DE MERCADO ABERTO ou PREENCHIMENTO DE PAVIO EM FLUXO OTC]
+                📊 CONTEXTO DO MERCADO: [TENDÊNCIA DE ALTA, TENDÊNCIA DE BAIXA ou LATERALIZADO]
+                📊 JUSTIFICATIVA DA PROJEÇÃO TEMPORAL: [Explique resumidamente o porquê o preço vai levar esse tempo exato (2 a 5 minutos) para atingir e confirmar sua zona de entrada]
 
-                💡 GATILHO TÉCNICO DETALHADO:
-                - Anatomia das Velas e Volume Implícito: [Descreva a cor predominante, variação dos corpos, o nível de volume estimado e o que os pavios indicam]
-                - Indicadores e Tendência: [Explique o posicionamento do preço em relação à EMA 10 e os níveis de saturação/exaustão do RSI 14]
-                - Justificativa do Alvo Futuro: [Explique o motivo técnico de projetar a operação exatamente para o minuto escolhido no Sincro-Cronograma para garantir ganhos excelentes]
-                --------------------------------------------------------------------------------
-                
-                Seja extremamente frio, preciso e direto na resposta. Velocidade e precisão salvam bancas e geram vitórias excelentes.
+                🔍 DETALHAMENTO ANATÔMICO, ESTRUTURAL E TÉCNICO (O QUE A IA VIU):
+                - Ambiente Identificado & Pavios: [Explique se identificou Mercado Aberto ou OTC e como os pavios das últimas velas confirmaram essa leitura]
+                - Diagnóstico do Fluxo de Cores e Volume Oculto: [Análise minuciosa da sequência de cores e tamanho dos corpos/volume]
+                - Projeção de Médias (EMA 9 / SMA 20 / EMA 50): [Alinhamento e posicionamento do preço em relação às médias estimadas]
+                - Nível do RSI 14: [Status do oscilador e espaço livre para o Gain antes da exaustão]
+                - Mapeamento S/R, LTA/LTB e SMC: [Comportamento do preço nas regiões estruturais, figuras gráficas ou quebras de estrutura]
+                - Padrão de Candle Validado como Gatilho: [Qual foi o padrão de candle exato que acionou o sinal]
+                - Justificativa de Frieza Analítica (Filtro Ativado): [Explique matematicamente por que esse sinal passou nos filtros anti-ruído]
+
+                Seja extremamente frio, preciso e direto. Velocidade e precisão salvam bancas.
                 """
                 
-                try:
-                    # Executa o modelo flash com suporte a leitura avançada de imagem
-                    response = client.models.generate_content(
-                        model='gemini-2.5-flash',
-                        contents=[image, prompt]
-                    )
-                    
-                    # Calcula o tempo total em milissegundos após o retorno da API
-                    end_time = time.perf_counter()
-                    execution_time_ms = round((end_time - start_time) * 1000, 2)
-                    
-                    # Injeta dinamicamente a marcação exata de milissegundos no relatório gerado
-                    final_text = response.text.replace("{{LATENCY_PLACEHOLDER}}", str(execution_time_ms))
-                    
-                    st.success("Análise de Alta Precisão Concluída com Sucesso!")
-                    st.markdown(final_text)
-                    
-                except Exception as e:
-                    st.error(f"Erro no processamento visual da IA: {e}")
-else:
-    st.info("👈 Insira sua Gemini API Key na barra lateral para ativar o modo de análise avançada.")
+                sucesso = False
+                modelos_disponiveis = ['gemini-2.5-flash', 'gemini-1.5-flash']
+                
+                # Percorre cada chave colada pelo usuário na barra lateral
+                for indice_chave, chave_atual in enumerate(lista_de_chaves):
+                    if sucesso:
+                        break
+                        
+                    try:
+                        client = genai.Client(api_key=chave_atual)
+                        
+                        # Testa os modelos sequencialmente
+                        for nome_modelo in modelos_disponiveis:
+                            try:
+                                st.toast(f"Disparando matriz temporal com Chave #{indice_chave + 1} no motor {nome_modelo}...")
+                                
+                                response = client.models.generate_content(
+                                    model=nome_modelo,
+                                    contents=[image, prompt]
+                                )
+                                
+                                st.success(f"Análise Concluída com Sucesso! (Chave #{indice_chave + 1} | Motor: {nome_modelo})")
+                                
+                                # Sistema de som injetado para alertar a entrada no Desktop
+                                st.components.v1.html(
+                                    '<audio autoplay src="https://google.com"></audio>',
+                                    height=0
+                                )
+                                
