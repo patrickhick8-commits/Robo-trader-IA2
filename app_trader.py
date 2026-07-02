@@ -67,7 +67,7 @@ if lista_de_chaves:
                 - FILTRO MERCADO PICOTADO: Se o gráfico estiver alternando cores a cada candle (verde, vermelha, verde, vermelha), ABORTE imediatamente.
                 - FILTRO FALSO ROMPIMENTO: Velas que rompem zonas sem volume implícito (com pavio de absorção longo contra o rompimento) devem ser descartadas.
                 - REQUISITO MÍNIMO DE ENTRADA: Exija confluência tripla (Ex: Fluxo de Cor + Alinhamento de Médias + Rompimento de LTB por Vela de Força).
-                - ASSERTIVIDADE RÍGIDA: Retorne um cálculo estatístico da operação. Sinais válidos apenas entre 88% e 99%. Abaixo disso, o veredito obrigatório é OPERAÇÃO ABORTADA.
+                - ASSERTIVIDADE RÍGIDA: Retorne um cálculo estatístico da operação. Sinais válidos apenas entre 88% e 99%. Abaixo disso, the veredito obrigatório é OPERAÇÃO ABORTADA.
 
                 Retorne o diagnóstico estruturado estritamente neste formato markdown limpo e destacado:
 
@@ -123,3 +123,4 @@ if lista_de_chaves:
                                     height=0
                                 )
                                 
+
