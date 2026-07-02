@@ -111,11 +111,9 @@ uploaded_file = st.file_uploader(
     type=["png", "jpg", "jpeg"]
 )
 
-# Inicializa as variáveis na memória de estado se um arquivo for carregado
 if uploaded_file is not None:
     st.session_state["imagem_grafico"] = Image.open(uploaded_file)
 
-# Se houver uma imagem salva na sessão do navegador, renderiza a tela operacional
 if "imagem_grafico" in st.session_state:
     st.image(st.session_state["imagem_grafico"], caption="Gráfico M1 Carregado para Análise", use_container_width=True)
     
@@ -123,3 +121,5 @@ if "imagem_grafico" in st.session_state:
         texto_limpo = chaves_input.replace(" ", "")
         
         if not texto_limpo:
+            st.error("ERRO: Preencha sua Gemini API Key na barra lateral esquerda antes de rodar!")
+        else:
