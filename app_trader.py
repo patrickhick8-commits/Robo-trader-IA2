@@ -94,18 +94,6 @@ Retorne o diagnóstico estruturado exatamente neste formato markdown limpo e des
 Seja frio, preciso e direto. Velocidade e precisão salvam bancas.
 """
 
-
-def executar_chamada_gemini(chave_api, imagem_objeto, prompt_texto):
-    try:
-        client_objeto = genai.Client(api_key=chave_api)
-        chamada = client_objeto.models.generate_content(
-            model="gemini-2.5-flash", contents=[imagem_objeto, prompt_texto]
-        )
-        return chamada.text
-    except Exception as erro_objeto:
-        return f"ERRO_GERADO: {str(erro_objeto)}"
-
-
 # --- AREA OPERACIONAL DO SITE ---
 
 uploaded_file = st.file_uploader(
@@ -117,13 +105,19 @@ if uploaded_file is not None:
     st.image(image, caption="Gráfico M1 Carregado", use_container_width=True)
 
     if st.button("🚀 EXECUTAR ANÁLISE SUPREMA MATRICIAL"):
+        # Limpa o texto eliminando espaços vazios
         texto_limpo = chaves_input.replace(" ", "")
-
+        
         if not texto_limpo:
-            st.error(
-                "ERRO: Preencha sua Gemini API Key na barra lateral esquerda antes de rodar!"
-            )
+            st.error("ERRO: Preencha sua Gemini API Key na barra lateral esquerda antes de rodar!")
         else:
-            # Lógica 100% Linear à prova de falhas: extrai sem colchetes usando pop do Python
-            chave_operacional = texto_limpo.split(";").pop(0)
+            # Separa os textos por ponto e vírgula e pega o primeiro de forma segura
+            lista_de_chaves_limpas = texto_limpo.split(";")
+            chave_operacional = lista_de_chaves_limpas[0]
+
+            if not chave_operacional:
+                st.error("ERRO: A primeira chave informada está vazia ou é inválida!")
+            else:
+                with st.spinner("IA escaneando padrões..."):
+                    try:
 
