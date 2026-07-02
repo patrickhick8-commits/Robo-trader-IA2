@@ -9,13 +9,13 @@ st.title("🤖 Agente IA Trader Pro: Matriz Suprema e Projeção Temporal")
 st.write("Fusão Total: Projeção de Tempo (Mesma Vela M1), SMC, Volume Oculto, Fluxo de Cores, Médias, RSI e S/R / LTA / LTB.")
 
 st.sidebar.markdown("### 🔑 Gerenciador de Chaves de Contingência")
-st.sidebar.info("Cole uma ou mais chaves (uma por linha) para ativar o rodízio automático antiqueda.")
+st.sidebar.info("Cole suas chaves protegidas separando-as por ponto e vírgula (;). Exemplo: chave1; chave2; chave3")
 
-# Campo para colar várias chaves (uma por linha) para rodízio grátis
-chaves_input = st.sidebar.text_area("Cole suas Gemini API Keys aqui:", type="password", height=150)
+# Correção Crítica: Mudança para text_input que aceita type="password" nativamente
+chaves_input = st.sidebar.text_input("Cole suas Gemini API Keys aqui:", type="password")
 
-# Transforma o texto em uma lista de chaves limpas e sem espaços vazios
-lista_de_chaves = [chave.strip() for chave in chaves_input.split("\n") if chave.strip()]
+# Transforma o texto em uma lista de chaves limpas usando ponto e vírgula como separador
+lista_de_chaves = [chave.strip() for chave in chaves_input.split(";") if chave.strip()]
 
 if lista_de_chaves:
     # 3. Campo de Upload do Print
@@ -43,7 +43,7 @@ if lista_de_chaves:
                 [2. REGRA DE TEMPO CRUCIAL - PROJEÇÃO DE VELA M1]
                 - Localize visualmente o relógio oficial da plataforma dentro do print.
                 - Você deve projetar matematicamente o momento exato em que a estrutura do gráfico se confirmará. Agende o HORÁRIO DO CLIQUE (ENTRADA) estritamente entre 2 a 5 minutos no futuro em relação ao horário do print.
-                - A operation deve expirar na MESMA vela do clique. Ou seja, tempo de expiração fixo e rígido de exatamente 1 minuto.
+                - A operação deve expirar na MESMA vela do clique. Ou seja, tempo de expiração fixo e rígido de exatamente 1 minuto.
 
                 [3. MAPEAMENTO DE FLUXO POR CORES DE VELAS e VOLUME OCULTO]
                 - FLUXO DE ALTA: Monitore blocos dominantes de velas verdes, corpos expandidos crescentes e redução de pavios superiores.
@@ -127,4 +127,4 @@ if lista_de_chaves:
                 if not sucesso:
                     st.error("❌ Todas as chaves ou motores de IA falharam. Verifique suas chaves e o print enviado.")
 else:
-    st.info("👈 Cole suas Gemini API Keys na barra lateral (uma por linha) para ativar a Matriz Suprema de análise.")
+    st.info("👈 Cole suas Gemini API Keys na barra lateral separadas por ponto e vírgula (;) para ativar a análise.")
