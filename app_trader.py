@@ -39,7 +39,7 @@ Busque de forma ativa por confluências avançadas de Price Action em Suporte, R
 
 2. MATRIZ DE TENDÊNCIA (ALTA OU BAIXA) E CONTINUIDADE:
    - FLUXO EM TENDÊNCIA: Se as velas demonstrarem corpos cheios de força (Marubozu), opere diretamente a favor da continuidade do movimento gráfico e da direção impressa nos candles.
-   - PULLBACK EM TENDÊNCIA (LTA / LTB / ZONAS INTERNES): Acompanhe o preço rompendo microzonas ou linhas inclinadas e realizando o teste de retorno. O sinal ocorre quando a vela toca a região recém-rompida, deixa pavio de rejeição e retoma o movimento da tendência principal.
+   - PULLBACK EM TENDÊNCIA (LTA / LTB / ZONAS INTERNAS): Acompanhe o preço rompendo microzonas ou linhas inclinadas e realizando o teste de retorno. O sinal ocorre quando a vela toca a região recém-rompida, deixa pavio de rejeição e retoma o movimento da tendência principal.
 
 3. MATRIZ DE PÓS-REVERSÃO E VIRADA DE MERCADO:
    - CONTINUIDADE PÓS-REVERSÃO: Identifique o momento exato em que o mercado encerra um ciclo (ex: falha de topo/fundo duplo ou quebra de estrutura CHOCH) e inicia uma nova tendência de Alta ou de Baixa. Opere o fluxo de continuidade e o preenchimento de pavios imediatamente após a confirmação dessa reversão macro, surfando o início do novo movimento de força dos candles.
@@ -95,8 +95,8 @@ Seja frio, preciso e direto. Velocidade e precisão salvam bancas.
 """
 
 if lista_de_chaves:
-    # Seleciona a primeira chave válida da contingência
-    chave_ativa = lista_de_chaves
+    # Seleciona a primeira chave válida da lista de contingência
+    chave_ativa = lista_de_chaves[0]
     
     # Inicializa o cliente oficial da nova SDK do Google GenAI
     client = genai.Client(api_key=chave_ativa)
