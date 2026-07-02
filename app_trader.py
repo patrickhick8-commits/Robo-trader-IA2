@@ -44,7 +44,7 @@ Busque de forma ativa por confluências avançadas de Price Action em Suporte, R
 
 3. MATRIZ DE TENDÊNCIA (ALTA OU BAIXA) E REVERSÃO:
    - RETRAÇÃO EM TENDÊNCIA / LTA / LTB: Identifique toques em canais ou linhas de tendência inclinadas onde o preço deixa pavios longos de rejeição, operando a retração a favor do canal.
-   - CONTINUIDADE PÓS-REVERSÃO MACRO: Identifique o momento exato em que o mercado encerra um ciclo (ex: falha de topo/fundo duplo ou quebra de estrutura CHOCH) e inicia uma nova tendência de Alta ou de Baixa. Opere o fluxo de continuidade e o preenchimento de pavios imediatamente após a confirmação dessa reversão macro, surfando o início do novo movimento de força dos candles.
+   - CONTINUIDADE PÓS-REVERSÃO MACRO: Identifique o momento exato em que o mercado encerra um ciclo (ex: falha de topo/fundo duplo ou quebra de estrutura CHOCH) e inicia uma nova tendência de Alta ou de Baixa. Opere o fluxo de continuidade e o preenchimento de pavios imediatamente após a confirmation dessa reversão macro, surfando o início do novo movimento de força dos candles.
 
 [PASSO 4: FILTROS ANTI-RUÍDO E MANIPULAÇÃO SUAVIZADOS]
 Não seja excessivamente rígido ao filtrar o gráfico. Só aborte a operação em casos extremos de mercado totalmente parado:
@@ -71,7 +71,7 @@ Defina a recomendação de capital com base na taxa calculada de forma matemáti
 
 Retorne o diagnóstico estruturado exatamente neste formato markdown limpo e destacado:
 
-🎯 PORCENTAGEM DE ACERTO DA ENTRADA: [Ex: 84% ou 93% - Dentro do padrão calibrado. Se for Abortada, escreva '0% - FILTRO ATIVADO'] (Escreva destacado e em tamanho grande)
+🎯 PORCENTAGEM DE ACERTO DA ENTRADA: [Apenas valores reais baseados nos filtros. Se for Abortada, escreva '0% - FILTRO ATIVADO'] (Escreva destacado e em tamanho grande)
 
 ⏰ HORÁRIO DO CLIQUE (ENTRADA): [HH:MM:00 exato projetado entre 2 a 5 minutos para o futuro]
 ⏳ TEMPO DE EXPIRAÇÃO: 1 Minuto (Para fechar na mesma vela do clique)
@@ -97,7 +97,7 @@ Seja frio, preciso e direto. Velocidade e precisão salvam bancas.
 """
 
 if lista_de_chaves:
-    # Acessa a primeira chave string da lista
+    # Acessa a primeira string de chave contida na lista
     chave_ativa = lista_de_chaves[0]
     client = genai.Client(api_key=chave_ativa)
     
