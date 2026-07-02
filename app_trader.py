@@ -86,8 +86,8 @@ Retorne o diagnóstico estruturado exatamente neste formato markdown limpo e des
 
 🔍 DETALHAMENTO ANATÔMICO, ESTRUTURAL E TÉCNICO (OPORTUNIDADES IDENTIFICADAS):
 - Ambiente Identificado: [MERCADO ABERTO ou OTC]
-- Diagnóstico de Continuidade (Cor, Impulso e Corpo): [Descreva a sequência de cores das velas, o tamanho anatômico do corpo e o nível de impulso institucional identificado]
-- Análise de Pavios e Pressão de Rejeição: [Explique como o comportamento dos pavios recentes provou a ausência de defesa contrária no fluxo ou o extremo respeito da lateralidade]
+- Diagnóstico do Fluxo de Continuidade (Cor, Impulso e Corpo): [Descreva a sequência de cores das velas, o tamanho anatômico do corpo e o nível de impulso institucional identificado]
+- Análise de Pavios e Pressão de Rejeição: [Explique como o comportamento dos pavios recentes confirmou a ausência de defesa contrária no fluxo ou o extremo respeito da lateralidade]
 - Mapeamento de Zonas Horizontais (S/R) e Inclinadas (LTA/LTB): [Descreva as microzonas ou suportes/resistências laterais identificados na movimentação dos candles]
 - Posicionamento da Média Móvel (EMA 9): [Descreva a posição do preço acima ou abaixo da EMA 9 apenas como ponto dinâmico de referência]
 - Avaliação de Ruído e Volatilidade: [Explique por que o cenário foi considerado aceitável para clique com filtros moderados]
@@ -97,7 +97,8 @@ Seja frio, preciso e direto. Velocidade e precisão salvam bancas.
 """
 
 if lista_de_chaves:
-    chave_ativa = lista_de_chaves
+    # Acessa a primeira chave string da lista
+    chave_ativa = lista_de_chaves[0]
     client = genai.Client(api_key=chave_ativa)
     
     uploaded_file = st.file_uploader(
