@@ -42,7 +42,7 @@ Busque por confluências de Price Action em Suporte, Resistência (S/R horizonta
    - RETRAÇÃO PELOS PAVIOS: Se as velas atuais estiverem demonstrando rejeição visual através de pavios ao tocar barreiras horizontais ou inclinadas consolidadas, valide a entrada.
 
 3. MATRIZ DE PÓS-REVERSÃO E VIRADA DE MERCADO:
-   - CONTINUIDADE PÓS-REVERSÃO MACRO: Identifique falhas estruturais (como topos/fundos duplos ou quebras de estrutura CHOCH). Assim que o mercado reverter e confirmar o primeiro candle sólido na nova direção, opere o fluxo de continuidade.
+   - CONTINUIDADE PÓS-REVERSÃO MACRO: Identifique falhas estruturais (como topos/fundos duplos ou quebra de estrutura CHOCH). Assim que o mercado reverter e confirmar o primeiro candle sólido na nova direção, opere o fluxo de continuidade.
 
 [PASSO 4: PROTOCOLO DE FILTRAGEM DE RUÍDO (NÍVEL: MÉDIO PARA ALTO)]
 Aplique uma barreira rigorosa e equilibrada contra manipulações ordinárias, abortando a operação em cenários de alta instabilidade:
@@ -119,7 +119,8 @@ if "imagem_grafico" in st.session_state:
             st.error("ERRO: Nenhuma chave foi preenchida na barra lateral esquerda!")
         else:
             with st.spinner("IA aplicando Filtros e Verificação Técnica Avançada..."):
-                chave_operacional = lista_de_chaves
+                # Correção Absoluta: Extrai o primeiro texto puro (string) de dentro da lista criada no topo do app
+                chave_operacional = lista_de_chaves.copy().pop(0)
                 resposta_final = executar_chamada_gemini(chave_operacional, st.session_state["imagem_grafico"], PROMPT_TRADER)
                 
             if "ERRO_GERADO:" in resposta_final:
