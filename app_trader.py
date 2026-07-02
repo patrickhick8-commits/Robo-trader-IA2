@@ -48,7 +48,7 @@ Busque de forma ativa por confluências avançadas de Price Action em Suporte, R
 Não seja excessivamente rígido ao filtrar o gráfico. Só aborte a operação em casos extremos de mercado totalmente parado:
 - FILTRO ANTI-XADREZ: Aborte apenas se houver uma alternância perfeita e sem direção de cores por mais de 8 velas seguidas. Pequenas oscilações normais intercaladas devem ser operadas.
 - FILTRO DE MICRO-VELAS: Aborte apenas se houver uma sequência longa de Dojis legítimos (linhas horizontais finas). Velas pequenas com corpos mínimos e pavios curtos ainda são elegíveis para operação.
-- EM OTC: Permita operações de retração de pavios e fluxo de continuidade se as regiões estiverem bem marcadas, aproveitando o fluxo comprador/vendedor para preenchimento de zonas.
+- EM OTC: Permita operações de retração de pavios e fluxo de continuidade se as regiões estiverem bem marquem, aproveitando o fluxo comprador/vendedor para preenchimento de zonas.
 
 [PASSO 5: SISTEMA DE CALIBRAGEM DE ASSERTIVIDADE REALISTA]
 - Avalie os riscos de forma equilibrada. Quanto mais fatores confluírem juntos (ex: Impulso de Cor + Vela de Corpo Cheio + Ausência de Pavio contrário + EMA 9 confirmando), maior deve ser a taxa de acerto.
@@ -109,7 +109,6 @@ if uploaded_file is not None:
     )
 
     if st.button("🚀 EXECUTAR ANÁLISE SUPREMA MATRICIAL"):
-        # Extrai e limpa a lista de chaves diretamente na execução
         lista_chaves = [c.strip() for c in chaves_input.split(";") if c.strip()]
         
         if not lista_chaves:
@@ -117,8 +116,9 @@ if uploaded_file is not None:
         else:
             with st.spinner("IA escaneando padrões e buscando oportunidades..."):
                 try:
-                    # Captura a primeira chave estável de forma direta
-                    chave_final = lista_chaves[0]
-                    
-                    # Inicialização e chamada unificada direto na árvore principal
+                    # Correção absoluta: Pega o primeiro item de forma limpa e à prova de quebras
+                    chave_final = str(lista_chaves[0])
                     client = genai.Client(api_key=chave_final)
+                    
+                    response = client.models.generate_content(
+                        model="gemini-2.5-flash", 
