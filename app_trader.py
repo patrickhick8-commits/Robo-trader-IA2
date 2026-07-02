@@ -36,7 +36,7 @@ Busque de forma ativa por confluências avançadas de Price Action em Suporte, R
 1. MATRIZ DE CONTINUIDADE DE FLUXO (IMPULSO E ANATOMIA DO CANDLE):
    - FLUXO POR COR E IMPULSO: Monitore blocos dominantes de velas de mesma cor que demonstrem aceleração rápida e impulso direcional.
    - TAMANHO DO CORPO (VOLUME INSTITUCIONAL): Avalie a expansão anatômica do corpo do candle recente. Corpos grandes, sólidos e crescentes (como Marubozu ou velas de força) confirmam a urgência e a entrada de volume financeiro pesado a favor do movimento.
-   - COMPORTAMENTO OPERACIONAL DE PAVIOS NO FLUXO: Se o candle de força apresentar pavios mínimos ou inexistentes na direção do movimento (pavio superior pequeno na alta ou pavio inferior pequeno na baixa), isso confirma a ausência de rejeição/absorção contrária. Opere a favor da continuidade do fluxo para o preenchimento da região.
+   - COMPORTAMENTO OPERACIONAL DE PAVIOS NO FLUXO: Se o candle de força apresentar pavios mínimos ou inexistentes na direção do movimento (pavio superior pequeno na alta ou pavio inferior pequeno na baixa), isso confirma a ausência de recuperação/absorção contrária. Opere a favor da continuidade do fluxo para o preenchimento da região.
 
 2. MATRIZ DE LATERALIDADE / CONSOLIDAÇÃO HORIZONTAL:
    - REVERSÃO E RETRAÇÃO EM SUPORTE/RESISTÊNCIA: Opere o extremo respeito de zonas horizontais nítidas de Suporte (Fundo) e Resistência (Topo). Quando o preço testar os limites com velas de perda de pressão e deixar pavios longos de rejeição, valide o clique de retração ou reversão para a mesma vela.
@@ -50,7 +50,7 @@ Busque de forma ativa por confluências avançadas de Price Action em Suporte, R
 Não seja excessivamente rígido ao filtrar o gráfico. Só aborte a operação em casos extremos de mercado totalmente parado:
 - FILTRO ANTI-XADREZ: Aborte apenas se houver uma alternância perfeita e sem direção de cores por mais de 8 velas seguidas. Pequenas oscilações normais intercaladas devem ser operadas.
 - FILTRO DE MICRO-VELAS: Aborte apenas se houver uma sequência longa de Dojis legítimos (linhas horizontais finas). Velas pequenas com corpos mínimos e pavios curtos ainda são elegíveis para operação.
-- EM OTC: Permita operações de retração de pavios e fluxo de continuidade se as regiões estiverem bem marcadas, aproveitando o impulso comprador/vendedor para preenchimento de zonas.
+- EM OTC: Permita operações de retração de pavios e fluxo de continuidade se as regiões estiverem bem marcadas, aproveitando o fluxo comprador/vendedor para preenchimento de zonas.
 
 [PASSO 5: SISTEMA DE CALIBRAGEM DE ASSERTIVIDADE REALISTA]
 - Avalie os riscos de forma equilibrada. Quanto mais fatores confluírem juntos (ex: Impulso de Cor + Vela de Corpo Cheio + Ausência de Pavio contrário + EMA 9 confirmando), maior deve ser a taxa de acerto.
@@ -86,8 +86,8 @@ Retorne o diagnóstico estruturado exatamente neste formato markdown limpo e des
 
 🔍 DETALHAMENTO ANATÔMICO, ESTRUTURAL E TÉCNICO (OPORTUNIDADES IDENTIFICADAS):
 - Ambiente Identificado: [MERCADO ABERTO ou OTC]
-- Diagnóstico de Continuidade (Cor, Impulso e Corpo): [Descreva a sequência de cores das velas, o tamanho anatômico do corpo e o nível de impulso institucional identificado]
-- Análise de Pavios e Pressão de Rejeição: [Explique como o comportamento dos pavios recentes provou a ausência de defesa contrária no fluxo ou o extremo respeito da lateralidade]
+- Diagnóstico do Fluxo de Continuidade (Cor, Impulso e Corpo): [Descreva a sequência de cores das velas, o tamanho anatômico do corpo e o nível de impulso institucional identificado]
+- Análise de Pavios e Pressão de Rejeição: [Explique como o comportamento dos pavios recentes confirmou a ausência de defesa contrária no fluxo ou o extremo respeito da lateralidade]
 - Mapeamento de Zonas Horizontais (S/R) e Inclinadas (LTA/LTB): [Descreva as microzonas ou suportes/resistências laterais identificados na movimentação dos candles]
 - Posicionamento da Média Móvel (EMA 9): [Descreva a posição do preço acima ou abaixo da EMA 9 apenas como ponto dinâmico de referência]
 - Avaliação de Ruído e Volatilidade: [Explique por que o cenário foi considerado aceitável para clique com filtros moderados]
@@ -96,23 +96,26 @@ Retorne o diagnóstico estruturado exatamente neste formato markdown limpo e des
 Seja frio, preciso e direto. Velocidade e precisão salvam bancas.
 """
 
-if lista_de_chaves:
-    chave_ativa = lista_de_chaves
-    client = genai.Client(api_key=chave_ativa)
-    
-    uploaded_file = st.file_uploader(
-        "Arraste o print completo do gráfico M1 (Obrigatório conter o Relógio da Plataforma visível, Velas, RSI e Volume):", 
-        type=["png", "jpg", "jpeg"]
-    )
+def executar_chamada_gemini(chave_api, imagem_objeto, prompt_texto):
+    try:
+        client_objeto = genai.Client(api_key=chave_api)
+        chamada = client_objeto.models.generate_content(
+            model="gemini-2.5-flash", contents=[imagem_objeto, prompt_texto]
+        )
+        return chamada.text
+    except Exception as erro_objeto:
+        return f"ERRO_GERADO: {str(erro_objeto)}"
 
-    if uploaded_file is not None:
-        image = Image.open(uploaded_file)
-        st.image(image, caption="Gráfico M1 Carregado para Análise de Confluência Suprema", use_container_width=True)
-        
-        if st.button("🚀 EXECUTAR ANÁLISE SUPREMA MATRICIAL"):
-            with st.spinner("IA escaneando padrões e buscando oportunidades..."):
-                try:
-                    response = client.models.generate_content(
-                        model='gemini-2.5-flash',
-                        contents=[image, PROMPT_TRADER]
-                    )
+# --- AREA OPERACIONAL DO SITE ---
+
+uploaded_file = st.file_uploader(
+    "Arraste o print completo do gráfico M1 (Obrigatório conter o Relógio da Plataforma visível, Velas, RSI e Volume):", 
+    type=["png", "jpg", "jpeg"]
+)
+
+if uploaded_file is not None:
+    image = Image.open(uploaded_file)
+    st.image(image, caption="Gráfico M1 Carregado para Análise de Confluência Suprema", use_container_width=True)
+    
+    if st.button("🚀 EXECUTAR ANÁLISE SUPREMA MATRICIAL"):
+        if not lista_de_chaves:
