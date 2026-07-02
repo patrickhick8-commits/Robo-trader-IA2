@@ -45,7 +45,7 @@ Busque de forma ativa por confluências avançadas de Price Action em Suporte, R
    - CONTINUIDADE PÓS-REVERSÃO MACRO: Identifique o momento exato em que o mercado encerra um ciclo (ex: falha de topo/fundo duplo ou quebra de estrutura CHOCH) e inicia uma nova tendência de Alta ou de Baixa. Opere o fluxo de continuidade e o preenchimento de pavios imediatamente após a confirmação dessa reversão macro, surfando o início do novo movimento de força dos candles.
 
 [PASSO 4: FILTROS ANTI-RUÍDO E MANIPULAÇÃO SUAVIZADOS]
-Não seja excessivamente rígido ao filtrar o gráfico. Só aborte a operação em casos extremos de mercado totalmente parado:
+Não seja excessivamente rígido ao filtrar o gráfico. Só aborte a operation em casos extremos de mercado totalmente parado:
 - FILTRO ANTI-XADREZ: Aborte apenas se houver uma alternância perfeita e sem direção de cores por mais de 8 velas seguidas. Pequenas oscilações normais intercaladas devem ser operadas.
 - FILTRO DE MICRO-VELAS: Aborte apenas se houver uma sequência longa de Dojis legítimos (linhas horizontais finas). Velas pequenas com corpos mínimos e pavios curtos ainda são elegíveis para operação.
 - EM OTC: Permita operações de retração de pavios e fluxo de continuidade se as regiões estiverem bem marcadas, aproveitando o fluxo comprador/vendedor para preenchimento de zonas.
@@ -117,11 +117,10 @@ if uploaded_file is not None:
     st.image(image, caption="Gráfico M1 Carregado", use_container_width=True)
 
     if st.button("🚀 EXECUTAR ANÁLISE SUPREMA MATRICIAL"):
-        
-        # Limpa o texto eliminando espaços vazios
         texto_limpo = chaves_input.replace(" ", "")
         
         if not texto_limpo:
             st.error("ERRO: Preencha sua Gemini API Key na barra lateral esquerda antes de rodar!")
         else:
-            # Pega estritamente o texto antes do primeiro ponto e vírgula de forma 100% linear (sem usar colchetes)
+            chave_operacional = texto_limpo.split(";")[0]
+            with st.spinner("IA escaneando padrões..."):
