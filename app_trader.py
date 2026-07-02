@@ -94,7 +94,7 @@ Retorne o diagnóstico estruturado exatamente neste formato markdown limpo e des
 Seja frio, preciso e direto. Velocidade e precisão salvam bancas.
 """
 
-# --- AREA OPERACIONAL DO SITE (Fica sempre visível para evitar travamentos) ---
+# --- AREA OPERACIONAL DO SITE ---
 
 uploaded_file = st.file_uploader(
     "Arraste o print completo do gráfico M1:", type=["png", "jpg", "jpeg"]
@@ -104,19 +104,19 @@ if uploaded_file is not None:
     image = Image.open(uploaded_file)
     st.image(image, caption="Gráfico M1 Carregado", use_container_width=True)
 
-    # O botão de disparo centralizado
-    botão_clicado = st.button("🚀 EXECUTAR ANÁLISE SUPREMA MATRICIAL")
-
-    if botão_clicado:
-        # Extrai as chaves limpando espaços e pontos e vírgulas
-        lista_chaves = [c.strip() for c in chaves_input.split(";") if c.strip()]
+    if st.button("🚀 EXECUTAR ANÁLISE SUPREMA MATRICIAL"):
         
-        if not lista_chaves:
+        # Limpa e formata o texto de entrada sem usar colchetes estruturais
+        texto_limpo = chaves_input.replace(" ", "")
+        
+        if not texto_limpo:
             st.error("ERRO: Preencha sua Gemini API Key na barra lateral esquerda antes de rodar!")
         else:
+            # Extrai a primeira chave de forma linear
+            chave_final = texto_limpo.split(";")[0]
+            
             with st.spinner("IA escaneando padrões e buscando oportunidades..."):
                 try:
-                    # Captura a primeira chave estável de forma direta e segura
-                    chave_final = lista_chaves[0]
-                    
-                    # Inicialização direta da API
+                    client = genai.Client(api_key=chave_final)
+                    response = client.models.generate_content(model="gemini-2.5-flash", contents=[image, PROMPT_TRADER])
+                    st.success("Análise Concluída com Sucesso!")
