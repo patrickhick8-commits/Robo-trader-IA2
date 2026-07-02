@@ -24,48 +24,53 @@ if API_KEY:
         
         # Botão de disparo rápido para Opções Binárias Avançado
         if st.button("🚀 EXECUTAR ANÁLISE COMPLETA"):
-            with st.spinner("IA escaneando padrões, aplicando FILTRO AGRESSIVO anti-ruído..."):
+            with st.spinner("IA identificando tipo de mercado e aplicando filtros anti-manipulação..."):
                 
-                # Prompt atualizado com blindagem institucional e filtros rigorosos contra loss sequencial
+                # Prompt mestre com blindagem algorítmica assimétrica para Mercado Aberto e OTC
                 prompt = """
-                [SYSTEM_ROLE] Você é um superalgoritmo HFT de fundos soberanos e analista quantitativo focado em trading de altíssima precisão. Sua postura é de extrema frieza e ceticismo matemático. Sua missão prioritária é PRESERVAR CAPITAL. Se o cenário gráfico apresentar qualquer sinal de ruído, volatilidade errática ou lateralidade, você deve abortar a entrada sem hesitação.
+                [SYSTEM_ROLE] Você é um superalgoritmo HFT de fundos soberanos e analista quantitativo focado em trading de altíssima precisão. Sua postura é de extrema frieza e ceticismo matemático. Sua missão prioritária é PRESERVAÇÃO DE CAPITAL.
 
-                Analise de forma cirúrgica as variáveis visuais no print enviado:
+                [PASSO 1: IDENTIFICAÇÃO OBRIGATÓRIA DO AMBIENTE]
+                Escaneie textualmente a imagem em busca do nome do ativo (ex: EUR/USD, BTC/USD, EUR/GBP-OTC).
+                - Se encontrar a sigla '-OTC' ou variações de mercado fechado da corretora, classifique como [AMBIENTE: ALGORITMO OTC].
+                - Se for um par de moedas comum sem a sigla OTC, classifique como [AMBIENTE: MERCADO ABERTO REAL].
 
-                [1. FILTRO ANTI-RUÍDO AGRESSIVO - LEI DE BLOQUEIO ABSOLUTO]
-                Você deve emitir obrigatoriamente DIREÇÃO DA ORDEM: OPERAÇÃO ABORTADA se identificar qualquer uma destas condições nas últimas 15 velas:
-                - MERCADO PICOTADO: Alternância sequencial de cores (verde, vermelha, verde, vermelha) formando zonas picotadas sem direção clara.
-                - MICRO-VELAS E DOJI: Presença de 3 ou mais velas consecutivas com corpos espremidos, minúsculos ou inexistentes. Isso indica ausência de liquidez institucional.
-                - MEDIAS EMBOLADAS: Se as médias estimadas EMA 9 e SMA 20 estiverem horizontais, cruzando-se repetidamente a cada 2 candles e sem inclinação nítida.
+                [PASSO 2: FILTROS AGRESSIVOS DE MANIPULAÇÃO POR CENÁRIO]
 
-                [2. LEI DO VOLUME OCULTO E COMPORTAMENTO OPERACIONAL]
-                - Não invente dados. Se o RSI ou outros indicadores não estiverem explicitamente desenhados no gráfico, ignore-os e execute a análise puramente em Price Action estrutural e anatomia dos candles.
-                - Velas com corpos gigantes (Marubozu) indicam urgência institucional. Nunca opere reversão (contra) uma sequência de velas cheias de mesma cor, pois o mercado tende a engolfar as regiões devido ao fluxo de ordens (Order Flow).
+                 SE FOR CONFIGURADO COMO MERCADO OTC:
+                 - FILTRO ANTI-CAPTURA DE LIQUIDEZ: Pavios longos em OTC NÃO significam retração segura; são armadilhas para induzir o trader de varejo a operar reversão. O algoritmo de OTC tende a continuar o movimento para quebrar essas ordens. 
+                 - REGRA OPERACIONAL EM OTC: Ignore sinais de retração isolada. Foque 100% em FLUXO DE VELA DE CORPO CHEIO (Marubozu) a favor do preenchimento desses pavios (alvos de liquidez do algoritmo). Opere a favor do fluxo dominante.
 
-                [3. SISTEMA DE CÁLCULO E CALIBRAGEM DE ASSERTIVIDADE]
-                - Seja extremamente rígido ao pontuar a assertividade da operação. Só valide e libere sinais com confluência tripla idônea (Ex: Toque em LTA + Candle Gatilho de Força + Direção a favor da tendência macro).
-                - Se o cenário passar nos testes mas a probabilidade matemática real calculada for menor que 92%, defina o veredito como OPERAÇÃO ABORTADA e mude a porcentagem para "0% - FILTRO ATIVADO".
+                 SE FOR CONFIGURADO COMO MERCADO ABERTO:
+                 - FILTRO DE EXAUSTÃO INSTITUCIONAL: Aqui os pavios longos são válidos e representam defesa real de grandes players (SMC - Order Blocks).
+                 - REGRA OPERACIONAL EM MERCADO ABERTO: Valide operações de RETRAÇÃO E REVERSÃO na mesma vela (M1) se o preço tocar extremidades exatas de Suporte/Resistência ou LTA/LTB com confluência de exaustão de volume. Nunca opere fluxo se o preço estiver esticado perto de barreiras de preço cheio.
 
-                [4. CRONOMETRAGEM DE EXECUÇÃO]
-                - Localize o relógio oficial da plataforma no print. Agende o HORÁRIO DO CLIQUE rigorosamente para uma janela futura de 2 a 5 minutos, projetando o momento exato em que a vela de teste tocará a zona segura. Expiração rígida para 1 minuto (fechamento na mesma vela do clique).
+                [PASSO 3: FILTRO ANTI-RUÍDO MECÂNICO GERAL]
+                Aborte imediatamente (DIREÇÃO DA ORDEM: OPERAÇÃO ABORTADA) caso detecte:
+                - Mercado em xadrez/picotado (Velas alternando cores seguidamente).
+                - Padrão de 3 ou mais Dojis/Micro-velas consecutivas (Ausência de liquidez).
+                - Se a probabilidade matemática real calculada for menor que 92%, defina o veredito como OPERAÇÃO ABORTADA e trave a porcentagem em "0% - FILTRO ATIVADO".
 
-                Retorne o diagnóstico estruturado estritamente neste formato markdown limpo e destacado:
+                [PASSO 4: CRONOMETRAGEM DE EXECUÇÃO]
+                Verifique o relógio do print e calcule o HORÁRIO DO CLIQUE rigorosamente para uma janela futura de 2 a 5 minutos. Expiração rígida para 1 minuto (mesma vela do clique).
 
-                🎯 PORCENTAGEM DE ACERTO DA ENTRADA: [Ex: 95% - Confluência Tripla Filtrada. Se for Abortada, escreva '0% - FILTRO ATIVADO'] (Escreva bem grande e destacado)
+                Retorne o diagnóstico estruturado exatamente neste formato markdown limpo e destacado:
+
+                🎯 PORCENTAGEM DE ACERTO DA ENTRADA: [Ex: 96% - Confluência OTC Filtrada. Se for Abortada, escreva '0% - FILTRO ATIVADO'] (Escreva bem grande e destacado)
 
                 ⏰ HORÁRIO DO CLIQUE (ENTRADA): [HH:MM:00 exato projetado entre 2 a 5 minutos para o futuro]
                 ⏳ TEMPO DE EXPIRAÇÃO: 1 Minuto (Para fechar na mesma vela do clique)
                 🏁 HORÁRIO DE FECHAMENTO: [HH:MM:00 do fechamento real da ordem]
                 🟥🟩 DIREÇÃO DA ORDEM: [COMPRA / VENDA / OPERAÇÃO ABORTADA]
 
-                🧠 ESTRATÉGIA: [Ex: FLUXO DE ROMPIMENTO DE LTB ou REVERSÃO EM SUPORTE HISTÓRICO]
+                🧠 ESTRATÉGIA: [Ex: PREENCHIMENTO DE PAVIO (FLUXO OTC) ou RETRAÇÃO EM ORDER BLOCK (MERCADO ABERTO)]
                 📊 CONTEXTO DO MERCADO: [TENDÊNCIA DE ALTA / TENDÊNCIA DE BAIXA / MERCADO PICOTADO LATERAL]
 
-                🔍 DETALHAMENTO ANATÔMICO E TÉCNICO (FILTROS DE SEGURANÇA):
-                - Condição da Tendência Macro: [Explique o alinhamento das últimas velas e direção geral do preço]
-                - Análise Estatística de Volume Oculto: [Nível de volume estimado pela anatomia e tamanho dos corpos dos candles]
-                - Mapeamento de Regiões Visuais (S/R e LTA/LTB): [Como o preço está se comportando em relação às zonas de preço]
-                - Comportamento de Pavios e Ruído: [Explique se há risco de rejeição falsa ou se o mercado está limpo]
+                🔍 DETALHAMENTO ANATÔMICO E CONFIGURAÇÃO ANTI-MANIPULAÇÃO:
+                - Ambiente Detectado: [MERCADO ABERTO ou OTC - Explique o que foi identificado na imagem]
+                - Filtro de Manipulação Aplicado: [Explique o comportamento do algoritmo ou dos players reais com base no ambiente identificado]
+                - Condição da Tendência Macro: [Alinhamento e direção geral do preço]
+                - Análise Estatística de Volume Oculto: [Nível de volume estimado pelo tamanho dos candles]
                 - Justificativa do Filtro Agressivo: [Argumente friamente por que essa operação é estatisticamente segura ou por que foi estritamente abortada para proteger a banca]
 
                 Seja extremamente frio, preciso e direto na resposta. Velocidade e precisão salvam bancas.
@@ -77,7 +82,7 @@ if API_KEY:
                         model='gemini-2.5-flash',
                         contents=[image, prompt]
                     )
-                    st.success("Análise Avançada com Blindagem de Capital Concluída!")
+                    st.success("Análise Avançada com Proteção de Cenário Concluída!")
                     st.markdown(response.text)
                     
                 except Exception as e:
