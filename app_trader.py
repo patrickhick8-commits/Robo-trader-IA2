@@ -3,87 +3,84 @@ from google import genai
 from PIL import Image
 
 # 1. Configuração da Página do Site Separado
-st.set_page_config(page_title="Agente IA Advanced - Matriz Suprema", page_icon="🤖", layout="centered")
+st.set_page_config(page_title="Agente IA Advanced - Volume Oculto", page_icon="🤖", layout="centered")
 
-st.title("🤖 Agente IA Trader Pro: Matriz Suprema e Projeção Temporal")
-st.write("Fusão Total: Projeção de Tempo (Mesma Vela M1), SMC, Volume Oculto, Fluxo de Cores, Médias, RSI e S/R / LTA / LTB.")
+st.title("🤖 Agente IA Trader Pro: Volume por Comportamento das Velas")
+st.write("Análise de Velas, Tendência, RSI, Volume Implícito (sem indicador na tela) e Probabilidade em M1.")
 
-st.sidebar.markdown("### 🔑 Gerenciador de Chaves de Contingência")
-st.sidebar.info("Cole suas chaves protegidas separando-as por ponto e vírgula (;). Exemplo: chave1; chave2; chave3")
+# 2. Configuração da Chave da IA
+API_KEY = st.sidebar.text_input("Cole sua Gemini API Key aqui:", type="password")
 
-chaves_input = st.sidebar.text_input("Cole suas Gemini API Keys aqui:", type="password")
-
-# Transforma o texto em uma lista de chaves limpas
-lista_de_chaves = [chave.strip() for chave in chaves_input.split(";") if chave.strip()]
-
-if lista_de_chaves:
-    # Seleciona a primeira chave válida da contingência
-    chave_ativa = lista_de_chaves[0]
-    
-    # Inicializa o cliente oficial da nova SDK do Google GenAI
-    client = genai.Client(api_key=chave_ativa)
+if API_KEY:
+    # Inicializa o cliente com a nova biblioteca oficial do Google
+    client = genai.Client(api_key=API_KEY)
 
     # 3. Campo de Upload do Print
-    uploaded_file = st.file_uploader("Arraste o print completo do gráfico M1 (Obrigatório conter o Relógio da Plataforma visível, Velas, RSI e Volume):", type=["png", "jpg", "jpeg"])
+    uploaded_file = st.file_uploader("Arraste o print do gráfico M1 (Velas, RSI e Relógio visíveis):", type=["png", "jpg", "jpeg"])
 
     if uploaded_file is not None:
         image = Image.open(uploaded_file)
-        st.image(image, caption="Gráfico M1 Carregado para Análise de Confluência Suprema", use_container_width=True)
+        st.image(image, caption="Gráfico M1 Carregado para Análise", use_container_width=True)
         
-        if st.button("🚀 EXECUTAR ANÁLISE SUPREMA MATRICIAL"):
-            with st.spinner("IA aplicando Filtros Anti-Ruído e Verificação de Tendência..."):
+        # Botão de disparo rápido para Opções Binárias Avançado
+        if st.button("🚀 EXECUTAR ANÁLISE COMPLETA"):
+            with st.spinner("IA escaneando padrões, aplicando FILTRO AGRESSIVO anti-ruído..."):
                 
+                # Prompt atualizado com blindagem institucional e filtros rigorosos contra loss sequencial
                 prompt = """
-                [SYSTEM_ROLE] Você é um superalgoritmo HFT (High-Frequency Trading) e analista quantitativo focado em trading de precisão matemática para Opções Binárias (M1). Sua postura é extremamente cética. Sua prioridade número um é a PRESERVAÇÃO DE CAPITAL. Se o cenário apresentar ruído ou lateralidade, você DEVE abortar.
+                [SYSTEM_ROLE] Você é um superalgoritmo HFT de fundos soberanos e analista quantitativo focado em trading de altíssima precisão. Sua postura é de extrema frieza e ceticismo matemático. Sua missão prioritária é PRESERVAR CAPITAL. Se o cenário gráfico apresentar qualquer sinal de ruído, volatilidade errática ou lateralidade, você deve abortar a entrada sem hesitação.
 
-                Analise as seguintes camadas visuais no print enviado de forma estrita:
+                Analise de forma cirúrgica as variáveis visuais no print enviado:
 
-                [1. FILTRO DE TENDÊNCIA E LATERALIDADE - CRÍTICO ANTI-LOSS]
-                - Se o gráfico apresentar velas pequenas (Dojis) alternando cores consecutivamente (verde, vermelha, verde, vermelha), o mercado está sem direção (lateralizado). Você deve emitir obrigatoriamente: DIREÇÃO EXATA DA ORDEM: OPERAÇÃO ABORTADA.
-                - Identifique a tendência macro visual das velas: não opere contra a tendência predominante dos últimos 20 candles.
+                [1. FILTRO ANTI-RUÍDO AGRESSIVO - LEI DE BLOQUEIO ABSOLUTO]
+                Você deve emitir obrigatoriamente DIREÇÃO DA ORDEM: OPERAÇÃO ABORTADA se identificar qualquer uma destas condições nas últimas 15 velas:
+                - MERCADO PICOTADO: Alternância sequencial de cores (verde, vermelha, verde, vermelha) formando zonas picotadas sem direção clara.
+                - MICRO-VELAS E DOJI: Presença de 3 ou mais velas consecutivas com corpos espremidos, minúsculos ou inexistentes. Isso indica ausência de liquidez institucional.
+                - MEDIAS EMBOLADAS: Se as médias estimadas EMA 9 e SMA 20 estiverem horizontais, cruzando-se repetidamente a cada 2 candles e sem inclinação nítida.
 
-                [2. REGRA DE AMBIENTE: ABERTO VS OTC]
-                - Localize o nome do ativo. Se contiver 'OTC', os pavios longos são armadilhas (absorção falsa do algoritmo). Foque apenas no preenchimento do corpo da vela a favor do fluxo atual.
-                - Se for Mercado Aberto, os pavios longos em zonas de suporte/resistência são válidos como rejeição institucional para operações de retração.
+                [2. LEI DO VOLUME OCULTO E COMPORTAMENTO OPERACIONAL]
+                - Não invente dados. Se o RSI ou outros indicadores não estiverem explicitamente desenhados no gráfico, ignore-os e execute a análise puramente em Price Action estrutural e anatomia dos candles.
+                - Velas com corpos gigantes (Marubozu) indicam urgência institucional. Nunca opere reversão (contra) uma sequência de velas cheias de mesma cor, pois o mercado tende a engolfar as regiões devido ao fluxo de ordens (Order Flow).
 
-                [3. PROJEÇÃO DE INDICADORES REALISTAS]
-                - Atenção: NÃO invente dados. Analise apenas os indicadores que estão de fato plotados na imagem (como RSI ou Médias). Se o RSI não estiver visível, desconsidere-o da pontuação e baseie-se estritamente na ação do preço (Price Action) e quebras de estrutura (SMC/BOS).
+                [3. SISTEMA DE CÁLCULO E CALIBRAGEM DE ASSERTIVIDADE]
+                - Seja extremamente rígido ao pontuar a assertividade da operação. Só valide e libere sinais com confluência tripla idônea (Ex: Toque em LTA + Candle Gatilho de Força + Direção a favor da tendência macro).
+                - Se o cenário passar nos testes mas a probabilidade matemática real calculada for menor que 92%, defina o veredito como OPERAÇÃO ABORTADA e mude a porcentagem para "0% - FILTRO ATIVADO".
 
-                [4. CRITÉRIO MATEMÁTICO DE ASSERTIVIDADE]
-                - Avalie os riscos de 0 a 100 com base em: alinhamento de tendência, volume do candle gatilho e proximidade de zonas de defesa.
-                - Se a confluência não atingir pelo menos 90% de probabilidade matemática real, defina a ordem como OPERAÇÃO ABORTADA. Não mascare resultados com taxas falsas de 92% se o gráfico estiver feio.
+                [4. CRONOMETRAGEM DE EXECUÇÃO]
+                - Localize o relógio oficial da plataforma no print. Agende o HORÁRIO DO CLIQUE rigorosamente para uma janela futura de 2 a 5 minutos, projetando o momento exato em que a vela de teste tocará a zona segura. Expiração rígida para 1 minuto (fechamento na mesma vela do clique).
 
-                [5. PROJEÇÃO TEMPORAL REGRADA]
-                - Verifique o relógio do print. Projete o horário do clique exatamente para a próxima vela limpa que tocará na região de interesse, limitando-se de 2 a 5 minutos no futuro. Exigido expiração para a mesma vela (1 minuto).
+                Retorne o diagnóstico estruturado estritamente neste formato markdown limpo e destacado:
 
-                Retorne o diagnóstico estruturado exatamente neste formato markdown limpo:
+                🎯 PORCENTAGEM DE ACERTO DA ENTRADA: [Ex: 95% - Confluência Tripla Filtrada. Se for Abortada, escreva '0% - FILTRO ATIVADO'] (Escreva bem grande e destacado)
 
-                🎯 PORCENTAGEM DE ACERTO DA ENTRADA: [Apenas valores reais baseados nos filtros. Se for Abortada, escreva '0% - FILTRO ATIVADO']
+                ⏰ HORÁRIO DO CLIQUE (ENTRADA): [HH:MM:00 exato projetado entre 2 a 5 minutos para o futuro]
+                ⏳ TEMPO DE EXPIRAÇÃO: 1 Minuto (Para fechar na mesma vela do clique)
+                🏁 HORÁRIO DE FECHAMENTO: [HH:MM:00 do fechamento real da ordem]
+                🟥🟩 DIREÇÃO DA ORDEM: [COMPRA / VENDA / OPERAÇÃO ABORTADA]
 
-                ⏰ HORÁRIO DO CLIQUE (ENTRADA): [HH:MM:00 exato projetado para o futuro]
-                ⏳ TEMPO DE EXPIRAÇÃO: 1 Minuto
-                🏁 HORÁRIO DE FECHAMENTO DA ORDEM: [HH:MM:00 do fechamento]
-                🟥🟩 DIREÇÃO EXATA DA ORDEM: [COMPRA / VENDA / OPERAÇÃO ABORTADA]
-
-                🧠 ESTRATÉGIA COMBINADA: [Ex: FLUXO DE CONTINUIDADE OTC ou RETRAÇÃO EM SUPORTE]
+                🧠 ESTRATÉGIA: [Ex: FLUXO DE ROMPIMENTO DE LTB ou REVERSÃO EM SUPORTE HISTÓRICO]
                 📊 CONTEXTO DO MERCADO: [TENDÊNCIA DE ALTA / TENDÊNCIA DE BAIXA / MERCADO PICOTADO LATERAL]
 
-                🔍 DETALHAMENTO TÉCNICO (FILTROS APLICADOS):
-                - Condição de Tendência: [Descreva o alinhamento das últimas 20 velas]
-                - Validação de Pavios e Ruído: [Explique por que o sinal é seguro ou por que foi abortado devido ao ruído]
-                - Estrutura de Mercado (SMC/SR): [Zonas reais identificadas e proximidade do preço]
-                - Justificativa da Decisão: [Seja direto e frio sobre o motivo de arriscar ou proteger o capital]
+                🔍 DETALHAMENTO ANATÔMICO E TÉCNICO (FILTROS DE SEGURANÇA):
+                - Condição da Tendência Macro: [Explique o alinhamento das últimas velas e direção geral do preço]
+                - Análise Estatística de Volume Oculto: [Nível de volume estimado pela anatomia e tamanho dos corpos dos candles]
+                - Mapeamento de Regiões Visuais (S/R e LTA/LTB): [Como o preço está se comportando em relação às zonas de preço]
+                - Comportamento de Pavios e Ruído: [Explique se há risco de rejeição falsa ou se o mercado está limpo]
+                - Justificativa do Filtro Agressivo: [Argumente friamente por que essa operação é estatisticamente segura ou por que foi estritamente abortada para proteger a banca]
+
+                Seja extremamente frio, preciso e direto na resposta. Velocidade e precisão salvam bancas.
                 """
                 
                 try:
-                    # Executa a chamada utilizando o modelo multimodal mais recente e performático para visão computacional
+                    # Executa o modelo flash com suporte a leitura avançada de imagem
                     response = client.models.generate_content(
                         model='gemini-2.5-flash',
                         contents=[image, prompt]
                     )
+                    st.success("Análise Avançada com Blindagem de Capital Concluída!")
                     st.markdown(response.text)
+                    
                 except Exception as e:
-                    st.error(f"Erro ao processar com a chave atual: {str(e)}")
-                    st.warning("Tentando chave de contingência seguinte se disponível...")
+                    st.error(f"Erro no processamento visual da IA: {e}")
 else:
-    st.warning("Insira pelo menos uma Gemini API Key válida na barra lateral para ativar o Agente.")
+    st.info("👈 Insira sua Gemini API Key na barra lateral para ativar o modo de análise avançada.")
