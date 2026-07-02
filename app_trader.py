@@ -33,7 +33,7 @@ Busque de forma ativa por confluências avançadas de Price Action em Suporte, R
 1. MATRIZ DE CONTINUIDADE DE FLUXO (IMPULSO E ANATOMIA DO CANDLE):
    - FLUXO POR COR E IMPULSO: Monitore blocos dominantes de velas de mesma cor que demonstrem aceleração rápida e impulso direcional.
    - TAMANHO DO CORPO (VOLUME INSTITUCIONAL): Avalie a expansão anatômica do corpo do candle recente. Corpos grandes, sólidos e crescentes (como Marubozu ou velas de força) confirmam a urgência e a entrada de volume financeiro pesado a favor do movimento.
-   - COMPORTAMENTO OPERACIONAL DE PAVIOS NO FLUXO: Se o candle de força apresentar pavios mínimos ou inexistentes na direção do movimento (pavio superior pequeno na alta ou pavio inferior pequeno na baixa), isso confirma a ausência de rejeição/absorção contrária. Opere a favor da continuidade do fluxo para o preenchimento da região.
+   - COMPORTAMENTO OPERACIONAL DE PAVIOS NO FLUXO: Se o candle de força apresentar pavios mínimos ou inexistentes na direção do movimento (pavio superior pequeno na alta ou pavio inferior pequeno na baixa), isso confirma a ausência de recuperação/absorção contrária. Opere a favor da continuidade do fluxo para o preenchimento da região.
 
 2. MATRIZ DE LATERALIDADE / CONSOLIDAÇÃO HORIZONTAL:
    - REVERSÃO E RETRAÇÃO EM SUPORTE/RESISTÊNCIA: Opere o extremo respeito de zonas horizontais nítidas de Suporte (Fundo) e Resistência (Topo). Quando o preço testar os limites com velas de perda de pressão e deixar pavios longos de rejeição, valide o clique de retração ou reversão para a mesma vela.
@@ -85,7 +85,7 @@ Retorne o diagnóstico estruturado exatamente neste formato markdown limpo e des
 - Ambiente Identificado: [MERCADO ABERTO ou OTC]
 - Diagnóstico do Fluxo de Continuidade (Cor, Impulso e Corpo): [Descreva a sequência de cores das velas, o tamanho anatômico do corpo e o nível de impulso institucional identificado]
 - Análise de Pavios e Pressão de Rejeição: [Explique como o comportamento dos pavios recentes confirmou a ausência de defesa contrária no fluxo ou o extremo respeito da lateralidade]
-- Mapeamento de Zonas Horizontais (S/R) e Inclinadas (LTA/LTB): [Descreva as microzonas ou supports/resistências laterais identificados na movimentação dos candles]
+- Mapeamento de Zonas Horizontais (S/R) e Inclinadas (LTA/LTB): [Descreva as microzonas ou suportes/resistências laterais identificados na movimentação dos candles]
 - Posicionamento da Média Móvel (EMA 9): [Descreva a posição do preço acima ou abaixo da EMA 9 apenas como ponto dinâmico de referência]
 - Avaliação de Ruído e Volatilidade: [Explique por que o cenário foi considerado aceitável para clique com filtros moderados]
 - Justificativa da Gestão de Lote: [Explique por que o lote sugerido se adequa perfeitamente a essa combinação de fatores]
@@ -95,23 +95,23 @@ Seja frio, preciso e direto. Velocidade e precisão salvam bancas.
 
 
 def analisar_grafico(api_key, imagem_grafico, prompt):
-    """Função isolada para evitar erros de sintaxe e indentação"""
     try:
         client = genai.Client(api_key=api_key)
         response = client.models.generate_content(
-            model="gemini-2.5-flash", contents=[imagem_grafico, prompt]
+            model="gemini-2.5-flash", 
+            contents=[imagem_grafico, prompt]
         )
         return response.text
     except Exception as erro:
         return f"ERRO_API: {str(erro)}"
 
 
-# Separa as chaves inseridas por ponto e vírgula
+# Separa e limpa as chaves fornecidas
 chaves_filtradas = [c.strip() for c in chaves_input.split(";") if c.strip()]
 
-if len(chaves_filtradas) > 0:
-    # Captura a primeira chave estável da lista
-    chave_ativa = chaves_filtradas[0]
+if chaves_filtradas:
+    # Lógica Segura: Pega o primeiro item usando a função 'next' para evitar colchetes invisíveis que quebram o app
+    chave_ativa = next(iter(chaves_filtradas))
 
     uploaded_file = st.file_uploader(
         "Arraste o print completo do gráfico M1 (Obrigatório conter o Relógio da Plataforma visível, Velas, RSI e Volume):",
