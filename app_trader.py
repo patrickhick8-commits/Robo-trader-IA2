@@ -109,13 +109,15 @@ def executar_chamada_gemini(chave_api, imagem_objeto, prompt_texto):
 # --- AREA OPERACIONAL DO SITE ---
 
 uploaded_file = st.file_uploader(
-    "Arraste o print completo do gráfico M1 (Obrigatório conter o Relógio da Plataforma visível, Velas, RSI e Volume):", 
+    "Arraste o print completo do gráfico M1:", 
     type=["png", "jpg", "jpeg"]
 )
 
 if uploaded_file is not None:
     image = Image.open(uploaded_file)
-    st.image(image, caption="Gráfico M1 Carregado para Análise de Confluência Suprema", use_container_width=True)
+    st.image(image, caption="Gráfico M1 Carregado para Análise", use_container_width=True)
     
     if st.button("🚀 EXECUTAR ANÁLISE SUPREMA MATRICIAL"):
         if not lista_de_chaves:
+            st.error("ERRO: Nenhuma chave foi preenchida na barra lateral esquerda!")
+        else:
