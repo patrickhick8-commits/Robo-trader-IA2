@@ -11,12 +11,10 @@ st.write("Fusão Total: Projeção de Tempo (Mesma Vela M1), SMC, Volume Oculto,
 st.sidebar.markdown("### 🔑 Gerenciador de Chaves de Contingência")
 st.sidebar.info("Cole suas chaves protegidas separando-as por ponto e vírgula (;). Exemplo: chave1; chave2; chave3")
 
+# Campo de texto para as chaves
 chaves_input = st.sidebar.text_input("Cole suas Gemini API Keys aqui:", type="password")
 
-# Transforma o texto em uma lista de chaves limpas
-lista_de_chaves = [chave.strip() for chave in chaves_input.split(";") if chave.strip()]
-
-# PROMPT MESTRE SUPERCONFLUENTE (Isolado para evitar erros de indentação)
+# PROMPT MESTRE SUPERCONFLUENTE
 PROMPT_TRADER = """
 [SYSTEM_ROLE] Você é um algoritmo de trading quantitativo focado em encontrar oportunidades frequentes e de boa precisão para Opções Binárias (M1). Sua postura é moderadamente agressiva: seu objetivo é extrair o máximo de sinais válidos do gráfico, operando por confluência máxima de fatores sem descartar operações por detalhes mínimos de ruído na tela.
 
@@ -113,12 +111,15 @@ uploaded_file = st.file_uploader(
     type=["png", "jpg", "jpeg"]
 )
 
+# Inicializa as variáveis na memória de estado se um arquivo for carregado
 if uploaded_file is not None:
-    image = Image.open(uploaded_file)
-    st.image(image, caption="Gráfico M1 Carregado para Análise", use_container_width=True)
+    st.session_state["imagem_grafico"] = Image.open(uploaded_file)
+
+# Se houver uma imagem salva na sessão do navegador, renderiza a tela operacional
+if "imagem_grafico" in st.session_state:
+    st.image(st.session_state["imagem_grafico"], caption="Gráfico M1 Carregado para Análise", use_container_width=True)
     
     if st.button("🚀 EXECUTAR ANÁLISE SUPREMA MATRICIAL"):
-        # Lógica linear sem blocos if/else aninhados para blindar a indentação
-        if not lista_de_chaves:
-            st.error("ERRO: Nenhuma chave foi preenchida na barra lateral esquerda!")
+        texto_limpo = chaves_input.replace(" ", "")
         
+        if not texto_limpo:
