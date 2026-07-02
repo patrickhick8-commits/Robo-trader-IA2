@@ -13,7 +13,7 @@ st.sidebar.info("Cole suas chaves protegidas separando-as por ponto e vírgula (
 
 chaves_input = st.sidebar.text_input("Cole suas Gemini API Keys aqui:", type="password")
 
-# PROMPT MESTRE SUPERCONFLUENTE (Isolado para evitar erros de indentação)
+# PROMPT MESTRE SUPERCONFLUENTE
 PROMPT_TRADER = """
 [SYSTEM_ROLE] Você é um algoritmo de trading quantitativo focado em encontrar oportunidades frequentes e de boa precisão para Opções Binárias (M1). Sua postura é moderadamente agressiva: seu objetivo é extrair o máximo de sinais válidos do gráfico, operando por confluência máxima de fatores sem descartar operações por detalhes mínimos de ruído na tela.
 
@@ -85,7 +85,7 @@ Retorne o diagnóstico estruturado exatamente neste formato markdown limpo e des
 - Ambiente Identificado: [MERCADO ABERTO ou OTC]
 - Diagnóstico do Fluxo de Continuidade (Cor, Impulso e Corpo): [Descreva a sequência de cores das velas, o tamanho anatômico do corpo e o nível de impulso institucional identificado]
 - Análise de Pavios e Pressão de Rejeição: [Explique como o comportamento dos pavios recentes confirmou a ausência de defesa contrária no fluxo ou o extremo respeito da lateralidade]
-- Mapeamento de Zonas Horizontais (S/R) e Inclinadas (LTA/LTB): [Descreva as microzonas ou suportes/resistências laterais identificados na movimentação dos candles]
+- Mapeamento de Zonas Horizontais (S/R) e Inclinadas (LTA/LTB): [Descreva as microzonas ou supports/resistências laterais identificados na movimentação dos candles]
 - Posicionamento da Média Móvel (EMA 9): [Descreva a posição do preço acima ou abaixo da EMA 9 apenas como ponto dinâmico de referência]
 - Avaliação de Ruído e Volatilidade: [Explique por que o cenário foi considerado aceitável para clique com filtros moderados]
 - Justificativa da Gestão de Lote: [Explique por que o lote sugerido se adequa perfeitamente a essa combinação de fatores]
@@ -93,27 +93,36 @@ Retorne o diagnóstico estruturado exatamente neste formato markdown limpo e des
 Seja frio, preciso e direto. Velocidade e precisão salvam bancas.
 """
 
-# Extração de Chaves de Contingência Limpa e Segura
+
+def analisar_grafico(api_key, imagem_grafico, prompt):
+    """Função isolada para evitar erros de sintaxe e indentação"""
+    try:
+        client = genai.Client(api_key=api_key)
+        response = client.models.generate_content(
+            model="gemini-2.5-flash", contents=[imagem_grafico, prompt]
+        )
+        return response.text
+    except Exception as erro:
+        return f"ERRO_API: {str(erro)}"
+
+
+# Separa as chaves inseridas por ponto e vírgula
 chaves_filtradas = [c.strip() for c in chaves_input.split(";") if c.strip()]
 
-if chaves_filtradas:
+if len(chaves_filtradas) > 0:
+    # Captura a primeira chave estável da lista
     chave_ativa = chaves_filtradas[0]
-    client = genai.Client(api_key=chave_ativa)
-    
+
     uploaded_file = st.file_uploader(
-        "Arraste o print completo do gráfico M1 (Obrigatório conter o Relógio da Plataforma visível, Velas, RSI e Volume):", 
-        type=["png", "jpg", "jpeg"]
+        "Arraste o print completo do gráfico M1 (Obrigatório conter o Relógio da Plataforma visível, Velas, RSI e Volume):",
+        type=["png", "jpg", "jpeg"],
     )
 
     if uploaded_file is not None:
         image = Image.open(uploaded_file)
-        st.image(image, caption="Gráfico M1 Carregado para Análise de Confluência Suprema", use_container_width=True)
-        
-        if st.button("🚀 EXECUTAR ANÁLISE SUPREMA MATRICIAL"):
-            with st.spinner("IA escaneando padrões e buscando oportunidades..."):
-                try:
-                    response = client.models.generate_content(
-                        model='gemini-2.5-flash',
-                        contents=[image, PROMPT_TRADER]
-                    )
-                    st.success("Análise Suprema de Confluência Matricial Concluída!")
+        st.image(
+            image,
+            caption="Gráfico M1 Carregado para Análise de Confluência Suprema",
+            use_container_width=True,
+        )
+
