@@ -14,7 +14,7 @@ st.sidebar.info("Cole suas chaves protegidas separando-as por ponto e vírgula (
 # Campo de texto para as chaves
 chaves_input = st.sidebar.text_input("Cole suas Gemini API Keys aqui:", type="password")
 
-# PROMPT MESTRE SUPERCONFLUENTE
+# PROMPT MESTRE SUPERCONFLUENTE (Isolado para evitar erros de indentação)
 PROMPT_TRADER = """
 [SYSTEM_ROLE] Você é um algoritmo de trading quantitativo focado em encontrar oportunidades frequentes e de boa precisão para Opções Binárias (M1). Sua postura é moderadamente agressiva: seu objetivo é extrair o máximo de sinais válidos do gráfico, operando por confluência máxima de fatores sem descartar operações por detalhes mínimos de ruído na tela.
 
@@ -122,5 +122,4 @@ if "imagem_grafico" in st.session_state:
         
         if not texto_limpo:
             st.error("ERRO: Preencha sua Gemini API Key na barra lateral esquerda antes de rodar!")
-        
-        if texto_limpo:
+            st.stop()
