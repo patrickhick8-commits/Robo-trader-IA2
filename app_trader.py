@@ -24,9 +24,9 @@ if API_KEY:
         
         # Botão de disparo rápido para Opções Binárias Avançado
         if st.button("🚀 EXECUTAR ANÁLISE COMPLETA"):
-            with st.spinner("IA identificando tipo de mercado e aplicando filtros anti-manipulação com EMA 9..."):
+            with st.spinner("IA identificando tipo de mercado e aplicando filtros com janela de 1 a 5 min..."):
                 
-                # Prompt mestre com inclusão técnica e cirúrgica da EMA 9
+                # Prompt mestre ajustado com a cronometragem agressiva de 1 a 5 minutos futuros
                 prompt = """
                 [SYSTEM_ROLE] Você é um superalgoritmo HFT de fundos soberanos e analista quantitativo focado em trading de altíssima precisão. Sua postura é de extrema frieza e ceticismo matemático. Sua missão prioritária é PRESERVAÇÃO DE CAPITAL.
 
@@ -60,14 +60,16 @@ if API_KEY:
                 - Avalie rigorosamente os riscos com base no cenário gráfico e confluências encontradas.
                 - Se o cenário for elegível para operação, defina a taxa de acerto estritamente dentro da faixa de **80% a 96%**. Sinais com menos de 80% de confluência real devem ser definidos obrigatoriamente como OPERAÇÃO ABORTADA e a porcentagem travada em "0% - FILTRO ATIVADO". Nenhum sinal pode passar de 96% para evitar métricas ilusórias.
 
-                [PASSO 6: CRONOMETRAGEM DE EXECUÇÃO]
-                Verifique o relógio do print e calcule o HORÁRIO DO CLIQUE rigorosamente para uma janela futura de 2 a 5 minutos. Expiração rígida para 1 minuto (mesma vela do clique).
+                [PASSO 6: CRONOMETRAGEM DE EXECUÇÃO AGRESSIVA]
+                - Localize o relógio oficial da plataforma no print. 
+                - Calcule e agende o HORÁRIO DO CLIQUE rigorosamente para uma janela futura de **1 a 5 minutos** (ex: se o relógio marca 14:30:15, a projeção pode ser para 14:31:00, 14:32:00, etc.). 
+                - A expiração deve ser rígida de exatamente 1 minuto para fechar rigorosamente na mesma vela do clique projetado.
 
                 Retorne o diagnóstico estruturado exatamente neste formato markdown limpo e destacado:
 
                 🎯 PORCENTAGEM DE ACERTO DA ENTRADA: [Ex: 89% ou 94% - Dentro do padrão calibrado. Se for Abortada, escreva '0% - FILTRO ATIVADO'] (Escreva bem grande e destacado)
 
-                ⏰ HORÁRIO DO CLIQUE (ENTRADA): [HH:MM:00 exato projetado entre 2 a 5 minutos para o futuro]
+                ⏰ HORÁRIO DO CLIQUE (ENTRADA): [HH:MM:00 exato projetado entre 1 a 5 minutos para o futuro]
                 ⏳ TEMPO DE EXPIRAÇÃO: 1 Minuto (Para fechar na mesma vela do clique)
                 🏁 HORÁRIO DE FECHAMENTO: [HH:MM:00 do fechamento real da ordem]
                 🟥🟩 DIREÇÃO DA ORDEM: [COMPRA / VENDA / OPERAÇÃO ABORTADA]
@@ -77,7 +79,7 @@ if API_KEY:
 
                 🔍 DETALHAMENTO ANATÔMICO E CONFIGURAÇÃO ANTI-MANIPULAÇÃO:
                 - Ambiente Detectado: [MERCADO ABERTO ou OTC - Explique o que foi identificado na imagem]
-                - Filtro da Média Móvel (EMA 9): [Descreva a posição do preço em relação à EMA 9 e se a inclinação dela valida o movimento de alta/baixa ou exige o aborto]
+                - Filtro da Média Móvel (EMA 9): [Descreva a posição do preço em relação à EMA 9 e se a inclinação dela valida o movimento ou exige o aborto]
                 - Filtro de Manipulação Aplicado: [Explique o comportamento do algoritmo ou dos players reais com base no ambiente identificado]
                 - Condição da Tendência Macro: [Alinhamento e direção geral do preço]
                 - Análise Estatística de Volume Oculto: [Nível de volume estimado pelo tamanho dos candles]
