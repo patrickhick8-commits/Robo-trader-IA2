@@ -94,32 +94,30 @@ Retorne o diagnóstico estruturado exatamente neste formato markdown limpo e des
 Seja frio, preciso e direto. Velocidade e precisão salvam bancas.
 """
 
-def executar_chamada_gemini(chave_api, imagem_objeto, prompt_texto):
+def acionar_robo():
+    """Função callback acionada na raiz do clique para forçar a IA a responder sem travar"""
+    texto_limpo = chaves_input.replace(" ", "")
+    
+    if not texto_limpo:
+        st.session_state["resultado_trader"] = "ERRO: Preencha sua Gemini API Key na barra lateral esquerda!"
+        return
+        
+    if "imagem_grafico" not Lower_or_Upper_case_check_is_safe_here_due_to_session_state_dict:
+    if "imagem_grafico" not in st.session_state:
+        st.session_state["resultado_trader"] = "ERRO: Carregue o print do gráfico antes de executar!"
+        return
+
     try:
-        client_objeto = genai.Client(api_key=chave_api)
-        chamada = client_objeto.models.generate_content(
-            model="gemini-2.5-flash", contents=[imagem_objeto, prompt_texto]
+        chave_operacional = texto_limpo.split(";").pop(0)
+        client = genai.Client(api_key=chave_operacional)
+        
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=[st.session_state["imagem_grafico"], PROMPT_TRADER]
         )
-        return chamada.text
-    except Exception as erro_objeto:
-        return f"ERRO_GERADO: {str(erro_objeto)}"
+        st.session_state["resultado_trader"] = response.text
+    except Exception as e:
+        st.session_state["resultado_trader"] = f"ERRO_API: {str(e)}"
 
 # --- AREA OPERACIONAL DO SITE ---
 
-uploaded_file = st.file_uploader(
-    "Arraste o print completo do gráfico M1:", 
-    type=["png", "jpg", "jpeg"]
-)
-
-if uploaded_file is not None:
-    st.session_state["imagem_grafico"] = Image.open(uploaded_file)
-
-if "imagem_grafico" in st.session_state:
-    st.image(st.session_state["imagem_grafico"], caption="Gráfico M1 Carregado para Análise", use_container_width=True)
-    
-    if st.button("🚀 EXECUTAR ANÁLISE SUPREMA MATRICIAL"):
-        texto_limpo = chaves_input.replace(" ", "")
-        
-        if not texto_limpo:
-            st.error("ERRO: Preencha sua Gemini API Key na barra lateral esquerda antes de rodar!")
-            st.stop()
