@@ -11,6 +11,7 @@ st.write("Fusão Total: Projeção de Tempo (Mesma Vela M1), SMC, Volume Oculto,
 st.sidebar.markdown("### 🔑 Gerenciador de Chaves de Contingência")
 st.sidebar.info("Cole suas chaves protegidas separando-as por ponto e vírgula (;). Exemplo: chave1; chave2; chave3")
 
+# Campo de texto para as chaves
 chaves_input = st.sidebar.text_input("Cole suas Gemini API Keys aqui:", type="password")
 
 # PROMPT MESTRE SUPERCONFLUENTE
@@ -106,23 +107,22 @@ def analisar_grafico(api_key, imagem_grafico, prompt):
         return f"ERRO_API: {str(erro)}"
 
 
-# Separa e limpa as chaves fornecidas
-chaves_filtradas = [c.strip() for c in chaves_input.split(";") if c.strip()]
+# --- AREA OPERACIONAL DO SITE (Fica sempre visível para o usuário) ---
 
-if chaves_filtradas:
-    # Lógica Segura: Pega o primeiro item usando a função 'next' para evitar colchetes invisíveis que quebram o app
-    chave_ativa = next(iter(chaves_filtradas))
+uploaded_file = st.file_uploader(
+    "Arraste o print completo do gráfico M1 (Obrigatório conter o Relógio da Plataforma visível, Velas, RSI e Volume):",
+    type=["png", "jpg", "jpeg"],
+)
 
-    uploaded_file = st.file_uploader(
-        "Arraste o print completo do gráfico M1 (Obrigatório conter o Relógio da Plataforma visível, Velas, RSI e Volume):",
-        type=["png", "jpg", "jpeg"],
+if uploaded_file is not None:
+    image = Image.open(uploaded_file)
+    st.image(
+        image,
+        caption="Gráfico M1 Carregado para Análise de Confluência Suprema",
+        use_container_width=True,
     )
 
-    if uploaded_file is not None:
-        image = Image.open(uploaded_file)
-        st.image(
-            image,
-            caption="Gráfico M1 Carregado para Análise de Confluência Suprema",
-            use_container_width=True,
-        )
-
+    # O botão de executar agora fica SEMPRE visível quando a imagem é enviada!
+    if st.button("🚀 EXECUTAR ANÁLISE SUPREMA MATRICIAL"):
+        
+        # Limpa e valida as chaves somente no momento do clique do botão
