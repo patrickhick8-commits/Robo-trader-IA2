@@ -35,7 +35,7 @@ Busque por confluências de Price Action em Suporte, Resistência (S/R horizonta
 
 1. MATRIZ DE CONTINUIDADE DE FLUXO (IMPULSO E ANATOMIA DO CANDLE):
    - FLUXO POR COR E IMPULSO: Monitore blocos dominantes de velas de mesma cor que demonstrem aceleração rápida.
-   - TAMANHO DO CORPO: Avalie a expansão anatômica do corpo do candle recente. Corpos médios a grandes e sólidos (velas de força) confirmam a urgência institucional. Pavios contra o movimento devem ser pequenos para atestar a continuidade.
+   - TAMANHO DO CORPO: Avalie a expansão anatômica do corpo do candle recente. Corpos médios a grandes e sólidos (velas de força) confirmam a urgência institutional. Pavios contra o movimento devem ser pequenos para atestar a continuidade.
 
 2. MATRIZ DE LATERALIDADE / CONSOLIDAÇÃO HORIZONTAL:
    - REVERSÃO E RETRAÇÃO EM SUPORTE/RESISTÊNCIA: Opere o respeito de zonas horizontais nítidas de Suporte (Fundo) e Resistência (Topo). Quando o preço testar os limites com velas de perda de pressão e deixar pavios nítidos de rejeição, valide o clique de retração ou reversão para a mesma vela.
@@ -93,7 +93,6 @@ Seja frio, preciso e direto. Velocidade e precisão salvam bancas.
 
 def executar_chamada_gemini(chave_api, imagem_objeto, prompt_texto):
     try:
-        # Inicializa o cliente usando o SDK correto: google-genai
         client_objeto = genai.Client(api_key=chave_api)
         chamada = client_objeto.models.generate_content(
             model="gemini-2.5-flash", 
@@ -111,11 +110,9 @@ uploaded_file = st.file_uploader(
 )
 
 if uploaded_file is not None:
-    # Abre a imagem usando o PIL
     imagem_aberta = Image.open(uploaded_file)
     st.image(imagem_aberta, caption="Gráfico Carregado com Sucesso", use_container_width=True)
     
-    # Botão de ativação do Analisador
     if st.button("🚀 Iniciar Análise de Alta Assertividade"):
         if not lista_de_chaves:
             st.error("❌ Nenhuma API Key do Gemini foi configurada na barra lateral!")
@@ -124,7 +121,6 @@ if uploaded_file is not None:
             resultado_texto = ""
             sucesso = False
             
-            # Loop de Contingência sobre a lista de chaves
             for i, chave in enumerate(lista_de_chaves):
                 status_placeholder.warning(f"⏳ Processando com a Chave de Contingência {i+1} de {len(lista_de_chaves)}...")
                 
@@ -137,7 +133,6 @@ if uploaded_file is not None:
                 else:
                     st.sidebar.error(f"Falha na Chave {i+1}: {resposta}")
             
-            # Limpa o placeholder de processamento
             status_placeholder.empty()
             
             if sucesso:
@@ -146,16 +141,4 @@ if uploaded_file is not None:
                 st.markdown(resultado_texto)
                 st.markdown("---")
             else:
-            # Loop de Contingência sobre a lista de chaves
-            for i, chave in enumerate(lista_de_chaves):
-                status_placeholder.warning(f"⏳ Processando com a Chave de Contingência {i+1} de {len(lista_de_chaves)}...")
-                
-                resposta = executar_chamada_gemini(chave, imagem_aberta, PROMPT_TRADER)
-                
-                if "ERRO_GERADO" not in resposta:
-                    resultado_texto = resposta
-                    sucesso = True
-                    break
-                else:
-                    # ESTA LINHA ABAIXO PRECISA DE MAIS RECUO (4 ESPAÇOS A MAIS QUE O ELSE)
-                    st.sidebar.error(f"Falha na Chave {i+1}: {resposta}")
+                st.error("🚨 Todas as suas chaves falharam ou estão esgotadas. Verifique a aba de erros na lateral.")
