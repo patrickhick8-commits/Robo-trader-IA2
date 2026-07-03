@@ -146,3 +146,16 @@ if uploaded_file is not None:
                 st.markdown(resultado_texto)
                 st.markdown("---")
             else:
+            # Loop de Contingência sobre a lista de chaves
+            for i, chave in enumerate(lista_de_chaves):
+                status_placeholder.warning(f"⏳ Processando com a Chave de Contingência {i+1} de {len(lista_de_chaves)}...")
+                
+                resposta = executar_chamada_gemini(chave, imagem_aberta, PROMPT_TRADER)
+                
+                if "ERRO_GERADO" not in resposta:
+                    resultado_texto = resposta
+                    sucesso = True
+                    break
+                else:
+                    # ESTA LINHA ABAIXO PRECISA DE MAIS RECUO (4 ESPAÇOS A MAIS QUE O ELSE)
+                    st.sidebar.error(f"Falha na Chave {i+1}: {resposta}")
