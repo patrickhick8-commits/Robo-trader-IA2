@@ -47,7 +47,7 @@ Busque por confluências de Price Action em Suporte, Resistência (S/R horizonta
 [PASSO 4: PROTOCOLO DE FILTRAGEM DE RUÍDO (NÍVEL: MÉDIO PARA ALTO)]
 Aplique uma barreira rigorosa e equilibrada contra manipulações ordinárias, abortando a operação em cenários de alta instabilidade:
 - FILTRO ANTI-XADREZ (NÍVEL ALTO): Aborte obrigatoriamente se houver uma alternância perfeita de cores (verde-vermelho-verde-vermelho) por mais de 6 a 8 velas seguidas, indicando exaustão completa de tendência e ruído micro.
-- FILTRO DE MICRO-VELAS (NÍVEL MÉDIO-ALTO): Aborte se identificar 3 ou mais Dojis legítimos (linhas horizontais sem corpo) consecutivos. No entanto, permita operações se as velas forem pequenas mas contarem com corpos mínimos e pavios de retração nítidos em zonas fortes de S/R.
+- FILTRO DE MICRO-VELAS (NÍVEL MÉDIO-ALTO): Aborte si identificar 3 ou mais Dojis legítimos (linhas horizontais sem corpo) consecutivos. No entanto, permita operações se as velas forem pequenas mas contarem com corpos mínimos e pavios de retração nítidos em zonas fortes de S/R.
 - FILTRO EM OTC (NÍVEL MÉDIO): Permita pullbacks e retrações desde que as regiões de preço estejam fortemente marcadas no histórico visual e confluam com a direção imediata dos candles.
 
 [PASSO 5: SISTEMA DE CALIBRAGEM DE ASSERTIVIDADE REALISTA]
@@ -93,9 +93,11 @@ Seja frio, preciso e direto. Velocidade e precisão salvam bancas.
 
 def executar_chamada_gemini(chave_api, imagem_objeto, prompt_texto):
     try:
+        # Inicializa o cliente usando o SDK correto: google-genai
         client_objeto = genai.Client(api_key=chave_api)
         chamada = client_objeto.models.generate_content(
-            model="gemini-2.5-flash", contents=[imagem_objeto, prompt_texto]
+            model="gemini-2.5-flash", 
+            contents=[imagem_objeto, prompt_texto]
         )
         return chamada.text
     except Exception as erro_objeto:
@@ -104,31 +106,43 @@ def executar_chamada_gemini(chave_api, imagem_objeto, prompt_texto):
 # --- AREA OPERACIONAL DO SITE ---
 
 uploaded_file = st.file_uploader(
-    "Arraste o print completo do gráfico M1 (Obrigatório conter o Relógio da Plataforma visível, Velas, RSI e Volume):", 
+    "Faça o upload do print do seu gráfico (M1):", 
     type=["png", "jpg", "jpeg"]
 )
 
 if uploaded_file is not None:
-    st.session_state["imagem_grafico"] = Image.open(uploaded_file)
-
-if "imagem_grafico" in st.session_state:
-    st.image(st.session_state["imagem_grafico"], caption="Gráfico M1 Carregado para Análise de Confluência Suprema", use_container_width=True)
+    # Abre a imagem usando o PIL
+    imagem_aberta = Image.open(uploaded_file)
+    st.image(imagem_aberta, caption="Gráfico Carregado com Sucesso", use_container_width=True)
     
-    if st.button("🚀 EXECUTAR ANÁLISE SUPREMA MATRICIAL"):
+    # Botão de ativação do Analisador
+    if st.button("🚀 Iniciar Análise de Alta Assertividade"):
         if not lista_de_chaves:
-            st.error("ERRO: Nenhuma chave foi preenchida na barra lateral esquerda!")
+            st.error("❌ Nenhuma API Key do Gemini foi configurada na barra lateral!")
         else:
-            with st.spinner("IA aplicando Filtros e Verificação Técnica Avançada..."):
-                # Correção Absoluta: Extrai o primeiro texto puro (string) de dentro da lista criada no topo do app
-                chave_operacional = lista_de_chaves.copy().pop(0)
-                resposta_final = executar_chamada_gemini(chave_operacional, st.session_state["imagem_grafico"], PROMPT_TRADER)
+            status_placeholder = st.empty()
+            resultado_texto = ""
+            sucesso = False
+            
+            # Loop de Contingência sobre a lista de chaves
+            for i, chave in enumerate(lista_de_chaves):
+                status_placeholder.warning(f"⏳ Processando com a Chave de Contingência {i+1} de {len(lista_de_chaves)}...")
                 
-            if "ERRO_GERADO:" in resposta_final:
-                st.error(resposta_final)
-                st.warning("Verifique sua chave na barra lateral.")
+                resposta = executar_chamada_gemini(chave, imagem_aberta, PROMPT_TRADER)
+                
+                if "ERRO_GERADO" not in resposta:
+                    resultado_texto = resposta
+                    sucesso = True
+                    break
+                else:
+                    st.sidebar.error(f"Falha na Chave {i+1}: {resposta}")
+            
+            # Limpa o placeholder de processamento
+            status_placeholder.empty()
+            
+            if sucesso:
+                st.success("🎯 Análise Executada e Filtrada com Sucesso!")
+                st.markdown("---")
+                st.markdown(resultado_texto)
+                st.markdown("---")
             else:
-                st.success("Análise Suprema de Confluência Matricial Concluída!")
-                st.markdown(resposta_final)
-else:
-    if not lista_de_chaves:
-        st.warning("Insira pelo menos uma Gemini API Key válida na barra lateral para ativar o Agente.")
