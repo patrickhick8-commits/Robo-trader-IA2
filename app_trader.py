@@ -123,6 +123,6 @@ if uploaded_file is not None:
             st.error("Por favor, insira pelo menos uma Gemini API Key na barra lateral.")
         else:
             sucesso = False
-            # Tenta rodar as chaves de contingência caso uma falhe
+            # Loop simplificado e direto para evitar conflitos de espaçamento
             for i, chave in enumerate(lista_de_chaves):
-                with st.spinner(f"Processando análise com a chave {i+1}..."):
+                st.info(f"Processando análise com a chave {i+1}...")
