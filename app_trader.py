@@ -11,8 +11,7 @@ st.write("Fusão Total: Projeção de Tempo (Mesma Vela M1), SMC, Volume Oculto,
 st.sidebar.markdown("### 🔑 Gerenciador de Chaves de Contingência")
 st.sidebar.info("Cole suas chaves protegidas separando-as por ponto e vírgula (;). Exemplo: chave1; chave2; chave3")
 
-# Memoriza as chaves na sessão para o botão não limpá-las ao ser clicado
-chaves_input = st.sidebar.text_input("Cole suas Gemini API Keys aqui:", type="password", key="gemini_keys_input")
+chaves_input = st.sidebar.text_input("Cole suas Gemini API Keys aqui:", type="password")
 
 # Transforma o texto em uma lista de chaves limpas
 lista_de_chaves = [chave.strip() for chave in chaves_input.split(";") if chave.strip()]
@@ -107,14 +106,13 @@ def executar_chamada_gemini(chave_api, imagem_objeto, prompt_texto):
             model="gemini-2.5-flash", 
             contents=[imagem_objeto, prompt_texto]
         )
-        
         if chamada and chamada.text:
             return chamada.text
-        return "ERRO_GERADO: A IA retornou um texto vazio."
+        return "ERRO_GERADO: Resposta em branco da API."
     except Exception as erro_objeto:
         return f"ERRO_GERADO: {str(erro_objeto)}"
 
-# --- AREA OPERACIONAL DO SITE (MEMÓRIA BLINDADA) ---
+# --- INTERFACE OPERACIONAL SIMPLIFICADA ---
 
 uploaded_file = st.file_uploader(
     "Faça o upload do print do seu gráfico (M1):", 
@@ -123,6 +121,11 @@ uploaded_file = st.file_uploader(
 
 if uploaded_file is not None:
     image = Image.open(uploaded_file)
-    st.image(image, caption="Gráfico Carregado com Sucesso", use_container_width=True)
+    st.image(image, caption="Gráfico Carregado", use_container_width=True)
     
-    # Criamos um botão autônomo que executa a análise sem depender de loops instáveis externos
+    # Botão padrão limpo e sem dependência de estados complexos
+    if st.button("🚀 Analisar com Frieza e Alta Precision"):
+        if not lista_de_chaves:
+            st.error("Insira suas chaves na barra lateral.")
+        else:
+            sucesso = False
