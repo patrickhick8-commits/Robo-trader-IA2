@@ -112,16 +112,19 @@ def executar_chamada_gemini(chave_api, imagem_objeto, prompt_texto):
     except Exception as erro_objeto:
         return f"ERRO_GERADO: {str(erro_objeto)}"
 
-# --- PAINEL FORMULÁRIO ANTI-TRAVAMENTO DE BOTÃO ---
+# --- AREA OPERACIONAL DO SITE (REVISADA E LINEAR) ---
 
-with st.form(key="painel_trader"):
-    uploaded_file = st.file_uploader(
-        "Faça o upload do print do seu gráfico (M1):", 
-        type=["png", "jpg", "jpeg"]
-    )
+uploaded_file = st.file_uploader(
+    "Faça o upload do print do seu gráfico (M1):", 
+    type=["png", "jpg", "jpeg"]
+)
+
+if uploaded_file is not None:
+    image = Image.open(uploaded_file)
+    st.image(image, caption="Gráfico Carregado com Sucesso", use_container_width=True)
     
-    # O botão de envio do formulário obriga o Streamlit a rodar a ação sem perder os dados
-    submit_button = st.form_submit_with_clicks = st.form_submit_button(label="🚀 FORÇAR ANÁLISE DO GRÁFICO")
-
-# Executa as ações imediatamente fora do formulário assim que clicado
-if submit_button and uploaded_file is not None:
+    # Botão principal isolado para evitar qualquer falha de recuo
+    botao_clique = st.button("🚀 ANALISAR GRÁFICO AGORA")
+    
+    if botao_clique:
+        if not lista_de_chaves:
