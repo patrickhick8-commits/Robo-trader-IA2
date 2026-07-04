@@ -146,5 +146,6 @@ if uploaded_file is not None:
             if not resposta_sucesso:
                 st.error("❌ Todas as chaves de contingência falharam. Verifique os limites ou a validade das chaves no console.")
             else:
-                # O temporizador agora roda de forma segura aqui dentro, apenas se houver sucesso na API
-                if "OPERAÇÃO ABORTADA" not in resultado and "FILTRO ATIVADO" not in resultado:
+                # Verificação explícita e isolada para impedir quebras de identação
+                validar_aborto = "OPERAÇÃO ABORTADA" in resultado or "FILTRO ATIVADO" in resultado
+                
