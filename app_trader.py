@@ -42,7 +42,7 @@ Busque por confluências de Price Action em Suporte, Resistência (S/R horizonta
    - Opere o respeito extremo de zonas horizontais (S/R) ou regiões inclinadas de tendência (LTA/LTB). Quando o preço testar os limites com velas de perda de pressão e deixar pavios nítidos de rejeição com RSI em zona extrema, valide a reversão milimétrica para a próxima vela ou retração na mesma região respeitada.
 
 2. FLUXO DE VELA EM TENDÊNCIA DE BAIXA E ALTA (ROMPIMENTO DE S/R):
-   - Monitore blocks dominantes de velas de mesma cor que demonstrem aceleração rápida a favor da tendência macro. Identifique rompimentos verdadeiros de suportes ou resistências horizontais. O candle que rompe deve ter corpo expressivo e fechar cheio além da taxa rompida, validando o fluxo contínuo na direção do rompimento.
+   - Monitore blocos dominantes de velas de mesma cor que demonstrem aceleração rápida a favor da tendência macro. Identifique rompimentos verdadeiros de suportes ou resistências horizontais. O candle que rompe deve ter corpo expressivo e fechar cheio além da taxa rompida, validando o fluxo contínuo na direção do rompimento.
 
 3. PULLBACK EM TENDÊNCIA DE ALTA, BAIXA E LATERAL COM RETRAÇÃO COM PAVIO:
    - Após o rompimento confirmado de uma região (S/R horizontal ou LTA/LTB), aguarde o preço fazer o movimento de correção (retorno à taxa rompida). Valide a entrada quando o preço tocar na região de antigo suporte/resistência e deixar pavio nítidos de retração e rejeição física da taxa, operando a favor do sentido original do rompimento.
@@ -98,10 +98,7 @@ Seja frio, preciso e direto. Velocidade e precisão salvam bancas.
 
 def executar_chamada_gemini(chave_api, imagem_objeto, prompt_texto):
     try:
-        # Inicializa o cliente oficial da Google
         client_objeto = genai.Client(api_key=chave_api)
-        
-        # Converte a imagem PIL para garantir a compatibilidade sem travamentos com a API do Gemini
         if imagem_objeto.mode != 'RGB':
             imagem_objeto = imagem_objeto.convert('RGB')
             
@@ -115,7 +112,6 @@ def executar_chamada_gemini(chave_api, imagem_objeto, prompt_texto):
         else:
             return "ERRO_GERADO: A inteligência artificial retornou uma resposta vazia."
     except Exception as erro_objeto:
-        # Retorna o erro real caso a chave de API esteja errada, sem saldo ou bloqueada
         return f"ERRO_GERADO: {str(erro_objeto)}"
 
 # --- AREA OPERACIONAL DO SITE ---
@@ -127,3 +123,9 @@ uploaded_file = st.file_uploader(
 
 if uploaded_file is not None:
     image = Image.open(uploaded_file)
+    st.image(image, caption="Gráfico Carregado", use_container_width=True)
+    
+    if st.button("🚀 Analisar com Frieza e Alta Precisão"):
+        if not lista_de_chaves:
+            st.error("Por favor, insira pelo menos uma Gemini API Key na barra lateral.")
+        else:
