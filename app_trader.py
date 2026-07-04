@@ -12,14 +12,14 @@ st.title("🤖 Agente IA Trader Pro: Matriz Suprema de Alta Assertividade")
 st.write("Fusão Total: Projeção de Tempo (Mesma Vela M1), SMC, Volume Oculto, Fluxo de Cores, Médias, RSI e S/R / LTA / LTB.")
 
 st.sidebar.markdown("### 🔑 Gerenciador de Chaves de Contingência")
-st.sidebar.info("Cole suas chaves protegidas separando-as por ponto e vírgula (;). Example: chave1; chave2; chave3")
+st.sidebar.info("Cole suas chaves protegidas separando-as por ponto e vírgula (;). Exemplo: chave1; chave2; chave3")
 
 chaves_input = st.sidebar.text_input("Cole suas Gemini API Keys aqui:", type="password")
 
 # Transforma o texto em uma lista de chaves limpas
 lista_de_chaves = [chave.strip() for chave in chaves_input.split(";") if chave.strip()]
 
-# PROMPT MESTRE RECONFIGURADO - ULTRA PRECISSÃO ANTI-FALSO SINAL NO RSI
+# PROMPT MESTRE RECONFIGURADO - ULTRA PRECISÃO ANTI-FALSO SINAL NO RSI
 PROMPT_TRADER = """
 [SYSTEM_ROLE] Você é um algoritmo de trading quantitativo focado em Opções Binárias (M1). Sua postura é de FRIEZA MÁXIMA, RIGOR ABSOLUTO E PRECISÃO CIRÚRGICA. Sua missão principal é eliminar falsos sinais de reversão gerados por indicadores esticados.
 
@@ -145,6 +145,6 @@ if uploaded_file is not None:
             
             if not resposta_sucesso:
                 st.error("❌ Todas as chaves de contingência falharam. Verifique os limites ou a validade das chaves no console.")
-            
-            # --- SISTEMA DE TEMPORIZADOR EM TEMPO REAL ---
-            elif "OPERAÇÃO ABORTADA" not in resultado and "FILTRO ATIVADO" not in resultado:
+            else:
+                # O temporizador agora roda de forma segura aqui dentro, apenas se houver sucesso na API
+                if "OPERAÇÃO ABORTADA" not in resultado and "FILTRO ATIVADO" not in resultado:
