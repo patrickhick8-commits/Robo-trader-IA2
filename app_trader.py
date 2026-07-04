@@ -47,7 +47,7 @@ Busque por confluências de Price Action em Suporte, Resistência (S/R horizonta
 3. PULLBACK EM TENDÊNCIA DE ALTA, BAIXA E LATERAL COM RETRAÇÃO COM PAVIO:
    - Após o rompimento confirmado de uma região (S/R horizontal ou LTA/LTB), aguarde o preço fazer o movimento de correção (retorno à taxa rompida). Valide a entrada quando o preço tocar na região de antigo suporte/resistência e deixar pavio nítidos de retração e rejeição física da taxa, operando a favor do sentido original do rompimento.
 
-4. FLUXO DE CONTINUIDADE PÓS-REVERSÃO DO MERCADO ANALISANDO A REGIÃO QUE O PREÇO ESTA OU IRA BUSCAR:
+4. FLUXO DE CONTINUIDADE PÓS-REVERSÃO DO MERCADO ANALIZANDO A REGIÃO QUE O PREÇO ESTA OU IRA BUSCAR:
    - Identifique falhas estruturais micro ou macro (topos/fundos duplos, quebras de estrutura). Assim que o mercado reverter e confirmar o primeiro candle sólido alinhado à nova direção, analise graficamente a seção de alvo do preço. O preço deve ter espaço livre para buscar o próximo alvo visível (próximo S/R ou topo/fundo isolado) antes de sofrer nova barreira.
 
 [PASSO 5: PROTOCOLO DE FILTRAGEM DE RUÍDO (NÍVEL: MÉDIO PARA ALTO)]
@@ -108,24 +108,20 @@ def executar_chamada_gemini(chave_api, imagem_objeto, prompt_texto):
         )
         if chamada and chamada.text:
             return chamada.text
-        return "ERRO_GERADO: Resposta em branco da API."
+        return "ERRO_GERADO: Resposta vazia da API do Gemini."
     except Exception as erro_objeto:
         return f"ERRO_GERADO: {str(erro_objeto)}"
 
-# --- INTERFACE OPERACIONAL SIMPLIFICADA ---
+# --- PAINEL FORMULÁRIO ANTI-TRAVAMENTO DE BOTÃO ---
 
-uploaded_file = st.file_uploader(
-    "Faça o upload do print do seu gráfico (M1):", 
-    type=["png", "jpg", "jpeg"]
-)
-
-if uploaded_file is not None:
-    image = Image.open(uploaded_file)
-    st.image(image, caption="Gráfico Carregado", use_container_width=True)
+with st.form(key="painel_trader"):
+    uploaded_file = st.file_uploader(
+        "Faça o upload do print do seu gráfico (M1):", 
+        type=["png", "jpg", "jpeg"]
+    )
     
-    # Botão padrão limpo e sem dependência de estados complexos
-    if st.button("🚀 Analisar com Frieza e Alta Precision"):
-        if not lista_de_chaves:
-            st.error("Insira suas chaves na barra lateral.")
-        else:
-            sucesso = False
+    # O botão de envio do formulário obriga o Streamlit a rodar a ação sem perder os dados
+    submit_button = st.form_submit_with_clicks = st.form_submit_button(label="🚀 FORÇAR ANÁLISE DO GRÁFICO")
+
+# Executa as ações imediatamente fora do formulário assim que clicado
+if submit_button and uploaded_file is not None:
