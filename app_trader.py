@@ -112,19 +112,19 @@ def executar_chamada_gemini(chave_api, imagem_objeto, prompt_texto):
     except Exception as erro_objeto:
         return f"ERRO_GERADO: {str(erro_objeto)}"
 
-# --- AREA OPERACIONAL DO SITE (REVISADA E LINEAR) ---
+# --- AREA OPERACIONAL FLUXO LINEAR (BLINDAGEM TOTAL) ---
 
 uploaded_file = st.file_uploader(
     "Faça o upload do print do seu gráfico (M1):", 
     type=["png", "jpg", "jpeg"]
 )
 
-if uploaded_file is not None:
-    image = Image.open(uploaded_file)
-    st.image(image, caption="Gráfico Carregado com Sucesso", use_container_width=True)
-    
-    # Botão principal isolado para evitar qualquer falha de recuo
-    botao_clique = st.button("🚀 ANALISAR GRÁFICO AGORA")
-    
-    if botao_clique:
-        if not lista_de_chaves:
+# Caso o usuário remova o arquivo ou a página recarregue, interrompe aqui de forma limpa
+if uploaded_file is None:
+    st.stop()
+
+image = Image.open(uploaded_file)
+st.image(image, caption="Gráfico Carregado com Sucesso", use_container_width=True)
+
+botao_clique = st.button("🚀 ANALISAR GRÁFICO AGORA")
+
