@@ -98,13 +98,24 @@ Seja frio, preciso e direto. Velocidade e precisão salvam bancas.
 
 def executar_chamada_gemini(chave_api, imagem_objeto, prompt_texto):
     try:
+        # Inicializa o cliente oficial da Google
         client_objeto = genai.Client(api_key=chave_api)
+        
+        # Converte a imagem PIL para garantir a compatibilidade sem travamentos com a API do Gemini
+        if imagem_objeto.mode != 'RGB':
+            imagem_objeto = imagem_objeto.convert('RGB')
+            
         chamada = client_objeto.models.generate_content(
             model="gemini-2.5-flash", 
             contents=[imagem_objeto, prompt_texto]
         )
-        return chamada.text
+        
+        if chamada and chamada.text:
+            return chamada.text
+        else:
+            return "ERRO_GERADO: A inteligência artificial retornou uma resposta vazia."
     except Exception as erro_objeto:
+        # Retorna o erro real caso a chave de API esteja errada, sem saldo ou bloqueada
         return f"ERRO_GERADO: {str(erro_objeto)}"
 
 # --- AREA OPERACIONAL DO SITE ---
@@ -116,13 +127,3 @@ uploaded_file = st.file_uploader(
 
 if uploaded_file is not None:
     image = Image.open(uploaded_file)
-    st.image(image, caption="Gráfico Carregado", use_container_width=True)
-    
-    if st.button("🚀 Analisar com Frieza e Alta Precisão"):
-        if not lista_de_chaves:
-            st.error("Por favor, insira pelo menos uma Gemini API Key na barra lateral.")
-        else:
-            sucesso = False
-            # Loop simplificado e direto para evitar conflitos de espaçamento
-            for i, chave in enumerate(lista_de_chaves):
-                st.info(f"Processando análise com a chave {i+1}...")
