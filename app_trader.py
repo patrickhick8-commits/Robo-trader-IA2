@@ -1,6 +1,7 @@
 import streamlit as st
 from google import genai
 from PIL import Image
+import io
 
 # 1. Configuração da Página do Site Separado
 st.set_page_config(page_title="Agente IA Advanced - Matriz Suprema", page_icon="🤖", layout="centered")
@@ -96,9 +97,12 @@ Retorne o diagnóstico estruturado exatamente neste formato markdown limpo e des
 Seja frio, preciso e direto. Velocidade e precisão salvam bancas.
 """
 
-def executar_chamada_gemini(chave_api, imagem_objeto, prompt_texto):
+# Função de cache para segurar o processamento pesado e evitar que o botão perca o comando
+@st.cache_data
+def analisar_grafico_com_cache(chave_api, image_bytes, prompt_texto):
     try:
         client_objeto = genai.Client(api_key=chave_api)
+        imagem_objeto = Image.open(io.BytesIO(image_bytes))
         if imagem_objeto.mode != 'RGB':
             imagem_objeto = imagem_objeto.convert('RGB')
             
@@ -112,19 +116,14 @@ def executar_chamada_gemini(chave_api, imagem_objeto, prompt_texto):
     except Exception as erro_objeto:
         return f"ERRO_GERADO: {str(erro_objeto)}"
 
-# --- AREA OPERACIONAL FLUXO LINEAR (BLINDAGEM TOTAL) ---
+# --- AREA OPERACIONAL DO SITE ---
 
 uploaded_file = st.file_uploader(
     "Faça o upload do print do seu gráfico (M1):", 
     type=["png", "jpg", "jpeg"]
 )
 
-# Caso o usuário remova o arquivo ou a página recarregue, interrompe aqui de forma limpa
-if uploaded_file is None:
-    st.stop()
-
-image = Image.open(uploaded_file)
-st.image(image, caption="Gráfico Carregado com Sucesso", use_container_width=True)
-
-botao_clique = st.button("🚀 ANALISAR GRÁFICO AGORA")
-
+# Se não há arquivo, a página para aqui sem dar erros visuais ou quebras
+if uploaded_file is not None:
+    # Lê os bytes fixos do arquivo para salvar no cache
+    file_bytes = uploaded_file.read()
