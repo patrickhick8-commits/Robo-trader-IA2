@@ -24,7 +24,7 @@ PROMPT_TRADER = """
 [SYSTEM_ROLE] Você é um algoritmo de trading quantitativo focado em Opções Binárias (M1). Sua postura é de FRIEZA MÁXIMA, RIGOR ABSOLUTO E PRECISÃO CIRÚRGICA. Sua missão principal é eliminar falsos sinais de reversão gerados por indicadores esticados.
 
 [DIRETRIZ DE POSTURA: EVITAR LOSS POR CONTA DE RSI ESTICADO]
-ATENÇÃO: Em gráficos M1, o preço frequentemente continua subindo ou caindo mesmo com o RSI acima de 70 ou abaixo de 30. NUNCA envie uma ordem de reversão (PUT no topo ou CALL no fundo) simplesmente porque o RSI tocou ou cruzou essas lines. Isso é um erro fatal de momentum. Você deve esperar o gatilho correto de exaustão ou retorno.
+ATENÇÃO: Em gráficos M1, o preço frequentemente continua subindo ou caindo mesmo com o RSI acima de 70 ou abaixo de 30. NUNCA envie uma ordem de reversão (PUT no topo ou CALL no fundo) simplesmente porque o RSI tocou ou cruzou essas linhas. Isso é um erro fatal de momentum. Você deve esperar o gatilho correto de exaustão ou retorno.
 
 [PASSO 1: IDENTIFICAÇÃO OBRIGATÓRIA DO AMBIENTE]
 Escaneie textualmente a imagem em busca do nome do ativo (ex: EUR/USD, BTC/USD, EUR/GBP-OTC).
@@ -58,7 +58,7 @@ Avalie o gráfico com base estrita na fusão dos seguintes pilares operacionais 
 3. PULLBACK EM TENDÊNCIA DE ALTA, BAIXA E LATERAL COM RETRAÇÃO COM PAVIO:
    - Aguarde o preço retornar para testar a zona rompida. O teste deve deixar pavio nítido de retração e o RSI deve estar retornando de forma saudável, sem força contrária.
 
-4. FLUXO DE CONTINUIDADE DA REVERSÃO DO MERCADO:
+4. FLUXO DE CONTINUIDADE PÓS-REVERSÃO DO MERCADO:
    - Após a virada estrutural confirmada, pegue o fluxo a favor da nova direção em busca do próximo alvo do preço.
 
 [PASSO 6: PROTOCOLO DE FILTRAGEM DE RUÍDO E REGRAS DE BLOQUEIO]
@@ -79,7 +79,7 @@ Retorne o diagnóstico estruturado exatamente neste formato markdown limpo e des
 🟥🟩 DIREÇÃO EXATA DA ORDEM: [COMPRA / VENDA / OPERAÇÃO ABORTADA]
 💰 GERENCIAMENTO DE LOTE RECOMENDADO: [SOROS / ENTRADA FIXA / MÃO LEVE / PARADA OBRIGATÓRIA]
 
-🧠 ESTRATÉGIA COMBINADA ATIVADA: [Descreva minuciosamente qual combinação exata ocorreu na tela: se foi Reversão com bastante respeito + Pavio, se foi Rompimento + Fluxo, se foi Pullback + Retração Longa de Pavio ou se foi Fluxo Reversão analisando o alvo do preço]
+🧠 ESTRATÉGIA COMBINADA ATIVADA: [Descreva minuciosamente qual combinação exata ocorreu na tela: se foi Reversão com bastante respeito + Pavio, se foi Rompimento + Fluxo, se foi Pullback + Retração Longa de Pavio ou se foi Fluxo Pós-Reversão analisando o alvo do preço]
 🌐 MODO DE MERCADO DETECTADO: [MERCADO ABERTO ou MERCADO OTC]
 📊 CONTEXTO DO MERCADO MACRO: [TENDÊNCIA MAJORITÁRIA DE ALTA / TENDÊNCIA MAJORITÁRIA DE BAIXA / CONSOLIDAÇÃO LATERAL SEVERA]
 📈 LEITURA DO RSI PADRÃO E GATILHO CONTRA MOMENTUM: [Descreva a posição do RSI, a INCLINAÇÃO ANGULAR e comprove se ele está curvando/retornando ou se está esticado gerando bloqueio]
@@ -91,7 +91,7 @@ Retorne o diagnóstico estruturado exatamente neste formato markdown limpo e des
 - Comportamento Gráfico do RSI (Filtro Anti-Loss): [Explique como o filtro de inclinação ou curva do RSI salvou a operação de tomar um loss por rompimento de momentum]
 - Verificação de Bloqueios (Retração Curta e Ruídos): [Justifique se a retração foi longa e forte o suficiente para evitar o bloqueio de retração curta]
 - Mapeamento das Regiões de Respeito (S/R, LTA/LTB): [Descreva as microzonas]
-- Diagnóstico do Fluxo de Continuadade ou Pullback (Cor, Impulso e Corpo): [Análise anatômica das velas, pavios e rompimentos]
+- Diagnóstico do Fluxo de Continuidade ou Pullback (Cor, Impulso e Corpo): [Análise anatômica das velas, pavios e rompimentos]
 - Posicionamento da Média Móvel (EMA 9): [Relação do preço com a EMA 9]
 - Justificativa da Gestão de Lote sob Frieza Máxima: [Por que o lote sugerido se adequa a esses fatores rígidos]
 
@@ -146,6 +146,6 @@ if uploaded_file is not None:
             if not resposta_sucesso:
                 st.error("❌ Todas as chaves de contingência falharam. Verifique os limites ou a validade das chaves no console.")
             else:
-                # Verificação explícita e isolada para impedir quebras de indentação
+                # Verificação explícita e isolada para impedir quebras de identação
                 validar_aborto = "OPERAÇÃO ABORTADA" in resultado or "FILTRO ATIVADO" in resultado
                 
