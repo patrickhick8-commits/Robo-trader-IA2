@@ -63,7 +63,7 @@ Aplique uma barreira rigorosa contra manipulações ordinárias, abortando a ope
 
 [PASSO 7: CRONOMETRAGEM DE EXECUÇÃO E GESTÃO DE LOTE]
 - Projete o HORÁRIO DO CLIQUE rigorosamente para uma janela futura de **2 a 5 minutos** à frente do relógio visível da plataforma. Expiração fixa de 1 minuto para fechar na mesma vela do clique projetado.
-- Defina a recomendação de capital proporcionalmente à taxa: Soros (90-95%), Mão Fixa (85-89%), Mão Leve (80-84%) ou Parada Obrigatória (Abortada).
+- Defina a recomendação de capital proporcionalmente à taxa: Soros (90-95%), Mão Fixa (85-89%), Mão Leve (80-84%) or Parada Obrigatória (Abortada).
 
 Retorne o diagnóstico estruturado exatamente neste formato markdown limpo e destacado:
 
@@ -97,12 +97,9 @@ Retorne o diagnóstico estruturado exatamente neste formato markdown limpo e des
 Seja frio, preciso e direto. Velocidade e precisão salvam bancas.
 """
 
-# Função de cache para segurar o processamento pesado e evitar que o botão perca o comando
-@st.cache_data
-def analisar_grafico_com_cache(chave_api, image_bytes, prompt_texto):
+def executar_chamada_gemini(chave_api, imagem_objeto, prompt_texto):
     try:
         client_objeto = genai.Client(api_key=chave_api)
-        imagem_objeto = Image.open(io.BytesIO(image_bytes))
         if imagem_objeto.mode != 'RGB':
             imagem_objeto = imagem_objeto.convert('RGB')
             
@@ -116,14 +113,17 @@ def analisar_grafico_com_cache(chave_api, image_bytes, prompt_texto):
     except Exception as erro_objeto:
         return f"ERRO_GERADO: {str(erro_objeto)}"
 
-# --- AREA OPERACIONAL DO SITE ---
+# --- AREA OPERACIONAL DO SITE COM MEMÓRIA SESSION_STATE ---
 
 uploaded_file = st.file_uploader(
     "Faça o upload do print do seu gráfico (M1):", 
     type=["png", "jpg", "jpeg"]
 )
 
-# Se não há arquivo, a página para aqui sem dar erros visuais ou quebras
+# Salva o arquivo na memória interna para o botão não apagá-lo ao ser clicado
 if uploaded_file is not None:
-    # Lê os bytes fixos do arquivo para salvar no cache
-    file_bytes = uploaded_file.read()
+    st.session_state['imagem_trader'] = uploaded_file.read()
+
+# Renderiza a imagem e o botão fixamente se o arquivo existir na memória do site
+if 'imagem_trader' in st.session_state:
+    image_preview = Image.open(io.BytesIO(st.session_state['imagem_trader']))
