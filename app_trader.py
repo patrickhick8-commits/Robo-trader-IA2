@@ -48,7 +48,7 @@ Busque por confluências de Price Action em Suporte, Resistência (S/R horizonta
    - Após o rompimento confirmado de uma região (S/R horizontal ou LTA/LTB), aguarde o preço fazer o movimento de correção (retorno à taxa rompida). Valide a entrada quando o preço tocar na região de antigo suporte/resistência e deixar pavio nítidos de retração e rejeição física da taxa, operando a favor do sentido original do rompimento.
 
 4. FLUXO DE CONTINUIDADE PÓS-REVERSÃO DO MERCADO ANALISANDO A REGIÃO QUE O PREÇO ESTA OU IRA BUSCAR:
-   - Identifique falhas estruturais micro ou macro (topos/fundos duplos, quebras de estrutura). Assim que o mercado reverter e confirmar o primeiro candle sólido alinhado à nova direção, analise graficamente a projeção espacial da região limpa. O preço deve ter espaço livre para buscar o próximo alvo visível (próximo S/R ou topo/fundo isolado) antes de sofrer nova barreira.
+   - Identifique falhas estruturais micro ou macro (topos/fundos duplos, quebras de estrutura). Assim que o mercado reverter e confirmar o primeiro candle sólido alinhado à nova direção, analise graficamente a seção de alvo do preço. O preço deve ter espaço livre para buscar o próximo alvo visível (próximo S/R ou topo/fundo isolado) antes de sofrer nova barreira.
 
 [PASSO 5: PROTOCOLO DE FILTRAGEM DE RUÍDO (NÍVEL: MÉDIO PARA ALTO)]
 Aplique uma barreira rigorosa contra manipulações ordinárias, abortando a operação em cenários de alta instabilidade:
@@ -109,8 +109,7 @@ def executar_chamada_gemini(chave_api, imagem_objeto, prompt_texto):
         
         if chamada and chamada.text:
             return chamada.text
-        else:
-            return "ERRO_GERADO: A inteligência artificial retornou uma resposta vazia."
+        return "ERRO_GERADO: A inteligência artificial retornou uma resposta vazia."
     except Exception as erro_objeto:
         return f"ERRO_GERADO: {str(erro_objeto)}"
 
@@ -129,3 +128,4 @@ if uploaded_file is not None:
         if not lista_de_chaves:
             st.error("Por favor, insira pelo menos uma Gemini API Key na barra lateral.")
         else:
+            sucesso = False
