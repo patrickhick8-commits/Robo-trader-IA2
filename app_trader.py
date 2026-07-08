@@ -19,14 +19,14 @@ chaves_input = st.sidebar.text_input("Cole suas Gemini API Keys aqui:", type="pa
 # Transforma o texto em uma lista de chaves limpas
 lista_de_chaves = [chave.strip() for chave in chaves_input.split(";") if chave.strip()]
 
-# PROMPT MESTRE RECONFIGURADO - OPERACIONAIS ISOLADOS E COMBINAÇÕES UNIFICADAS
+# PROMPT MESTRE RECONFIGURADO - REVERSÃO PROJETADA POR VELAS E TEMPO EXPANDIDO
 PROMPT_TRADER = """
 [SYSTEM_ROLE] Você é um algoritmo de trading quantitativo focado em Opções Binárias. Sua postura é de FRIEZA MÁXIMA, RIGOR ABSOLUTO E PRECISÃO CIRÚRGICA. Sua missão principal é prever a movimentação futura dos candles com base no print do gráfico fornecido, calculando o tempo exato para o clique institucional.
 
 [DIRETRIZ DE POSTURA: EVITAR LOSS POR CONTA DE RSI ESTICADO]
 ATENÇÃO: Em gráficos rápidos, o preço frequentemente continua a tendência mesmo com o RSI em zonas extremas (acima de 70 ou abaixo de 30). NUNCA envie uma ordem de reversão imediata simplesmente por toque de linha. Aguarde o momento e o alvo gráfico corretos projetados no tempo.
 
-[PASSO 1: IDENTIFICAÇÃO OBRIGATÓLA DO AMBIENTE]
+[PASSO 1: IDENTIFICAÇÃO OBRIGATÓRIA DO AMBIENTE]
 Escaneie textualmente a imagem em busca do nome do ativo (ex: EUR/USD, BTC/USD, EUR/GBP-OTC).
 - Identifique se o ativo é [MERCADO ABERTO REAL] ou [ALGORITMO OTC].
 
@@ -71,11 +71,7 @@ Retorne o diagnóstico estruturado exatamente neste formato markdown limpo e des
 🟥🟩 DIREÇÃO EXATA DA ORDEM: [COMPRA / VENDA / OPERAÇÃO ABORTADA]
 💰 GERENCIAMENTO DE LOTE RECOMENDADO: [SOROS / ENTRADA FIXA / MÃO LEVE / PARADA OBRIGATÓRIA]
 
-🧠 ESTRATÉGIA E OPERACIONAL COMBINADO ATIVADO: 
-- Especifique com precisão qual tipo de operacional isolado foi ativado na tela. Exemplos exatos permitidos: 'OPERACIONAL DE REVERSÃO EM REGIÃO', 'OPERACIONAL DE FLUXO DE VELA EM TENDÊNCIA', 'OPERACIONAL DE PULLBACK' ou 'OPERACIONAL DE FLUXO DE CONTINUIDADE'.
-- Explique em detalhes os gatilhos e a região que o preço está ou irá buscar.
-- Descreva minuciosamente qual combinação exata ocorreu na tela: se foi Reversão com bastante respeito + Pavio, se foi Rompimento + Fluxo, se foi Pullback + Retração Longa de Pavio ou se foi Fluxo Reversão analisando o alvo do preço.
-
+🧠 ESTRATÉGIA COMBINADA ATIVADA: [Descreva detalhadamente se foi Reversão Projetada por contagem de candles futuros, Fluxo de Continuidade (4+ velas) ou Fluxo para Retração com pavios]
 🌐 MODO DE MERCADO DETECTADO: [MERCADO ABERTO ou MERCADO OTC]
 📊 CONTEXTO DO MERCADO MACRO: [TENDÊNCIA MAJORITÁRIA DE ALTA / TENDÊNCIA MAJORITÁRIA DE BAIXA / CONSOLIDAÇÃO LATERAL SEVERA]
 📈 LEITURA DO RSI PADRÃO E GATILHO CONTRA MOMENTUM: [Descreva a posição do RSI e a perda de angulação prevista para o momento do clique futuro]
@@ -83,7 +79,7 @@ Retorne o diagnóstico estruturado exatamente neste formato markdown limpo e des
 
 🔍 DETALHAMENTO ANATÔMICO, ESTRUTURAL E TÉCNICO (OPORTUNIDADES IDENTIFICADAS):
 - Ambiente Identificado: [MERCADO ABERTO ou OTC]
-- Avaliação da Trajetória do Preço pós-Print: [Explique a coleção de movimentos espaciais dos próximos minutos]
+- Avaliação da Trajetória do Preço pós-Print: [Explique a projeção de movimentação espacial dos próximos minutos]
 - Análise de Reversão em Zona Alvo: [Justificativa técnica de mudança para o operacional de reversão assim que atingir a microzona]
 - Padrão Sequencial de Cores: [Confirmação se existem 4+ velas da mesma cor com poucos pavios para fluxo]
 - Densidade e Comportamento dos Pavios: [Análise se há bastante pavio em candles médios confirmando fluxo para retração]
@@ -98,7 +94,10 @@ Seja frio, preciso e direto. Velocidade e precisão salvam bancas.
 def executar_chamada_gemini(chave_api, imagem_objeto, prompt_comando):
     """Executa a chamada unificada usando a biblioteca moderna google-genai"""
     try:
+        # Inicializa o cliente com a chave fornecida
         client = genai.Client(api_key=chave_api)
+        
+        # Realiza a chamada utilizando o modelo ideal para visão multimodal
         response = client.models.generate_content(
             model='gemini-2.5-flash',
             contents=[imagem_objeto, prompt_comando]
@@ -131,4 +130,5 @@ if uploaded_file and lista_de_chaves:
             
             if not sucesso:
                 st.error("Todas as chaves de contingência fornecidas falharam. Verifique os limites ou status das chaves na Google AI Studio.")
-                
+elif not lista_de_chaves:
+    st.info("Aguardando a inserção de pelo menos uma Gemini API Key válida na barra lateral.")
