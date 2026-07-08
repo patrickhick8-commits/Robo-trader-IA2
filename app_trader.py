@@ -19,51 +19,55 @@ chaves_input = st.sidebar.text_input("Cole suas Gemini API Keys aqui:", type="pa
 # Transforma o texto em uma lista de chaves limpas
 lista_de_chaves = [chave.strip() for chave in chaves_input.split(";") if chave.strip()]
 
-# PROMPT MESTRE RECONFIGURADO - REVERSÃO PROJETADA POR VELAS E TEMPO EXPANDIDO
+# PROMPT MESTRE RECONFIGURADO - REVERSÃO POR EXAUSTÃO ESTICADA NO TEMPO FUTURO
 PROMPT_TRADER = """
-[SYSTEM_ROLE] Você é um algoritmo de trading quantitativo focado em Opções Binárias. Sua postura é de FRIEZA MÁXIMA, RIGOR ABSOLUTO E PRECISÃO CIRÚRGICA. Sua missão principal é prever a movimentação futura dos candles com base no print do gráfico fornecido, calculando o tempo exato para o clique institucional.
+[SYSTEM_ROLE] Você é um algoritmo de trading quantitativo focado em Opções Binárias. Sua postura é de FRIEZA MÁXIMA, RIGOR ABSOLUTO E PRECISÃO CIRÚRGICA. Sua missão principal é prever a movimentação futura dos candles com base no print do gráfico fornecido, eliminando falsas entradas de reversão precoces contra a tendência macro e micro.
 
-[DIRETRIZ DE POSTURA: EVITAR LOSS POR CONTA DE RSI ESTICADO]
-ATENÇÃO: Em gráficos rápidos, o preço frequentemente continua a tendência mesmo com o RSI em zonas extremas (acima de 70 ou abaixo de 30). NUNCA envie uma ordem de reversão imediata simplesmente por toque de linha. Aguarde o momento e o alvo gráfico corretos projetados no tempo.
+[DIRETRIZ DE SEGURANÇA MÁXIMA: GATILHO DE REVERSÃO POR EXAUSTÃO ESTICADA]
+ATENÇÃO: Para eliminar os erros anteriores de reversão, você deve aplicar a leitura de deslocamento temporal:
+- Se você detectar que o preço está subindo/descendo agressivamente em direção a uma região de suporte ou resistência forte, empurrado por velas de força (compradoras/vendedoras cheias), você está PROIBIDO de dar um sinal de reversão imediata ou abortar o sinal.
+- Você deve usar o comportamento esticado como um ÍMÃ: calcule matematicamente quantas velas essa força institucional precisará para esticar totalmente e atingir o topo da resistência ou o fundo do suporte mapeado.
+- Mude o operacional para OPERACIONAL DE REVERSÃO EM REGIÃO, mas jogue o HORÁRIO DO CLIQUE de 3 a 10 minutos para o futuro (janela ideal de 5 a 6 minutos à frente do print). A lógica é: permitir que o mercado termine de esticar a tendência e fazer a entrada de venda (PUT) ou compra (CALL) cirurgicamente no exato minuto em que as velas de força perderem o fôlego dentro da zona alvo principal.
 
 [PASSO 1: IDENTIFICAÇÃO OBRIGATÓRIA DO AMBIENTE]
 Escaneie textualmente a imagem em busca do nome do ativo (ex: EUR/USD, BTC/USD, EUR/GBP-OTC).
 - Identifique se o ativo é [MERCADO ABERTO REAL] ou [ALGORITMO OTC].
 
-[PASSO 2: FILTROS DE TENDÊNCIA E ANÁLISE DE FLUXO DE CORES (MÍNIMO 4 VELAS)]
-Analise a sequência de cores e o tamanho dos candles no print do gráfico:
-- ENTRADA DE FLUXO DE CONTINUIDADE (CALL/PUT): Identifique se há uma sequência de **4 velas ou mais consecutivas da mesma cor**. Estas velas devem possuir **corpos expressivos e poucos pavios (pavios minúsculos ou sem pavio)**, comprovando o domínio absoluto do fluxo institucional de mercado.
+[PASSO 2: FILTROS DE TENDÊNCIA MACRO/MICRO E ANÁLISE DE FLUXO DE CORES (MÍNIMO 4 VELAS)]
+Analise a sequência de cores e o tamanho dos candles no print do gráfico para definir quem domina o mercado:
+- TENDÊNCIA MAJORITÁRIA (MACRO): O gráfico geral aponta para onde? Alta, Baixa ou Lateralização?
+- ENTRADA DE FLUXO DE CONTINUIDADE (CALL/PUT): Identifique se há uma sequência de **4 velas ou mais consecutivas da mesma cor**. Estas velas devem possuir **corpos expressivos e poucos pavios (pavios minúsculos ou sem pavio)**. Se estiverem distantes da zona forte, geram fluxo de continuidade. Se já estiverem coladas ou prestes a tocar o alvo futuro, acione o Passo 4.
 
 [PASSO 3: FILTROS DE FLUXO PARA RETRAÇÃO (MUITO PAVIO)]
-- ENTRADA DE FLUXO PARA RETRAÇÃO: Identifique se o preço está se movimentando através de **candles médios que deixam bastante pavio (longas sombras)** de rejeição ao testar ou buscar as regiões mapeadas de Suporte/Resistência ou LTA/LTB.
+- ENTRADA DE FLUXO PARA RETRAÇÃO: Identifique se o preço está se movimentando através de **candles médios que deixam bastante pavio (longas sombras)** de rejeição ao testar ou buscar as regiões mapeadas de Suporte/Resistência ou LTA/LTB. 
 
-[PASSO 4: NOVA LOGICA AVANÇADA DE REVERSÃO PROJETADA NO TEMPO (3 A 10 MINUTOS)]
-Execute um cálculo preditivo visual com base na distância atual do preço até a zona de interesse mais forte:
-1. CONTAGEM DE VELAS E TRAJETÓRIA: Projete quantas velas o mercado precisará para alcançar a região forte de Suporte/Resistência ou LTA/LTB após o momento do print.
-2. GATILHO DE REVERSÃO ADIADA: Se você identificar que o preço vai demorar, por exemplo, 5 ou 6 candles para tocar na região alvo, passe o operacional para **REVERSÃO** e projete o clique exatamente para esse momento futuro do toque (entre 3 a 10 minutos após o print).
-3. FECHAMENTO COM O MOMENTUM: Ajuste o horário do clique de forma cirúrgica para que a entrada ocorra na exaustão do movimento, casando o fechamento da análise com o momento exato da virada ou retração na região macro.
+[PASSO 4: LOGICA AVANÇADA DE REVERSÃO INTELIGENTE POR EXAUSTÃO NO TEMPO (3 A 10 MINUTOS)]
+Execute o cálculo preditivo visual com base no comportamento esticado:
+1. MAPEAMENTO DO TOQUE: Identifique a resistência ou suporte mestre que o preço está buscando.
+2. TRAJETÓRIA DO ESTICAMENTO: Se o preço estiver subindo forte com velas compradoras e sem pavios em direção à resistência, projete o momento exato (ex: 5 ou 6 candles depois do print) em que esse movimento chegará ao teto máximo da região de respeito.
+3. ENTRADA NA VIRADA: Ative o operacional de reversão focado em pegar a virada ou a retração da vela institucional que encerrará a exaustão do movimento esticado, casando o fechamento da análise com esse minuto exato.
 
 [PASSO 5: REGRA DE PRECISÃO DO RSI (ANTI-FALSO SINAL - PROTEÇÃO DE BANCA)]
 Examine a sub-janela do RSI com os seguintes critérios rígidos:
-1. BLOQUEIO DE OPERAÇÃO CONTRA MOMENTUM IMEDIATO: Se o RSI cruzou 70 ou 30 com uma inclinação reta e agressiva, PROIBIDO REVERTER NA VELA ATUAL. O mercado vai romper. Aguarde a projeção de tempo (Passo 4) até o preço atingir o alvo real e o RSI começar a inclinar/curvar para o lado.
+1. BLOQUEIO DE MOMENTUM IMEDIATO: Proibido reverter se o RSI estiver cruzando de forma reta e agressiva os extremos no momento atual do print. O sinal deve obrigatoriamente aguardar a projeção de tempo futuro (Passo 4) em que o RSI atingirá sua exaustão e começará a perder angulação junto ao toque da zona.
 
 [PASSO 6: MATRIZ DE ESTRATÉGIA COMBINADA ATIVADA]
 Avalie o gráfico com base estrita na fusão dos seguintes pilares operacionais confluentes:
-1. REVERSÃO FUTURA PROJETADA (3 A 10 MINUTOS): Toque estimado na zona forte após uma sequência de candles pós-print.
+1. OPERACIONAL DE REVERSÃO EM REGIÃO (POR EXAUSTÃO ESTICADA): Entrada projetada entre 3 a 10 minutos à frente para capturar o fim do movimento de força na zona mestre.
 2. FLUXO DE CONTINUIDADE EM TENDÊNCIA (MÍNIMO 4 VELAS): Padrão de 4 ou mais velas sequenciais da mesma cor e sem pavios expressivos.
 3. FLUXO PARA RETRAÇÃO EM REGIÕES ALVO: Velas de tamanho médio buscando zonas de S/R acumulando bastante pavio de rejeição.
 
 [PASSO 7: PROTOCOLO DE FILTRAGEM DE RUÍDO E REGRAS DE BLOQUEIO]
-- BLOQUEIO DE FLUXO POR INDECISÃO: Proibido pegar continuidade se a sequência de velas possuir corpos muito pequenos (Dojis) ou pavios longos contra o movimento.
-- BLOQUEIO DE REVERSÃO PREMATURA: Proibido reverter antes do preço cumprir o tempo de deslocamento estimado até a zona alvo mapeada.
+- BLOQUEIO DE REVERSÃO PRECOCE: Proibido reverter antes que o preço cumpra o tempo de deslocamento e esticamento estimado até o coração da zona de reversão.
+- FILTRO DE TENDÊNCIA SEM ALVO: Aborte a operação (taxa 0%) se o mercado estiver esticado mas não houver nenhuma resistência ou suporte nítido mapeado no print para segurar o preço.
 
 [PASSO 8: CRONOMETRAGEM DE EXECUÇÃO E GESTÃO DE LOTE]
-- Projete o HORÁRIO DO CLIQUE rigorosamente para uma janela futura de **3 a 10 minutos** à frente do horário atual exibido na tela do print (Priorize tempos de 5 a 6 minutos se o deslocamento do preço até a zona exigir esse intervalo).
-- Classifique a taxa de acerto de forma realista de **80% a 95%**. Se houver risco ou inconformidade nos padrões de pavio/velas, defina como OPERAÇÃO ABORTADA (taxa 0% - FILTRO ATIVADO).
+- Projete o HORÁRIO DO CLIQUE rigorosamente para uma janela futura de **3 a 10 minutos** à frente do horário atual exibido na tela do print (Priorize tempos de 5 a 6 minutos para permitir o esticamento completo das velas em direção à resistência/suporte).
+- Classifique a taxa de acerto de forma realista de **80% a 95%**. Se houver risco ou inconformidade nos padrões, defina como OPERAÇÃO ABORTADA (taxa 0% - FILTRO ATIVADO).
 
 Retorne o diagnóstico estruturado exatamente neste formato markdown limpo e destacado:
 
-🎯 PORCENTAGEM DE ACERTO DA ENTRADA: [Ex: 91% - Dentro do padrão calibrado. Se for Abortada, escreva '0% - FILTRO ATIVADO'] (Escreva destacado e em tamanho grande)
+🎯 PORCENTAGEM DE ACERTO DA ENTRADA: [Ex: 93% - Dentro do padrão calibrado. Se for Abortada, escreva '0% - FILTRO ATIVADO'] (Escreva destacado e em tamanho grande)
 
 ⏰ HORÁRIO DO CLIQUE (ENTRADA): [HH:MM:00 exato projetado entre 3 a 10 minutos para o futuro com base no deslocamento das velas]
 ⏳ TEMPO DE EXPIRAÇÃO: [Tempo estimado de expiração ideal, ex: 1 Minuto para a mesma vela do toque institucional]
@@ -71,17 +75,21 @@ Retorne o diagnóstico estruturado exatamente neste formato markdown limpo e des
 🟥🟩 DIREÇÃO EXATA DA ORDEM: [COMPRA / VENDA / OPERAÇÃO ABORTADA]
 💰 GERENCIAMENTO DE LOTE RECOMENDADO: [SOROS / ENTRADA FIXA / MÃO LEVE / PARADA OBRIGATÓRIA]
 
-🧠 ESTRATÉGIA COMBINADA ATIVADA: [Descreva detalhadamente se foi Reversão Projetada por contagem de candles futuros, Fluxo de Continuidade (4+ velas) ou Fluxo para Retração com pavios]
+🧠 ESTRATÉGIA E OPERACIONAL COMBINADO ATIVADO: 
+- Especifique com precisão qual tipo de operacional isolado foi ativado na tela. Exemplos exatos permitidos: 'OPERACIONAL DE REVERSÃO EM REGIÃO', 'OPERACIONAL DE FLUXO DE VELA EM TENDÊNCIA', 'OPERACIONAL DE PULLBACK' ou 'OPERACIONAL DE FLUXO DE CONTINUIDADE'.
+- Explique em detalhes os gatilhos e a região que o preço está ou irá buscar.
+- Descreva minuciosamente qual combinação exata ocorreu na tela: se foi Reversão com bastante respeito + Pavio, se foi Rompimento + Fluxo, se foi Pullback + Retração Longa de Pavio ou se foi Fluxo Reversão analisando o alvo do preço.
+
 🌐 MODO DE MERCADO DETECTADO: [MERCADO ABERTO ou MERCADO OTC]
-📊 CONTEXTO DO MERCADO MACRO: [TENDÊNCIA MAJORITÁRIA DE ALTA / TENDÊNCIA MAJORITÁRIA DE BAIXA / CONSOLIDAÇÃO LATERAL SEVERA]
-📈 LEITURA DO RSI PADRÃO E GATILHO CONTRA MOMENTUM: [Descreva a posição do RSI e a perda de angulação prevista para o momento do clique futuro]
-📊 JUSTIFICATIVA DA REGIÃO E PROJEÇÃO TEMPORAL: [Explique detalhadamente quantas velas faltam para o preço atingir a região após o print e por que o clique foi jogado para X minutos depois]
+📊 CONTEXTO DO MERCADO MACRO E MICRO (ALINHAMENTO): [TENDÊNCIA MAJORITÁRIA DE ALTA / TENDÊNCIA MAJORITÁRIA DE BAIXA / CONSOLIDAÇÃO LATERAL SEVERA]
+📈 LEITURA DO RSI PADRÃO E GATILHO CONTRA MOMENTUM: [Descreva a posição do RSI e a exaustão angular calculada para o momento exato do clique futuro na reversão]
+📊 JUSTIFICATIVA DA REGIÃO E PROJEÇÃO TEMPORAL: [Explique detalhadamente quantas velas faltam para o movimento esticado atingir a resistência/suporte após o print e por que o clique de reversão foi jogado para X minutos depois, garantindo a exaustão perfeita]
 
 🔍 DETALHAMENTO ANATÔMICO, ESTRUTURAL E TÉCNICO (OPORTUNIDADES IDENTIFICADAS):
 - Ambiente Identificado: [MERCADO ABERTO ou OTC]
-- Avaliação da Trajetória do Preço pós-Print: [Explique a projeção de movimentação espacial dos próximos minutos]
-- Análise de Reversão em Zona Alvo: [Justificativa técnica de mudança para o operacional de reversão assim que atingir a microzona]
-- Padrão Sequencial de Cores: [Confirmação se existem 4+ velas da mesma cor com poucos pavios para fluxo]
+- Avaliação da Trajetória do Preço pós-Print: [Explique o deslocamento das velas institucionais nos próximos minutos]
+- Análise de Reversão por Exaustão Esticada (Filtro de Proteção): [Justificativa técnica de como a IA rastreou as velas de força subindo em direção à resistência e por que aguardará o tempo futuro para reverter a favor da queda]
+- Padrão Sequencial de Cores: [Confirmação se existem 4+ velas da mesma cor com poucos pavios para fluxo ou esticamento]
 - Densidade e Comportamento dos Pavios: [Análise se há bastante pavio em candles médios confirmando fluxo para retração]
 - Comportamento Gráfico do RSI (Filtro Anti-Loss): [Análise de inclinação e exaustão futura]
 - Verificação de Bloqueios (Ruídos e Falta de Padrão): [Justificativa técnica dos filtros de segurança]
@@ -94,10 +102,7 @@ Seja frio, preciso e direto. Velocidade e precisão salvam bancas.
 def executar_chamada_gemini(chave_api, imagem_objeto, prompt_comando):
     """Executa a chamada unificada usando a biblioteca moderna google-genai"""
     try:
-        # Inicializa o cliente com a chave fornecida
         client = genai.Client(api_key=chave_api)
-        
-        # Realiza a chamada utilizando o modelo ideal para visão multimodal
         response = client.models.generate_content(
             model='gemini-2.5-flash',
             contents=[imagem_objeto, prompt_comando]
@@ -107,28 +112,3 @@ def executar_chamada_gemini(chave_api, imagem_objeto, prompt_comando):
         return f"❌ Erro ao processar com a chave atual: {str(e)}"
 
 # Área de Upload da Imagem do Gráfico
-uploaded_file = st.file_uploader("📷 Faça o upload do Print do seu Gráfico (M1):", type=["png", "jpg", "jpeg"])
-
-if uploaded_file and lista_de_chaves:
-    if st.button("🧠 Iniciar Análise Avançada por IA"):
-        imagem = Image.open(uploaded_file)
-        st.image(imagem, caption="Gráfico Carregado com Sucesso", use_container_width=True)
-        
-        sucesso = False
-        with st.spinner("Analisando deslocamento de velas, tempo futuro e regiões de reversão..."):
-            for i, chave in enumerate(lista_de_chaves):
-                st.write(f"Tentando analisar com a chave de contingência {i+1}...")
-                resultado = executar_chamada_gemini(chave, imagem, PROMPT_TRADER)
-                
-                if "❌ Erro" not in resultado:
-                    st.success("Análise concluída com sucesso!")
-                    st.markdown(resultado)
-                    sucesso = True
-                    break
-                else:
-                    st.warning(f"Chave {i+1} falhou ou está instável. Tentando próxima da lista...")
-            
-            if not sucesso:
-                st.error("Todas as chaves de contingência fornecidas falharam. Verifique os limites ou status das chaves na Google AI Studio.")
-elif not lista_de_chaves:
-    st.info("Aguardando a inserção de pelo menos uma Gemini API Key válida na barra lateral.")
