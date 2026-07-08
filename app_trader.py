@@ -110,8 +110,9 @@ if botao_enviar:
     else:
         conteudo_resposta = None
         imagem_pil = Image.open(arquivo_imagem)
+        
+        # Pega de forma segura estritamente a primeira chave da lista (formato string limpa)
         chave_operacional = lista_de_chaves[0]
         
         try:
             client = genai.Client(api_key=chave_operacional)
-            resposta = client.models.generate_content(model="gemini-2.5-flash", contents=[imagem_pil, PROMPT_TRADER])
