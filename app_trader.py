@@ -7,14 +7,10 @@ st.set_page_config(page_title="Agente IA Advanced - Matriz Suprema", page_icon="
 st.title("🤖 Agente IA Trader Pro: Matriz Suprema de Alta Assertividade")
 st.write("Fusão Total: Projeção de Tempo (Mesma Vela M1), SMC, Volume Oculto, Fluxo de Cores, RSI e S/R / LTA / LTB.")
 
-if "imagem_carregada" not in st.session_state:
-    st.session_state["imagem_carregada"] = None
-
 st.sidebar.markdown("### 🔑 Gerenciador de Chaves de Contingência")
 st.sidebar.info("Cole suas chaves protegidas separando-as por ponto e vírgula (;). Exemplo: chave1; chave2; chave3")
 
 chaves_input = st.sidebar.text_input("Cole suas Gemini API Keys aqui:", type="password")
-lista_de_chaves = [chave.strip() for chave in chaves_input.split(";") if chave.strip()]
 
 PROMPT_TRADER = """
 [SYSTEM_ROLE] Você é um algoritmo de trading quantitativo focado em Opções Binárias (M1). Sua postura é de FRIEZA MÁXIMA, RIGOR ABSOLUTO E PRECISÃO CIRÚRGICA. Sua missão principal é eliminar falsos sinais e identificar os padrões exatos de fluxo, retração e reversão avançada com base na imagem do gráfico.
@@ -47,7 +43,7 @@ Examine a sub-janela do RSI (Padrão 14 períodos com zonas 70/30 or 80/20) com 
 Avalie as velas (candles) do gráfico buscando estritamente as confluências abaixo:
 
 1. REGRA DE TRANSIÇÃO DINÂMICA (FLUXO PARA REVERSÃO APÓS 'X' VELAS):
-   - ATENÇÃO MÁXIMA: Se você identificar um fluxo atual (várias velas da mesma cor), mas calcular geometricamente que após tantas velas futuras (ex: 4, 5 ou 6 velas após o print) o preço finalmente irá tocar e testar uma região macro forte de S/R ou LTA/LTB, você deve TRANSMUTAR O OPERACIONAL. 
+   - ATENÇÃO MÁXIMA: Se você identificar um fluxo atual (várias velas da mesma cor), mas calcular geometricamente que após tantas velas futures (ex: 4, 5 ou 6 velas após o print) o preço finalmente irá tocar e testar uma região macro forte de S/R ou LTA/LTB, você deve TRANSMUTAR O OPERACIONAL. 
    - Ignore o fluxo de continuidade para o momento do clique e passe a análise para OPERACIONAL DE REVERSÃO, projetando a entrada exatamente para quando o preço esticar e atingir a zona alvo.
 
 2. REVERSÃO EM REGIÃO E EXAUSTÃO DA TENDÊNCIA:
@@ -76,7 +72,7 @@ Retorne o diagnóstico estruturado exatamente neste formato markdown limpo e des
 
 🎯 PORCENTAGEM DE ACERTO DA ENTRADA: [Ex: 84% ou 93% - Dentro do padrão calibrado. Se for Abortada, escreva '0% - FILTRO ATIVADO'] (Escreva destacado e em tamanho grande)
 
-⏰ HORÁRIO DO CLIQUE (ENTRADA): [HH:MM:00 exato projetado entre 3 a 10 minutos para o futuro (Dê preferência para 5 a 6 minutos à frente si o padrão encaixar)]
+⏰ HORÁRIO DO CLIQUE (ENTRADA): [HH:MM:00 exato projetado entre 3 a 10 minutos para o futuro (Dê preferência para 5 a 6 minutos à frente se o padrão encaixar)]
 ⏳ TEMPO DE EXPIRAÇÃO: 1 Minuto (Para fechar na mesma vela do clique)
 🏁 HORÁRIO DE FECHAMENTO DA ORDEM: [HH:MM:00 do fechamento real da vela]
 🟥🟩 DIREÇÃO EXATA DA ORDEM: [COMPRA / VENDA / OPERAÇÃO ABORTADA]
@@ -99,22 +95,22 @@ Retorne o diagnóstico estruturado exatamente neste formato markdown limpo e des
 Seja frio, preciso e direto. Velocidade e precisão salvam bancas.
 """
 
-st.markdown("### 📸 Upload do Print do Gráfico")
-arquivo_imagem = st.file_uploader("Selecione a captura de tela do gráfico:", type=["png", "jpg", "jpeg"])
+# Utilizando st.form para blindar o estado dos componentes e forçar a execução correta do botão
+with st.form(key="painel_trader_matriz"):
+    st.markdown("### 📸 Upload do Print do Gráfico")
+    arquivo_imagem = st.file_uploader("Selecione a captura de tela do gráfico:", type=["png", "jpg", "jpeg"])
+    
+    st.markdown("---")
+    botao_enviar = st.form_submit_button("🔍 ANALISAR GRÁFICO (MATRIZ SUPREMA)", use_container_width=True)
 
-if arquivo_imagem is not None:
-    st.session_state["imagem_carregada"] = Image.open(arquivo_imagem)
-
-if st.session_state["imagem_carregada"] is not None:
-    st.image(st.session_state["imagem_carregada"], caption="Gráfico Carregado", use_container_width=True)
-
-st.markdown("---")
-botao_analisar = st.button("🔍 ANALISAR GRÁFICO (MATRIZ SUPREMA)", use_container_width=True)
-
-if botao_analisar:
-    if st.session_state["imagem_carregada"] is None:
+if botao_enviar:
+    # A validação e o processamento da lista de chaves ocorrem de forma 100% segura APÓS o clique
+    lista_de_chaves = [chave.strip() for chave in chaves_input.split(";") if chave.strip()]
+    
+    if not arquivo_imagem:
         st.warning("⚠️ Por favor, faça o upload de um print do gráfico antes de analisar.")
-        st.stop()
-
-    if not lista_de_chaves:
+    elif not lista_de_chaves:
         st.error("❌ Configure ao menos uma Gemini API Key no menu lateral.")
+    else:
+        st.info("🔄 Iniciando processamento quantitativo...")
+        imagem_pil = Image.open(arquivo_imagem)
