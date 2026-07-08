@@ -109,13 +109,11 @@ if arquivo_imagem is not None:
     imagem_aberta = Image.open(arquivo_imagem)
     st.image(imagem_aberta, caption="Gráfico Carregado com Sucesso", use_container_width=True)
 
-def executar_chamada_gemini(chaves, imagem, prompt_base):
-    if not chaves:
+st.markdown("---")
+if st.button("🔍 ANALISAR GRÁFICO (MATRIZ SUPREMA)", use_container_width=True):
+    if imagem_aberta is None:
+        st.warning("⚠️ Por favor, faça o upload de um print do gráfico antes de iniciar a análise.")
+    elif not lista_de_chaves:
         st.error("❌ Nenhuma API Key foi configurada no menu lateral.")
-        return None
-    
-    # Execução sequencial direta e linear para evitar conflitos de indentação com try/except herdados
-    for index, chave in enumerate(chaves):
-        try:
-            client = genai.Client(api_key=chave)
-            conteudo = [imagem, prompt_base]
+    else:
+        analise_concluida = False
