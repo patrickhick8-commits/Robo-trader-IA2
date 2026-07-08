@@ -117,4 +117,4 @@ def executar_chamada_gemini(chaves, imagem, prompt_base):
         try:
             client = genai.Client(api_key=chave)
             conteudo = [imagem, prompt_base]
-            with st.spinner("Processando..."):
+            resposta = client.models.generate_content(model="gemini-2.5-flash", contents=conteudo)
