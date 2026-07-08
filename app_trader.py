@@ -60,7 +60,7 @@ Avalie as velas (candles) do gráfico buscando estritamente as confluências aba
 [PASSO 6: PROTOCOLO DE FILTRAGEM DE RUÍDO E REGRAS DE BLOQUEIO]
 - BLOQUEIO DE REVERSÃO PREMATURA: Se o preço estiver indo buscar uma zona forte, mas as velas anteriores forem gigantes e sem pavio, bloqueie a reversão (o mercado vai romper).
 - BLOQUEIO DE FLUXO CURTO: Proibido operar fluxo se a sequência tiver menos de 4 velas da mesma cor ou se as velas possuírem pavios longos de contração.
-- FILTRO DE RSI EM CONSOLIDAÇÃO INDEFINIDA: Aborte se o RSI estiver travado em linha reta perto da linha 50.
+- FILTRO DE RSI EM CONSOLIDAÇÃO INDEFINIDA: Aborte se o RSI estiver travado in linha reta perto da linha 50.
 
 [PASSO 7: CRONOMETRAGEM DE EXECUÇÃO E RECURSO ESPECIAL DE TIMING]
 - Projete o HORÁRIO DO CLIQUE rigorosamente para uma janela futura de **3 a 10 minutos** à frente do horário atual visto no print do gráfico. Expiração fixa de 1 minuto para fechar na mesma vela do clique projetado.
@@ -95,22 +95,25 @@ Retorne o diagnóstico estruturado exatamente neste formato markdown limpo e des
 Seja frio, preciso e direto. Velocidade e precisão salvam bancas.
 """
 
-# Utilizando st.form para blindar o estado dos componentes e forçar a execução correta do botão
-with st.form(key="painel_trader_matriz"):
-    st.markdown("### 📸 Upload do Print do Gráfico")
-    arquivo_imagem = st.file_uploader("Selecione a captura de tela do gráfico:", type=["png", "jpg", "jpeg"])
+st.markdown("### 📸 Upload do Print do Gráfico")
+arquivo_imagem = st.file_uploader("Selecione a captura de tela do gráfico:", type=["png", "jpg", "jpeg"])
+
+# Exibição IMEDIATA do gráfico assim que o upload é feito
+if arquivo_imagem is not None:
+    imagem_pil = Image.open(arquivo_imagem)
+    st.image(imagem_pil, caption="Visualização do Gráfico Carregado", use_container_width=True)
     
     st.markdown("---")
-    botao_enviar = st.form_submit_button("🔍 ANALISAR GRÁFICO (MATRIZ SUPREMA)", use_container_width=True)
+    botao_enviar = st.button("🔍 ANALISAR GRÁFICO (MATRIZ SUPREMA)", use_container_width=True)
 
-if botao_enviar:
-    # A validação e o processamento da lista de chaves ocorrem de forma 100% segura APÓS o clique
-    lista_de_chaves = [chave.strip() for chave in chaves_input.split(";") if chave.strip()]
-    
-    if not arquivo_imagem:
-        st.warning("⚠️ Por favor, faça o upload de um print do gráfico antes de analisar.")
-    elif not lista_de_chaves:
-        st.error("❌ Configure ao menos uma Gemini API Key no menu lateral.")
-    else:
-        st.info("🔄 Iniciando processamento quantitativo...")
-        imagem_pil = Image.open(arquivo_imagem)
+    if botao_enviar:
+        lista_de_chaves = [chave.strip() for chave in chaves_input.split(";") if chave.strip()]
+        
+        if not lista_de_chaves:
+            st.error("❌ Configure ao menos uma Gemini API Key no menu lateral.")
+        else:
+            # Extração segura da primeira string da lista
+            chave_operacional = lista_de_chaves[0]
+            
+            with st.spinner("Processando análise de mercado quantitativa..."):
+                try:
