@@ -108,6 +108,7 @@ Seja frio, preciso e direto. Velocidade e precisão salvam bancas.
 st.markdown("### 📸 Upload do Print do Gráfico")
 arquivo_imagem = st.file_uploader("Arraste ou selecione a captura de tela do seu gráfico (Formatos: PNG, JPG, JPEG):", type=["png", "jpg", "jpeg"])
 
+imagem_aberta = None
 if arquivo_imagem is not None:
     imagem_aberta = Image.open(arquivo_imagem)
     st.image(imagem_aberta, caption="Gráfico Carregado com Sucesso", use_container_width=True)
