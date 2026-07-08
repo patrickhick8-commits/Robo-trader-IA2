@@ -112,6 +112,6 @@ if botao_enviar:
         imagem_pil = Image.open(arquivo_imagem)
         chave_operacional = lista_de_chaves[0]
         
-        # Chamada direta e linear da API sem blocos complexos de repetição interna
         try:
             client = genai.Client(api_key=chave_operacional)
+            resposta = client.models.generate_content(model="gemini-2.5-flash", contents=[imagem_pil, PROMPT_TRADER])
