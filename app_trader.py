@@ -96,11 +96,9 @@ Retorne o diagnóstico estruturado exatamente neste formato markdown limpo e des
 Seja frio, preciso e direto. Velocidade e precisão salvam bancas.
 """
 
-# Utilizando um Form para blindar e garantir que o envio dos dados ocorra de uma vez só
 with st.form(key="formulario_trader"):
     st.markdown("### 📸 Upload do Print do Gráfico")
     arquivo_imagem = st.file_uploader("Selecione a captura de tela do gráfico:", type=["png", "jpg", "jpeg"])
-    
     st.markdown("---")
     botao_enviar = st.form_submit_button("🔍 ANALISAR GRÁFICO (MATRIZ SUPREMA)", use_container_width=True)
 
@@ -112,5 +110,8 @@ if botao_enviar:
     else:
         conteudo_resposta = None
         imagem_pil = Image.open(arquivo_imagem)
+        chave_operacional = lista_de_chaves[0]
         
-        with st.spinner("Processando análise de mercado quantitativa..."):
+        # Chamada direta e linear da API sem blocos complexos de repetição interna
+        try:
+            client = genai.Client(api_key=chave_operacional)
