@@ -83,7 +83,7 @@ Retorne o diagnóstico estruturado exatamente neste formato markdown limpo e des
 
 🔍 DETALHAMENTO ANATÔMICO, ESTRUTURAL E TÉCNICO (OPORTUNIDADES IDENTIFICADAS):
 - Ambiente Identificado: [MERCADO ABERTO ou OTC]
-- Avaliação da Trajetória do Preço pós-Print: [Explique a projeção de movimentação espacial dos próximos minutos]
+- Avaliação da Trajetória do Preço pós-Print: [Explique a coleção de movimentos espaciais dos próximos minutos]
 - Análise de Reversão em Zona Alvo: [Justificativa técnica de mudança para o operacional de reversão assim que atingir a microzona]
 - Padrão Sequencial de Cores: [Confirmação se existem 4+ velas da mesma cor com poucos pavios para fluxo]
 - Densidade e Comportamento dos Pavios: [Análise se há bastante pavio em candles médios confirmando fluxo para retração]
@@ -98,10 +98,7 @@ Seja frio, preciso e direto. Velocidade e precisão salvam bancas.
 def executar_chamada_gemini(chave_api, imagem_objeto, prompt_comando):
     """Executa a chamada unificada usando a biblioteca moderna google-genai"""
     try:
-        # Inicializa o cliente com a chave fornecida
         client = genai.Client(api_key=chave_api)
-        
-        # Realiza a chamada utilizando o modelo ideal para visão multimodal
         response = client.models.generate_content(
             model='gemini-2.5-flash',
             contents=[imagem_objeto, prompt_comando]
@@ -133,3 +130,5 @@ if uploaded_file and lista_de_chaves:
                     st.warning(f"Chave {i+1} falhou ou está instável. Tentando próxima da lista...")
             
             if not sucesso:
+                st.error("Todas as chaves de contingência fornecidas falharam. Verifique os limites ou status das chaves na Google AI Studio.")
+elif not lista_de_chaves:
