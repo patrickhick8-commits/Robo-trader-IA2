@@ -26,7 +26,7 @@ PROMPT_TRADER = """
 [DIRETRIZ DE POSTURA: EVITAR LOSS POR CONTA DE RSI ESTICADO]
 ATENÇÃO: Em gráficos rápidos, o preço frequentemente continua a tendência mesmo com o RSI em zonas extremas (acima de 70 ou abaixo de 30). NUNCA envie uma ordem de reversão imediata simplesmente por toque de linha. Aguarde o momento e o alvo gráfico corretos projetados no tempo.
 
-[PASSO 1: IDENTIFICAÇÃO OBRIGATÓRIA DO AMBIENTE]
+[PASSO 1: IDENTIFICAÇÃO OBRIGATÓLA DO AMBIENTE]
 Escaneie textualmente a imagem em busca do nome do ativo (ex: EUR/USD, BTC/USD, EUR/GBP-OTC).
 - Identifique se o ativo é [MERCADO ABERTO REAL] ou [ALGORITMO OTC].
 
@@ -131,4 +131,4 @@ if uploaded_file and lista_de_chaves:
             
             if not sucesso:
                 st.error("Todas as chaves de contingência fornecidas falharam. Verifique os limites ou status das chaves na Google AI Studio.")
-elif not lista_de_chaves:
+                
