@@ -78,7 +78,7 @@ Retorne o diagnóstico estruturado exatamente neste formato markdown limpo e des
 🧠 ESTRATÉGIA E OPERACIONAL COMBINADO ATIVADO: 
 - Especifique com precisão qual tipo de operacional isolado foi ativado na tela. Exemplos exatos permitidos: 'OPERACIONAL DE REVERSÃO EM REGIÃO', 'OPERACIONAL DE FLUXO DE VELA EM TENDÊNCIA', 'OPERACIONAL DE PULLBACK' ou 'OPERACIONAL DE FLUXO DE CONTINUIDADE'.
 - Explique em detalhes os gatilhos e a região que o preço está ou irá buscar.
-- Descreva minuciuamente qual combinação exata ocorreu na tela: se foi Reversão com bastante respeito + Pavio, se foi Rompimento + Fluxo, se foi Pullback + Retração Longa de Pavio ou se foi Fluxo Reversão analisando o alvo do preço.
+- Descreva minuciosamente qual combinação exata ocorreu na tela: se foi Reversão com bastante respeito + Pavio, se foi Rompimento + Fluxo, se foi Pullback + Retração Longa de Pavio ou se foi Fluxo Reversão analisando o alvo do preço.
 
 🌐 MODO DE MERCADO DETECTADO: [MERCADO ABERTO ou MERCADO OTC]
 📊 CONTEXTO DO MERCADO MACRO E MICRO (ALINHAMENTO): [TENDÊNCIA MAJORITÁRIA DE ALTA / TENDÊNCIA MAJORITÁRIA DE BAIXA / CONSOLIDAÇÃO LATERAL SEVERA]
@@ -111,4 +111,4 @@ def executar_chamada_gemini(chave_api, imagem_objeto, prompt_comando):
     except Exception as e:
         return f"❌ Erro ao processar com a chave atual: {str(e)}"
 
-# Área de Upload da Imagem do Gráfico (Fica visível o tempo todo)
+# Área de Upload da Imagem do Gráfico (Elemento independente e visível na raiz)
