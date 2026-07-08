@@ -7,7 +7,6 @@ st.set_page_config(page_title="Agente IA Advanced - Matriz Suprema", page_icon="
 st.title("🤖 Agente IA Trader Pro: Matriz Suprema de Alta Assertividade")
 st.write("Fusão Total: Projeção de Tempo (Mesma Vela M1), SMC, Volume Oculto, Fluxo de Cores, RSI e S/R / LTA / LTB.")
 
-# Inicialização persistente da imagem
 if "imagem_carregada" not in st.session_state:
     st.session_state["imagem_carregada"] = None
 
@@ -110,8 +109,11 @@ if st.session_state["imagem_carregada"] is not None:
     st.image(st.session_state["imagem_carregada"], caption="Gráfico Carregado", use_container_width=True)
 
 st.markdown("---")
-# O botão agora fica sempre visível na tela sem travar a renderização
 botao_analisar = st.button("🔍 ANALISAR GRÁFICO (MATRIZ SUPREMA)", use_container_width=True)
 
 if botao_analisar:
     if st.session_state["imagem_carregada"] is None:
+        st.warning("⚠️ Por favor, faça o upload de um print do gráfico antes de analisar.")
+    elif not lista_de_chaves:
+        st.error("❌ Configure ao menos uma Gemini API Key no menu lateral.")
+    else:
