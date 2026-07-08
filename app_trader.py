@@ -108,11 +108,9 @@ if botao_enviar:
     elif not lista_de_chaves:
         st.error("❌ Configure ao menos uma Gemini API Key no menu lateral.")
     else:
-        conteudo_resposta = None
+        # Extração segura da primeira chave como string de texto puro
+        chave_limpa = str(lista_de_chaves[0])
         imagem_pil = Image.open(arquivo_imagem)
         
-        # Correção Crítica: Extrai o primeiro item textual limpo da lista para evitar SyntaxError
-        chave_operacional = str(lista_de_chaves[0])
-        
-        try:
-            client = genai.Client(api_key=chave_operacional)
+        # Chamada direta e linear da API sem estruturas try/except complexas para blindar o código
+        client = genai.Client(api_key=chave_limpa)
