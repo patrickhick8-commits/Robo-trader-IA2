@@ -2,13 +2,12 @@ import streamlit as st
 from google import genai
 from PIL import Image
 
-# Configuração da Página do Site Separado
 st.set_page_config(page_title="Agente IA Advanced - Matriz Suprema", page_icon="🤖", layout="centered")
 
 st.title("🤖 Agente IA Trader Pro: Matriz Suprema de Alta Assertividade")
 st.write("Fusão Total: Projeção de Tempo (Mesma Vela M1), SMC, Volume Oculto, Fluxo de Cores, RSI e S/R / LTA / LTB.")
 
-# Inicialização das variáveis de estado para não sumirem no recarregamento da página
+# Inicialização persistente da imagem
 if "imagem_carregada" not in st.session_state:
     st.session_state["imagem_carregada"] = None
 
@@ -104,13 +103,15 @@ Seja frio, preciso e direto. Velocidade e precisão salvam bancas.
 st.markdown("### 📸 Upload do Print do Gráfico")
 arquivo_imagem = st.file_uploader("Selecione a captura de tela do gráfico:", type=["png", "jpg", "jpeg"])
 
-# Salva a imagem na sessão para ela nunca sumir da tela
 if arquivo_imagem is not None:
     st.session_state["imagem_carregada"] = Image.open(arquivo_imagem)
 
-# Se houver imagem na sessão, ela é exibida continuamente para o usuário
 if st.session_state["imagem_carregada"] is not None:
-    st.image(st.session_state["imagem_carregada"], caption="Gráfico Ativo", use_container_width=True)
+    st.image(st.session_state["imagem_carregada"], caption="Gráfico Carregado", use_container_width=True)
 
 st.markdown("---")
-# Botão livre fora de formulários para evitar que o Streamlit ignore o clique
+# O botão agora fica sempre visível na tela sem travar a renderização
+botao_analisar = st.button("🔍 ANALISAR GRÁFICO (MATRIZ SUPREMA)", use_container_width=True)
+
+if botao_analisar:
+    if st.session_state["imagem_carregada"] is None:
