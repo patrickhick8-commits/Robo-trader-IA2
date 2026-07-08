@@ -114,6 +114,7 @@ botao_analisar = st.button("🔍 ANALISAR GRÁFICO (MATRIZ SUPREMA)", use_contai
 if botao_analisar:
     if st.session_state["imagem_carregada"] is None:
         st.warning("⚠️ Por favor, faça o upload de um print do gráfico antes de analisar.")
-    elif not lista_de_chaves:
+        st.stop()
+
+    if not lista_de_chaves:
         st.error("❌ Configure ao menos uma Gemini API Key no menu lateral.")
-    else:
