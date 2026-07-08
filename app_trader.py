@@ -1,6 +1,5 @@
 import streamlit as st
 from google import genai
-from google.genai import types
 from PIL import Image
 
 st.set_page_config(page_title="Agente IA Advanced - Matriz Suprema", page_icon="🤖", layout="centered")
@@ -12,7 +11,6 @@ st.sidebar.markdown("### 🔑 Gerenciador de Chaves de Contingência")
 st.sidebar.info("Cole suas chaves protegidas separando-as por ponto e vírgula (;). Exemplo: chave1; chave2; chave3")
 
 chaves_input = st.sidebar.text_input("Cole suas Gemini API Keys aqui:", type="password")
-
 lista_de_chaves = [chave.strip() for chave in chaves_input.split(";") if chave.strip()]
 
 PROMPT_TRADER = """
@@ -98,20 +96,21 @@ Retorne o diagnóstico estruturado exatamente neste formato markdown limpo e des
 Seja frio, preciso e direto. Velocidade e precisão salvam bancas.
 """
 
-st.markdown("### 📸 Upload do Print do Gráfico")
-arquivo_imagem = st.file_uploader("Arraste ou selecione a captura de tela do seu gráfico (Formatos: PNG, JPG, JPEG):", type=["png", "jpg", "jpeg"])
+# Utilizando um Form para blindar e garantir que o envio dos dados ocorra de uma vez só
+with st.form(key="formulario_trader"):
+    st.markdown("### 📸 Upload do Print do Gráfico")
+    arquivo_imagem = st.file_uploader("Selecione a captura de tela do gráfico:", type=["png", "jpg", "jpeg"])
+    
+    st.markdown("---")
+    botao_enviar = st.form_submit_button("🔍 ANALISAR GRÁFICO (MATRIZ SUPREMA)", use_container_width=True)
 
-if arquivo_imagem is not None:
-    st.session_state["imagem_grafico"] = Image.open(arquivo_imagem)
-    st.image(st.session_state["imagem_grafico"], caption="Gráfico Carregado com Sucesso", use_container_width=True)
-
-st.markdown("---")
-click_analisar = st.button("🔍 ANALISAR GRÁFICO (MATRIZ SUPREMA)", use_container_width=True)
-
-if click_analisar:
-    if "imagem_grafico" not in st.session_state:
-        st.warning("⚠️ Por favor, faça o upload de um print do gráfico antes de iniciar a análise.")
+if botao_enviar:
+    if not arquivo_imagem:
+        st.warning("⚠️ Por favor, faça o upload de um print do gráfico antes de analisar.")
     elif not lista_de_chaves:
-        st.error("❌ Nenhuma API Key foi configurada no menu lateral.")
+        st.error("❌ Configure ao menos uma Gemini API Key no menu lateral.")
     else:
-        analise_concluida = False
+        conteudo_resposta = None
+        imagem_pil = Image.open(arquivo_imagem)
+        
+        with st.spinner("Processando análise de mercado quantitativa..."):
