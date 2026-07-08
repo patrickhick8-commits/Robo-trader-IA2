@@ -34,7 +34,7 @@ Escaneie textualmente a imagem em busca do nome do ativo (ex: EUR/USD, BTC/USD, 
 - VENDA (PUT): A tendência majoritária deve ser de Baixa.
 
 [PASSO 3: REGRA DE PRECISÃO DO RSI (ANTI-FALSO SINAL - PROTEÇÃO DE BANCA)]
-Examine a sub-janela do RSI (Padrão 14 períodos com zonas 70/30 ou 80/20) com os seguintes critérios rígidos:
+Examine a sub-janela do RSI (Padrão 14 períodos com zonas 70/30 or 80/20) com os seguintes critérios rígidos:
 1. BLOQUEIO DE OPERAÇÃO CONTRA MOMENTUM: Se o RSI cruzou 70 (para cima) ou 30 (para baixo) com uma inclinação reta e agressiva, PROIBIDO OPERAR REVERSÃO. O mercado está esticado e vai romper. Aborte a reversão ou opere o FLUXO do rompimento a favor do movimento.
 2. GATILHO VÁLIDO DE REVERSÃO (RETORNO OU DIVERGÊNCIA): Para validar uma reversão em zona extrema, o RSI deve:
    - Demonstrar perda nítida de angulação (curvando para o lado).
@@ -111,10 +111,10 @@ if arquivo_imagem is not None:
 
 def executar_chamada_gemini(chaves, imagem, prompt_base):
     if not chaves:
-        st.error("❌ Nenhuma API Key do Gemini foi configurada no menu lateral.")
+        st.error("❌ Nenhuma API Key foi configurada no menu lateral.")
         return None
     for index, chave in enumerate(chaves):
         try:
             client = genai.Client(api_key=chave)
-            with st.spinner(f"Processando análise avançada com a Chave {index + 1}..."):
-                resposta = client.models.generate_content(
+            conteudo = [imagem, prompt_base]
+            with st.spinner("Processando..."):
