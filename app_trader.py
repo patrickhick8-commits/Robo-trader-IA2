@@ -19,7 +19,7 @@ chaves_input = st.sidebar.text_input("Cole suas Gemini API Keys aqui:", type="pa
 # Transforma o texto em uma lista de chaves limpas
 lista_de_chaves = [chave.strip() for chave in chaves_input.split(";") if chave.strip()]
 
-# PROMPT MESTRE RECONFIGURADO - REVERSÃO PROJETADA POR VELAS E TEMPO EXPANDIDO
+# PROMPT MESTRE RECONFIGURADO - OPERACIONAIS ISOLADOS E COMBINAÇÕES UNIFICADAS
 PROMPT_TRADER = """
 [SYSTEM_ROLE] Você é um algoritmo de trading quantitativo focado em Opções Binárias. Sua postura é de FRIEZA MÁXIMA, RIGOR ABSOLUTO E PRECISÃO CIRÚRGICA. Sua missão principal é prever a movimentação futura dos candles com base no print do gráfico fornecido, calculando o tempo exato para o clique institucional.
 
@@ -71,7 +71,11 @@ Retorne o diagnóstico estruturado exatamente neste formato markdown limpo e des
 🟥🟩 DIREÇÃO EXATA DA ORDEM: [COMPRA / VENDA / OPERAÇÃO ABORTADA]
 💰 GERENCIAMENTO DE LOTE RECOMENDADO: [SOROS / ENTRADA FIXA / MÃO LEVE / PARADA OBRIGATÓRIA]
 
-🧠 ESTRATÉGIA COMBINADA ATIVADA: [Descreva detalhadamente se foi Reversão Projetada por contagem de candles futuros, Fluxo de Continuidade (4+ velas) ou Fluxo para Retração com pavios]
+🧠 ESTRATÉGIA E OPERACIONAL COMBINADO ATIVADO: 
+- Especifique com precisão qual tipo de operacional isolado foi ativado na tela. Exemplos exatos permitidos: 'OPERACIONAL DE REVERSÃO EM REGIÃO', 'OPERACIONAL DE FLUXO DE VELA EM TENDÊNCIA', 'OPERACIONAL DE PULLBACK' ou 'OPERACIONAL DE FLUXO DE CONTINUIDADE'.
+- Explique em detalhes os gatilhos e a região que o preço está ou irá buscar.
+- Descreva minuciosamente qual combinação exata ocorreu na tela: se foi Reversão com bastante respeito + Pavio, se foi Rompimento + Fluxo, se foi Pullback + Retração Longa de Pavio ou se foi Fluxo Reversão analisando o alvo do preço.
+
 🌐 MODO DE MERCADO DETECTADO: [MERCADO ABERTO ou MERCADO OTC]
 📊 CONTEXTO DO MERCADO MACRO: [TENDÊNCIA MAJORITÁRIA DE ALTA / TENDÊNCIA MAJORITÁRIA DE BAIXA / CONSOLIDAÇÃO LATERAL SEVERA]
 📈 LEITURA DO RSI PADRÃO E GATILHO CONTRA MOMENTUM: [Descreva a posição do RSI e a perda de angulação prevista para o momento do clique futuro]
@@ -129,6 +133,3 @@ if uploaded_file and lista_de_chaves:
                     st.warning(f"Chave {i+1} falhou ou está instável. Tentando próxima da lista...")
             
             if not sucesso:
-                st.error("Todas as chaves de contingência fornecidas falharam. Verifique os limites ou status das chaves na Google AI Studio.")
-elif not lista_de_chaves:
-    st.info("Aguardando a inserção de pelo menos uma Gemini API Key válida na barra lateral.")
