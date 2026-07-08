@@ -2,9 +2,7 @@ import streamlit as st
 from google import genai
 from google.genai import types
 from PIL import Image
-import re
-from datetime import datetime, timedelta
-import time
+import io
 
 st.set_page_config(page_title="Agente IA Advanced - Matriz Suprema", page_icon="🤖", layout="centered")
 
@@ -94,7 +92,7 @@ Retorne o diagnóstico estruturado exatamente neste formato markdown limpo e des
 - Ambiente Identificado: [MERCADO ABERTO ou OTC]
 - Avaliação da Tendência Majoritária e Região Synch: [Análise da macro e o alvo de reversão/continuidade que o preço está buscando]
 - Comportamento Gráfico do RSI (Filtro Anti-Loss): [Análise do RSI]
-- Anatomia de Reversão / Contagem de Velas (Filtro Especial): [Explique a projeção de quantas velas o preço deve se movimentar a partir do print até alcançar a zona de reversão operacional]
+- Anatomia de Reversão / Contagem de Velas (Filtro Especial): [Explique a reação de quantas velas o preço deve se movimentar a partir do print até alcançar a zona de reversão operacional]
 - Mapeamento das Regiões de Respeito (S/R, LTA/LTB): [Descreva as microzonas e blocos de ordens mapeados pela IA avançada]
 - Justificativa da Gestão de Lote sob Frieza Máxima: [Por que o lote sugerido se adequa a esses fatores rígidos]
 
@@ -104,16 +102,13 @@ Seja frio, preciso e direto. Velocidade e precisão salvam bancas.
 st.markdown("### 📸 Upload do Print do Gráfico")
 arquivo_imagem = st.file_uploader("Arraste ou selecione a captura de tela do seu gráfico (Formatos: PNG, JPG, JPEG):", type=["png", "jpg", "jpeg"])
 
-imagem_aberta = None
+# Salvando a imagem no estado da sessão para ela não sumir quando o botão for clicado
 if arquivo_imagem is not None:
-    imagem_aberta = Image.open(arquivo_imagem)
-    st.image(imagem_aberta, caption="Gráfico Carregado com Sucesso", use_container_width=True)
+    st.session_state["imagem_grafico"] = Image.open(arquivo_imagem)
+    st.image(st.session_state["imagem_grafico"], caption="Gráfico Carregado com Sucesso", use_container_width=True)
+elif "imagem_grafico" in st.session_state:
+    # Caso a página recarregue pelo clique do botão, mantemos a prévia na tela
+    st.image(st.session_state["imagem_grafico"], caption="Gráfico Carregado", use_container_width=True)
 
 st.markdown("---")
 if st.button("🔍 ANALISAR GRÁFICO (MATRIZ SUPREMA)", use_container_width=True):
-    if imagem_aberta is None:
-        st.warning("⚠️ Por favor, faça o upload de um print do gráfico antes de iniciar a análise.")
-    elif not lista_de_chaves:
-        st.error("❌ Nenhuma API Key foi configurada no menu lateral.")
-    else:
-        analise_concluida = False
