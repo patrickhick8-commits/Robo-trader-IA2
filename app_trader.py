@@ -111,8 +111,8 @@ if botao_enviar:
         conteudo_resposta = None
         imagem_pil = Image.open(arquivo_imagem)
         
-        # Pega de forma segura estritamente a primeira chave da lista (formato string limpa)
-        chave_operacional = lista_de_chaves[0]
+        # Correção Crítica: Extrai o primeiro item textual limpo da lista para evitar SyntaxError
+        chave_operacional = str(lista_de_chaves[0])
         
         try:
             client = genai.Client(api_key=chave_operacional)
