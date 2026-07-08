@@ -2,10 +2,15 @@ import streamlit as st
 from google import genai
 from PIL import Image
 
+# Configuração da Página do Site Separado
 st.set_page_config(page_title="Agente IA Advanced - Matriz Suprema", page_icon="🤖", layout="centered")
 
 st.title("🤖 Agente IA Trader Pro: Matriz Suprema de Alta Assertividade")
 st.write("Fusão Total: Projeção de Tempo (Mesma Vela M1), SMC, Volume Oculto, Fluxo de Cores, RSI e S/R / LTA / LTB.")
+
+# Inicialização das variáveis de estado para não sumirem no recarregamento da página
+if "imagem_carregada" not in st.session_state:
+    st.session_state["imagem_carregada"] = None
 
 st.sidebar.markdown("### 🔑 Gerenciador de Chaves de Contingência")
 st.sidebar.info("Cole suas chaves protegidas separando-as por ponto e vírgula (;). Exemplo: chave1; chave2; chave3")
@@ -96,21 +101,16 @@ Retorne o diagnóstico estruturado exatamente neste formato markdown limpo e des
 Seja frio, preciso e direto. Velocidade e precisão salvam bancas.
 """
 
-with st.form(key="formulario_trader"):
-    st.markdown("### 📸 Upload do Print do Gráfico")
-    arquivo_imagem = st.file_uploader("Selecione a captura de tela do gráfico:", type=["png", "jpg", "jpeg"])
-    st.markdown("---")
-    botao_enviar = st.form_submit_button("🔍 ANALISAR GRÁFICO (MATRIZ SUPREMA)", use_container_width=True)
+st.markdown("### 📸 Upload do Print do Gráfico")
+arquivo_imagem = st.file_uploader("Selecione a captura de tela do gráfico:", type=["png", "jpg", "jpeg"])
 
-if botao_enviar:
-    if not arquivo_imagem:
-        st.warning("⚠️ Por favor, faça o upload de um print do gráfico antes de analisar.")
-    elif not lista_de_chaves:
-        st.error("❌ Configure ao menos uma Gemini API Key no menu lateral.")
-    else:
-        # Extração segura da primeira chave como string de texto puro
-        chave_limpa = str(lista_de_chaves[0])
-        imagem_pil = Image.open(arquivo_imagem)
-        
-        # Chamada direta e linear da API sem estruturas try/except complexas para blindar o código
-        client = genai.Client(api_key=chave_limpa)
+# Salva a imagem na sessão para ela nunca sumir da tela
+if arquivo_imagem is not None:
+    st.session_state["imagem_carregada"] = Image.open(arquivo_imagem)
+
+# Se houver imagem na sessão, ela é exibida continuamente para o usuário
+if st.session_state["imagem_carregada"] is not None:
+    st.image(st.session_state["imagem_carregada"], caption="Gráfico Ativo", use_container_width=True)
+
+st.markdown("---")
+# Botão livre fora de formulários para evitar que o Streamlit ignore o clique
