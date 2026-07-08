@@ -62,7 +62,7 @@ Avalie as velas (candles) do gráfico buscando estritamente as confluências aba
    - As velas que se aproximam da região devem ser **candles médios** e apresentar **bastante pavio** (rejeição visível à medida que chegam perto da zona alvo). 
 
 [PASSO 6: PROTOCOLO DE FILTRAGEM DE RUÍDO E REGRAS DE BLOQUEIO]
-- BLOQUEIO DE REVERSÃO PREMATURA: Se o preço estiver indo buscar uma zona forte, mas as velas anteriores forem gigantes e sem pavio, bloqueie a reversão (o mercado vai romper).
+- BLOQUEIO DE REVERSÃO PREMATURA: Se o preço estiver indo buscar uma zona forte, mas as velas anteriores forem gigantes e sem pavio, kaleb_bloqueie a reversão (o mercado vai romper).
 - BLOQUEIO DE FLUXO CURTO: Proibido operar fluxo se a sequência tiver menos de 4 velas da mesma cor ou se as velas possuírem pavios longos de contração.
 - FILTRO DE RSI EM CONSOLIDAÇÃO INDEFINIDA: Aborte se o RSI estiver travado em linha reta perto da linha 50.
 
@@ -111,8 +111,9 @@ if st.session_state["imagem_carregada"] is not None:
 st.markdown("---")
 botao_analisar = st.button("🔍 ANALISAR GRÁFICO (MATRIZ SUPREMA)", use_container_width=True)
 
-def disparar_analise_ia(chave, imagem, prompt):
-    try:
-        client = genai.Client(api_key=chave)
-        resposta = client.models.generate_content(model="gemini-2.5-flash", contents=[imagem, prompt])
-        if resposta and hasattr(resposta, "text") and resposta.text:
+if botao_analisar:
+    if st.session_state["imagem_carregada"] is None:
+        st.warning("⚠️ Por favor, faça o upload de um print do gráfico antes de analisar.")
+    elif not lista_de_chaves:
+        st.error("❌ Configure ao menos uma Gemini API Key no menu lateral.")
+    else:
