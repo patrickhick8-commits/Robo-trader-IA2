@@ -2,7 +2,6 @@ import streamlit as st
 from google import genai
 from google.genai import types
 from PIL import Image
-import io
 
 st.set_page_config(page_title="Agente IA Advanced - Matriz Suprema", page_icon="🤖", layout="centered")
 
@@ -102,13 +101,17 @@ Seja frio, preciso e direto. Velocidade e precisão salvam bancas.
 st.markdown("### 📸 Upload do Print do Gráfico")
 arquivo_imagem = st.file_uploader("Arraste ou selecione a captura de tela do seu gráfico (Formatos: PNG, JPG, JPEG):", type=["png", "jpg", "jpeg"])
 
-# Salvando a imagem no estado da sessão para ela não sumir quando o botão for clicado
 if arquivo_imagem is not None:
     st.session_state["imagem_grafico"] = Image.open(arquivo_imagem)
     st.image(st.session_state["imagem_grafico"], caption="Gráfico Carregado com Sucesso", use_container_width=True)
-elif "imagem_grafico" in st.session_state:
-    # Caso a página recarregue pelo clique do botão, mantemos a prévia na tela
-    st.image(st.session_state["imagem_grafico"], caption="Gráfico Carregado", use_container_width=True)
 
 st.markdown("---")
-if st.button("🔍 ANALISAR GRÁFICO (MATRIZ SUPREMA)", use_container_width=True):
+click_analisar = st.button("🔍 ANALISAR GRÁFICO (MATRIZ SUPREMA)", use_container_width=True)
+
+if click_analisar:
+    if "imagem_grafico" not in st.session_state:
+        st.warning("⚠️ Por favor, faça o upload de um print do gráfico antes de iniciar a análise.")
+    elif not lista_de_chaves:
+        st.error("❌ Nenhuma API Key foi configurada no menu lateral.")
+    else:
+        analise_concluida = False
