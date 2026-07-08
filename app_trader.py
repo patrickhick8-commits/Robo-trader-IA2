@@ -9,7 +9,7 @@ import time
 st.set_page_config(page_title="Agente IA Advanced - Matriz Suprema", page_icon="🤖", layout="centered")
 
 st.title("🤖 Agente IA Trader Pro: Matriz Suprema de Alta Assertividade")
-st.write("Fusão Total: Projeção de Tempo (Mesma Vela M1), SMC, Volume Oculto, Fluxo de Cores, RSI e S/R / LTA / LTB.")
+st.write("Fusão Total: Projeção de Tempo (Mesma Vela M1), SMC, Volume Oculto, Fluxo de Cores, Média Móvel de 9, RSI e S/R / LTA / LTB.")
 
 st.sidebar.markdown("### 🔑 Gerenciador de Chaves de Contingência")
 st.sidebar.info("Cole suas chaves protegidas separando-as por ponto e vírgula (;). Exemplo: chave1; chave2; chave3")
@@ -19,7 +19,7 @@ chaves_input = st.sidebar.text_input("Cole suas Gemini API Keys aqui:", type="pa
 # Transforma o texto em uma lista de chaves limpas
 lista_de_chaves = [chave.strip() for chave in chaves_input.split(";") if chave.strip()]
 
-# PROMPT MESTRE RECONFIGURADO - REMOVIDA A MÉDIA MÓVEL DE 9
+# PROMPT MESTRE RECONFIGURADO - ULTRA PRECISÃO ANTI-FALSO SINAL E ANÁLISE AVANÇADA DE FLUXO/RETRAÇÃO
 PROMPT_TRADER = """
 [SYSTEM_ROLE] Você é um algoritmo de trading quantitativo focado em Opções Binárias (M1). Sua postura é de FRIEZA MÁXIMA, RIGOR ABSOLUTO E PRECISÃO CIRÚRGICA. Sua missão principal é eliminar falsos sinais e identificar os padrões exatos de fluxo e retração com base na imagem do gráfico.
 
@@ -30,10 +30,10 @@ ATENÇÃO: Em gráficos M1, o preço frequentemente continua subindo ou caindo m
 Escaneie textualmente a imagem em busca do nome do ativo (ex: EUR/USD, BTC/USD, EUR/GBP-OTC).
 - Identifique se o ativo é [MERCADO ABERTO REAL] ou [ALGORITMO OTC].
 
-[PASSO 2: FILTROS DE TENDÊNCIA MAJORITÁRIA (MACRO)]
+[PASSO 2: FILTROS DE TENDÊNCIA MAJORITÁRIA (MACRO) E POSICIONAMENTO DA MÉDIA MÓVEL DE 9]
 - ANALISE DA TENDÊNCIA MAJORITÁRIA: Avalie o cenário macro do gráfico em segundo plano.
-- COMPRA (CALL): A tendência majoritária deve ser de Alta.
-- VENDA (PUT): A tendência majoritária deve ser de Baixa.
+- COMPRA (CALL): A tendência majoritária deve ser de Alta e o preço operando ACIMA da Média Móvel de 9.
+- VENDA (PUT): A tendência majoritária deve ser de Baixa e o preço operando ABAIXO da Média Móvel de 9.
 
 [PASSO 3: REGRA DE PRECISÃO DO RSI (ANTI-FALSO SINAL - PROTEÇÃO DE BANCA)]
 Examine a sub-janela do RSI (Padrão 14 períodos com zonas 70/30 ou 80/20) com os seguintes critérios rígidos:
@@ -91,6 +91,7 @@ Retorne o diagnóstico estruturado exatamente neste formato markdown limpo e des
 - Comportamento Gráfico do RSI (Filtro Anti-Loss): [Análise do RSI]
 - Contagem de Velas e Pavios (Filtro de Fluxo/Retração): [Confirme se há 4+ velas com poucos pavios para fluxo OU candles médios com muitos pavios para retração]
 - Mapeamento das Regiões de Respeito (S/R, LTA/LTB): [Descreva as microzonas mapeadas pela IA avançada]
+- Posicionamento da Média Móvel de 9: [Relação do preço operando acima ou abaixo da Média Móvel de 9]
 - Justificativa da Gestão de Lote sob Frieza Máxima: [Por que o lote sugerido se adequa a esses fatores rígidos]
 
 Seja frio, preciso e direto. Velocidade e precisão salvam bancas.
