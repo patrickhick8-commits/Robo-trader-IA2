@@ -6,7 +6,6 @@ import re
 from datetime import datetime, timedelta
 import time
 
-# 1. Configuração da Página do Site Separado
 st.set_page_config(page_title="Agente IA Advanced - Matriz Suprema", page_icon="🤖", layout="centered")
 
 st.title("🤖 Agente IA Trader Pro: Matriz Suprema de Alta Assertividade")
@@ -17,10 +16,8 @@ st.sidebar.info("Cole suas chaves protegidas separando-as por ponto e vírgula (
 
 chaves_input = st.sidebar.text_input("Cole suas Gemini API Keys aqui:", type="password")
 
-# Transforma o texto em uma lista de chaves limpas
 lista_de_chaves = [chave.strip() for chave in chaves_input.split(";") if chave.strip()]
 
-# PROMPT MESTRE RECONFIGURADO - TRANSIÇÃO DINÂMICA PARA REVERSÃO APÓS CONTAGEM DE VELAS
 PROMPT_TRADER = """
 [SYSTEM_ROLE] Você é um algoritmo de trading quantitativo focado em Opções Binárias (M1). Sua postura é de FRIEZA MÁXIMA, RIGOR ABSOLUTO E PRECISÃO CIRÚRGICA. Sua missão principal é eliminar falsos sinais e identificar os padrões exatos de fluxo, retração e reversão avançada com base na imagem do gráfico.
 
@@ -104,7 +101,6 @@ Retorne o diagnóstico estruturado exatamente neste formato markdown limpo e des
 Seja frio, preciso e direto. Velocidade e precisão salvam bancas.
 """
 
-# 2. Área de Upload do Print do Gráfico
 st.markdown("### 📸 Upload do Print do Gráfico")
 arquivo_imagem = st.file_uploader("Arraste ou selecione a captura de tela do seu gráfico (Formatos: PNG, JPG, JPEG):", type=["png", "jpg", "jpeg"])
 
@@ -113,6 +109,12 @@ if arquivo_imagem is not None:
     imagem_aberta = Image.open(arquivo_imagem)
     st.image(imagem_aberta, caption="Gráfico Carregado com Sucesso", use_container_width=True)
 
-# 3. Função de Chamada Oficial à API do Gemini utilizando o SDK google-genai
 def executar_chamada_gemini(chaves, imagem, prompt_base):
     if not chaves:
+        st.error("❌ Nenhuma API Key do Gemini foi configurada no menu lateral.")
+        return None
+    for index, chave in enumerate(chaves):
+        try:
+            client = genai.Client(api_key=chave)
+            with st.spinner(f"Processando análise avançada com a Chave {index + 1}..."):
+                resposta = client.models.generate_content(
