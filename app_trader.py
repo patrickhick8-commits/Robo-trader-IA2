@@ -113,8 +113,9 @@ def executar_chamada_gemini(chaves, imagem, prompt_base):
     if not chaves:
         st.error("❌ Nenhuma API Key foi configurada no menu lateral.")
         return None
+    
+    # Execução sequencial direta e linear para evitar conflitos de indentação com try/except herdados
     for index, chave in enumerate(chaves):
         try:
             client = genai.Client(api_key=chave)
             conteudo = [imagem, prompt_base]
-            resposta = client.models.generate_content(model="gemini-2.5-flash", contents=conteudo)
