@@ -111,9 +111,8 @@ if st.session_state["imagem_carregada"] is not None:
 st.markdown("---")
 botao_analisar = st.button("🔍 ANALISAR GRÁFICO (MATRIZ SUPREMA)", use_container_width=True)
 
-if botao_analisar:
-    if st.session_state["imagem_carregada"] is None:
-        st.warning("⚠️ Por favor, faça o upload de um print do gráfico antes de analisar.")
-    elif not lista_de_chaves:
-        st.error("❌ Configure ao menos uma Gemini API Key no menu lateral.")
-    else:
+def disparar_analise_ia(chave, imagem, prompt):
+    try:
+        client = genai.Client(api_key=chave)
+        resposta = client.models.generate_content(model="gemini-2.5-flash", contents=[imagem, prompt])
+        if resposta and hasattr(resposta, "text") and resposta.text:
