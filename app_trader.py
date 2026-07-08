@@ -1,5 +1,6 @@
 import streamlit as st
 from google import genai
+from google.genai import types
 from PIL import Image
 import re
 from datetime import datetime, timedelta
@@ -19,7 +20,7 @@ chaves_input = st.sidebar.text_input("Cole suas Gemini API Keys aqui:", type="pa
 # Transforma o texto em uma lista de chaves limpas
 lista_de_chaves = [chave.strip() for chave in chaves_input.split(";") if chave.strip()]
 
-# PROMPT MESTRE RECONFIGURADO - REMOVIDA A MÉDIA MÓVEL DE 9
+# PROMPT MESTRE RECONFIGURADO - SEM MÉDIA MÓVEL E AJUSTADO PARA FLUXO E RETRAÇÃO
 PROMPT_TRADER = """
 [SYSTEM_ROLE] Você é um algoritmo de trading quantitativo focado em Opções Binárias (M1). Sua postura é de FRIEZA MÁXIMA, RIGOR ABSOLUTO E PRECISÃO CIRÚRGICA. Sua missão principal é eliminar falsos sinais e identificar os padrões exatos de fluxo e retração com base na imagem do gráfico.
 
@@ -96,8 +97,52 @@ Retorne o diagnóstico estruturado exatamente neste formato markdown limpo e des
 Seja frio, preciso e direto. Velocidade e precisão salvam bancas.
 """
 
-def executar_chamada_gemini(chave_api, imagem_objeto, prompt_base):
-    # Função simulada ou continuação do seu código para chamadas à API do Gemini
-    pass
+# 2. Área de Upload do Print do Gráfico
+st.markdown("### 📸 Upload do Print do Gráfico")
+arquivo_imagem = st.file_uploader("Arraste ou selecione a captura de tela do seu gráfico (Formatos: PNG, JPG, JPEG):", type=["png", "jpg", "jpeg"])
 
-                
+if arquivo_imagem is not None:
+    # Exibe uma prévia da imagem enviada para o usuário verificar se está correta
+    imagem_aberta = Image.open(arquivo_imagem)
+    st.image(imagem_aberta, caption="Gráfico Carregado com Sucesso", use_container_width=True)
+
+# 3. Função de Chamada Oficial à API do Gemini utilizando o SDK google-genai
+def executar_chamada_gemini(chaves, imagem, prompt_base):
+    if not chaves:
+        st.error("❌ Nenhuma API Key do Gemini foi configurada no menu lateral.")
+        return None
+    
+    # Sistema de contingência: tenta usar a primeira chave operacional disponível
+    for index, chave in enumerate(chaves):
+        try:
+            # Inicializa o cliente oficial da Google
+            client = genai.Client(api_key=chave)
+            
+            with st.spinner(f"Processando análise avançada com a Chave de Contingência {index + 1}..."):
+                # Envia o prompt e a imagem usando o modelo multimodal ideal
+                resposta = client.models.generate_content(
+                    model='gemini-2.5-flash',
+                    contents=[imagem, prompt_base]
+                )
+                if resposta.text:
+                    return resposta.text
+        except Exception as e:
+            st.warning(f"⚠️ Chave {index + 1} falhou ou está instável. Tentando próxima chave...")
+            continue
+            
+    st.error("❌ Todas as Chaves de Contingência configuradas falharam ou atingiram o limite de requisições.")
+    return None
+
+# 4. Botão de Comando para Executar a Análise Estratégica
+st.markdown("---")
+if st.button("🔍 ANALISAR GRÁFICO (MATRIZ SUPREMA)", use_container_width=True):
+    if arquivo_imagem is None:
+        st.warning("⚠️ Por favor, faça o upload de um print do gráfico antes de iniciar a análise.")
+    else:
+        # Chama a execução injetando as chaves informadas e o arquivo de imagem carregado
+        resultado_analise = executar_chamada_gemini(lista_de_chaves, imagem_aberta, PROMPT_TRADER)
+        
+        if resultado_analise:
+            st.success("✅ Análise Concluída com Sucesso!")
+            st.markdown("---")
+            st.markdown(resultado_analise)
