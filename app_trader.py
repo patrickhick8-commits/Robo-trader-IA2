@@ -62,7 +62,7 @@ Avalie as velas (candles) do gráfico buscando estritamente as confluências aba
    - As velas que se aproximam da região devem ser **candles médios** e apresentar **bastante pavio** (rejeição visível à medida que chegam perto da zona alvo). 
 
 [PASSO 6: PROTOCOLO DE FILTRAGEM DE RUÍDO E REGRAS DE BLOQUEIO]
-- BLOQUEIO DE REVERSÃO PREMATURA: Se o preço estiver indo buscar uma zona forte, mas as velas anteriores forem gigantes e sem pavio, kaleb_bloqueie a reversão (o mercado vai romper).
+- BLOQUEIO DE REVERSÃO PREMATURA: Se o preço estiver indo buscar uma zona forte, mas as velas anteriores forem gigantes e sem pavio, bloqueie a reversão (o mercado vai romper).
 - BLOQUEIO DE FLUXO CURTO: Proibido operar fluxo se a sequência tiver menos de 4 velas da mesma cor ou se as velas possuírem pavios longos de contração.
 - FILTRO DE RSI EM CONSOLIDAÇÃO INDEFINIDA: Aborte se o RSI estiver travado em linha reta perto da linha 50.
 
