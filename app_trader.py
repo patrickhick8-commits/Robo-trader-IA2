@@ -98,13 +98,14 @@ def executar_chamada_gemini(chave_api, imagem_pil, prompt_comando):
     except Exception as e:
         return f"❌ Erro: {str(e)}"
 
-# 4. Componentes Globais na Raiz do Código (Sem sub-blocos ou travas)
+# 4. Interface Totalmente Linear na Raiz do Código
 uploaded_file = st.file_uploader("📷 Faça o upload do Print do seu Gráfico (M1):", type=["png", "jpg", "jpeg"])
 
 botao_disparar = st.button("🧠 Iniciar Análise Avançada por IA")
 
-# 5. Processamento Síncrono Direto
-if botao_disparar:
-    if uploaded_file is None:
-        st.error("⚠️ Por favor, faça o upload de uma imagem do gráfico antes de iniciar a análise.")
-    elif not lista_de_chaves:
+# 5. Execução em Linha Reta Absoluta (Achatamento Completo)
+if botao_disparar and not uploaded_file:
+    st.error("⚠️ Por favor, faça o upload de uma imagem do gráfico antes de iniciar a análise.")
+    st.stop()
+
+if botao_disparar and not lista_de_chaves:
