@@ -2,7 +2,6 @@ import streamlit as st
 from google import genai
 from google.genai import types
 from PIL import Image
-import io
 
 # 1. Configuração da Página
 st.set_page_config(page_title="Agente IA Advanced - Matriz Suprema", page_icon="🤖", layout="centered")
@@ -52,9 +51,9 @@ PROMPT_TRADER = (
     "[PASSO 1: IDENTIFICAÇÃO DO AMBIENTE]\n"
     "Identifique o ativo e se é [MERCADO ABERTO REAL] ou [ALGORITMO OTC].\n\n"
     "[PASSO 2: CONTAGEM DE FLUXO, PROXIMIDADE E VELOCIDADE]\n"
-    "Conte as velas do fluxo. Calcule a distância até a região forte de reversão. Classifique a velocidade do movimento (Explosivo, Constante ou Cansado) com base no tamanho das velas atuais para definir o tempo exato à frente.\n\n"
+    "Conte as velas do fluxo. Calcule a distância até a região forte de reversão. Classifique a velocidade do movimento (Explosivo, Constante ou Cansado) com base no tamanho das velas atuais para definir o tempo exato à frente.\n"
     "[PASSO 3: APLICAÇÃO DOS CRITÉRIOS DE REJEIÇÃO]\n"
-    "Valide rigorosamente se a movimentação atual viola alguma das 4 regras de rejeição estipuladas.\n\n"
+    "Valide rigorosamente se a movimentação atual viola alguma das 4 regras de rejeição estipuladas.\n"
     "[PASSO 4: PROTOCOLO DE BLOQUEIO POR FALTA DE ALVO]\n"
     "Bloqueie reversões se os candles anteriores na região alvo forem cheios e sem histórico de pavios ou paradas, indicando rompimento iminente.\n\n"
     "Retorne o diagnóstico estruturado exatamente neste formato markdown limpo e destacado:\n\n"
@@ -84,7 +83,6 @@ PROMPT_TRADER = (
     "- Gestão de Lote sob Frieza Máxima\n"
 )
 
-# 4. Função Otimizada da API do Gemini
 def executar_chamada_gemini(chave_api, imagem_pil, prompt_comando):
     try:
         client = genai.Client(api_key=chave_api)
@@ -100,12 +98,14 @@ def executar_chamada_gemini(chave_api, imagem_pil, prompt_comando):
     except Exception as e:
         return f"❌ Erro: {str(e)}"
 
-# 5. Fluxo Linear e Plano (Sem sub-blocos aninhados ou recuos cruzados)
+# 4. Interface Principal Sequencial Pura (Sem Trava de Parada)
 uploaded_file = st.file_uploader("📷 Faça o upload do Print do seu Gráfico (M1):", type=["png", "jpg", "jpeg"])
 
-if not uploaded_file:
-    st.info("Aguardando o upload do print do gráfico para ativar o painel de análise.")
-    st.stop()
-
-# Carregamento e renderização sequencial pura
-imagem_viva = Image.open(uploaded_file)
+# Se houver um arquivo, o aplicativo renderiza a imagem e libera o botão sem usar st.stop()
+if uploaded_file is not None:
+    imagem_viva = Image.open(uploaded_file)
+    st.image(imagem_viva, caption="Gráfico Carregado com Sucesso", use_container_width=True)
+    
+    botao_disparar = st.button("🧠 Iniciar Análise Avançada por IA")
+    
+    if botao_disparar:
