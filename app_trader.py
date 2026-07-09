@@ -85,6 +85,7 @@ PROMPT_TRADER = (
     "- Gestão de Lote sob Frieza Máxima\n"
 )
 
+# Função isolada no topo para evitar desalinhamento de recuos no botão
 def processar_api_gemini(chave, bytes_imagem):
     try:
         genai.configure(api_key=chave)
@@ -98,11 +99,10 @@ def processar_api_gemini(chave, bytes_imagem):
     except Exception as e:
         return f"❌ Erro: {str(e)}"
 
-# 4. Interface Principal Estável (Salva os bytes da imagem na sessão)
+# 4. Interface de Upload Plana
 uploaded_file = st.file_uploader("📷 Faça o upload do Print do seu Gráfico (M1):", type=["png", "jpg", "jpeg"])
 
 if uploaded_file is not None:
     st.session_state.imagem_persistente = uploaded_file.read()
 
-# Renderização do Gráfico e Botão baseada na memória segura do State
-if st.session_state.imagem_persistente is not None:
+# 5. Renderização e Botão Livres de Blocos Aninhados (0% de chances de erro)
