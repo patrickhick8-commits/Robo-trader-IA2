@@ -73,8 +73,10 @@ def executar_chamada_gemini(chave_api, imagem_objeto, prompt_comando):
     try:
         # Inicializa o cliente usando a nova biblioteca google-genai
         client = genai.Client(api_key=chave_api)
+        
+        # ATUALIZADO: Usando o modelo estável atualizado gemini-3.5-flash
         response = client.models.generate_content(
-            model='gemini-2.5-flash',
+            model='gemini-3.5-flash',
             contents=[imagem_objeto, prompt_comando]
         )
         return response.text
@@ -94,7 +96,8 @@ if botao_analise:
     elif not lista_de_chaves:
         st.error("⚠️ Insira pelo menos uma Gemini API Key válida na barra lateral antes de analisar.")
     else:
-        imagem = Image.open(uploaded_file)
+        # Abre e garante que a imagem está em modo RGB para evitar incompatibilidade
+        imagem = Image.open(uploaded_file).convert("RGB")
         st.image(imagem, caption="Gráfico Carregado com Sucesso", use_container_width=True)
         
         sucesso = False
@@ -114,7 +117,6 @@ if botao_analise:
                     st.warning(f"Chave {i+1} falhou. Detalhes: {resultado}")
                     st.write("Tentando próxima chave da lista...")
             
-            # Correção do NameError: usando a variável correta em português
             if not sucesso:
                 st.error("Todas as chaves de contingência fornecidas falharam. Verifique suas chaves e permissões no Google AI Studio.")
 
