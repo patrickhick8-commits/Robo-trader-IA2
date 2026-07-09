@@ -21,7 +21,7 @@ PROMPT_TRADER = (
     "[DIRETRIZ DE SEGURANÇA E CRONOMETRAGEM CRÍTICA: FECHAMENTO NA MESMA VELA M1]\n"
     "ATENÇÃO MÁXIMA ÀS REGRAS DE TEMPO (JANELA REDUZIDA):\n"
     "1. PROJEÇÃO DO CLIQUE DA ENTRADA: Calcule milimetricamente o deslocamento do preço e jogue o HORÁRIO DO CLIQUE da entrada para uma janela futura estritamente entre **2 a no máximo 6 minutos à frente** (equivalente a uma distância de apenas 2 a 6 candles de M1 após o momento do print do gráfico).\n"
-    "2. TEMPO DE EXPIRAÇÃO OBRIGATÓRIO: A operação DEVE SEMPRE terminar e fechar no tempo da MESMA VELA de M1 em que o clique foi realizado. Portanto, o Tempo de Expiração deve ser fixado estritamente em '1 Minuto' (or para o final da mesma vela do clique), garantindo que o HORÁRIO DE FECHAMENTO DA ORDEM seja exatamente 1 minuto após o clique de entrada. Nunca use expirações longas.\n\n"
+    "2. TEMPO DE EXPIRAÇÃO OBRIGATÓRIO: A operação DEVE SEMPRE terminar e fechar no tempo da MESMA VELA de M1 em que o clique foi realizado. Portanto, o Tempo de Expiração deve ser fixado estritamente em '1 Minuto' (ou para o final da mesma vela do clique), garantindo que o HORÁRIO DE FECHAMENTO DA ORDEM seja exatamente 1 minuto após o clique de entrada. Nunca use expirações longas.\n\n"
     
     "[MECÂNICA CORE: ALGORITMO DE CONTEXTO E GEOMETRIA DAS VELAS]\n"
     "Mapeie o histórico recente de velas exibido no print ignorando qualquer linha de indicador técnico. Foque apenas no comportamento do preço:\n"
@@ -45,7 +45,7 @@ PROMPT_TRADER = (
     "Identifique o ativo e se é [MERCADO ABERTO REAL] ou [ALGORITMO OTC].\n\n"
     
     "[PASSO 2: DETERMINAÇÃO DO CONTEXTO DO MERCADO]\n"
-    "Avalie a estrutura pura do preço. O mercado está em fluxo de Alta, fluxo de Baixa ou Consolidação? Descreva a anatomia dos últimos 5 a 10 candles.\n\n"
+    "Avalie a estrutura pura do preço. O mercado está em fluxo de Alta, fluxo de Baixa ou Consolidação? Descreva a anatomyia dos últimos 5 a 10 candles.\n\n"
     
     "[PASSO 3: APLICAÇÃO DOS CRITÉRIOS DE REJEIÇÃO]\n"
     "Valide rigorosamente se as velas atuais violam alguma das 4 regras de rejeição estipuladas.\n\n"
@@ -62,7 +62,7 @@ PROMPT_TRADER = (
     "💰 GERENCIAMENTO DE LOTE RECOMENDADO: [SOROS / ENTRADA FIXA / MÃO LEVE / PARADA OBRIGATÓRIA]\n"
     "🧠 ESTRATÉGIA E OPERACIONAL COMBINADO ATIVADO:\n"
     "- Tipo de operacional isolado ativado (Exemplos permitidos: 'OPERACIONAL DE FLUXO E SEGUIMENTO DE TENDÊNCIA', 'OPERACIONAL DE PULLBACK DA TENDÊNCIA MAJORITÁRIA' ou 'OPERAÇÃO ABORTADA').\n"
-    "- Gatilho específico acionado (Ex: 'Velas de correção buscando região de pavios anteriores a favor do contexto de alta' ou 'Rompimento confirmado de topo anterior com velas de impulsão livres').\n"
+    "- Gatilho específico acionado (Ex: 'Velas de correção buscando região de pavios anteriores a favor do contexto de alta' ou 'Rompimento confirmed de topo anterior com velas de impulsão livres').\n"
     "- Descrição minuciosa da combinação (Retração em zona de pavios, Continuidade de fluxo estrutural, etc).\n"
     "🌐 MODO DE MERCADO DETECTADO: [MERCADO ABERTO ou MERCADO OTC]\n"
     "📊 CONTEXTO DO MERCADO MACRO E MICRO (ALINHAMENTO): [Estrutura Pura de Preço Detectada]\n"
