@@ -13,7 +13,7 @@ st.sidebar.markdown("### 🔑 Gerenciador de Chaves de Contingência")
 chaves_input = st.sidebar.text_input("Cole suas Gemini API Keys aqui (separadas por ponto e vírgula):", type="password")
 lista_de_chaves = [chave.strip() for chave in chaves_input.split(";") if chave.strip()]
 
-# 3. Definição Limpa do Prompt Mestre (Sem RSI + Foco em Regiões de Pavios e Paradas + Rejeições)
+# 3. Definição Limpa do Prompt Mestre (Sem RSI + Regra Dinâmica de Fluxo e Reversão por Proximidade)
 PROMPT_TRADER = (
     "[SYSTEM_ROLE] Você é um algoritmo de trading quantitativo focado em Opções Binárias (Gráficos de M1). "
     "Sua postura é de FRIEZA MÁXIMA, RIGOR ABSOLUTO E PRECISÃO CIRÚRGICA.\n\n"
@@ -28,22 +28,23 @@ PROMPT_TRADER = (
     "1. RASTREIO DE ZONAS COM PAVIOS DE RETRAÇÃO: Identifique regiões onde os candles anteriores deixaram longas sombras/pavios seguidos de rejeição e reversão do movimento, provando forte presença de defesa.\n"
     "2. RASTREIO DE PARADA DE CORPO (EXAUSTÃO): Identifique regiões onde os candles anteriores vinham com volume, mas perderam drasticamente o tamanho dos corpos (pararam de andar/travaram a movimentação) e mudaram a direção do gráfico nas velas seguintes.\n\n"
     
+    "[MATRIZ DE DECISÃO HÍBRIDA: FLUXO VS REVERSÃO POR PROXIMIDADE]\n"
+    "Analise o comportamento do preço atual e defina a estratégia com base nestes dois cenários:\n"
+    "CENÁRIO A - FLUXO DE CONTINUIDADE ISOLADO: Se você identificar uma sequência de a partir de 4 velas consecutivas da mesma cor com corpos expressivos, e o preço estiver longe de qualquer zona forte de reversão, ative o OPERACIONAL DE FLUXO DE CONTINUIDADE acompanhando a cor do movimento.\n"
+    "CENÁRIO B - MUDANÇA PARA REVERSÃO POR ATRAÇÃO: Se você identificar um fluxo forte de velas (mesmo que seja a partir de 4 velas da mesma cor), mas perceber que esse fluxo está buscando e está PERTO de uma região de reversão forte (zona de pavios ou paradas mapeada no histórico), você está PROIBIDO de seguir o fluxo. O fluxo forte agora funciona como um ÍMÃ. Mude a análise para REVERSÃO EM REGIÃO, projete o número de candles necessários para o preço tocar a zona alvo à frente e mande a ordem contra o fluxo (Reversão) exatamente no momento do toque na região.\n\n"
+    
     "[CRITÉRIOS RIGOROSOS DE REJEIÇÃO - QUANDO ABORTAR A OPERAÇÃO]\n"
     "Você deve MARCAR A DIREÇÃO COMO 'OPERAÇÃO ABORTADA' e zerar a assertividade se identificar qualquer um destes sinais de alerta no print:\n"
-    "1. VELAS DE FORÇA SEM PAVIO (MARUBOZU): Se o preço estiver indo em direção à zona alvo empurrado por velas grandes, cheias e sem pavio nenhum, rejeite por risco de rompimento institucional de fluxo.\n"
+    "1. VELAS DE FORÇA SEM PAVIO (MARUBOZU) FORA DE CONTEXTO: Velas cheias sem pavio nenhum tocando a região de forma seca e sem desaceleração prévia quando não há histórico de respeito similar.\n"
     "2. VELAS DE ANOMALIA (VETORES GIGANTES / NOTÍCIAS): Velas desproporcionais (3 a 5 vezes maiores que a média do gráfico) que indicam pico extremo de volatilidade. REJEIÇÃO IMEDIATA.\n"
-    "3. MICRO-TENDÊNCIA INSISTENTE (VELAS TRATOR): Sequências longas de 5 ou mais velas consecutivas da mesma cor sem deixar pavio contrário relevante, indicando força que passará direto pela região.\n"
-    "4. AUSÊNCIA DE MAPEAMENTO HISTÓRICO: Se a região para onde o preço está indo não tiver um histórico nítido e visível de pavios ou paradas de corpos anteriores no print, a operação está proibida.\n\n"
-    
-    "[GATILHO DE REVERSÃO POR EXAUSTÃO ESTICADA]\n"
-    "Se o preço atual estiver se deslocando de forma saudável (com candles médios e pavios) em direção a uma região validada de retração/parada histórica, você está PROIBIDO de dar um sinal de reversão imediata no exato momento do print.\n"
-    "Use essa região mapeada como um ÍMÃ: calcule quantos candles (de 3 a 10 minutos à frente) o preço levará para esticar e testar aquela zona de pavios ou de parada de corpos. Agende o HORÁRIO DO CLIQUE para o exato minuto desse teste futuro, aplicando a expiração rígida para o fechamento da mesma vela.\n\n"
+    "3. MICRO-TENDÊNCIA INSISTENTE (VELAS TRATOR): Sequências longas de mais de 7 velas consecutivas da mesma cor sem deixar pavio contrário relevante, indicando força atípica que romperá a região.\n"
+    "4. AUSÊNCIA DE MAPEAMENTO HISTÓRICO: Se a região para onde o preço está indo não tiver um histórico nítido e visível de pavios ou paradas de corpos anteriores no print, a operação de reversão está proibida.\n\n"
     
     "[PASSO 1: IDENTIFICAÇÃO DO AMBIENTE]\n"
     "Identifique o ativo e se é [MERCADO ABERTO REAL] ou [ALGORITMO OTC].\n\n"
     
-    "[PASSO 2: FILTROS DE TENDÊNCIA E FLUXO DE CORES (MÍNIMO 4 VELAS)]\n"
-    "Identifique a tendência macro e micro e verifique o fluxo de cores atual do mercado.\n\n"
+    "[PASSO 2: CONTAGEM DE FLUXO E PROXIMIDADE]\n"
+    "Conte a sequência de velas atuais da mesma cor (é maior ou igual a 4?). Calcule visualmente a distância do preço atual até a região forte de reversão mais próxima.\n\n"
     
     "[PASSO 3: APLICAÇÃO DOS CRITÉRIOS DE REJEIÇÃO]\n"
     "Valide rigorosamente se a movimentação atual viola alguma das 4 regras de rejeição estipuladas.\n\n"
@@ -59,16 +60,17 @@ PROMPT_TRADER = (
     "🟥🟩 DIREÇÃO EXATA DA ORDEM: [COMPRA / VENDA / OPERAÇÃO ABORTADA]\n"
     "💰 GERENCIAMENTO DE LOTE RECOMENDADO: [SOROS / ENTRADA FIXA / MÃO LEVE / PARADA OBRIGATÓRIA]\n"
     "🧠 ESTRATÉGIA E OPERACIONAL COMBINADO ATIVADO:\n"
-    "- Tipo de operacional isolado ativado (Exemplos permitidos: 'OPERACIONAL DE REVERSÃO EM REGIÃO DE RETRAÇÃO', 'OPERACIONAL DE EXAUSTÃO POR PARADA DE CORPO' ou 'OPERAÇÃO ABORTADA POR CRITÉRIO DE REJEIÇÃO').\n"
-    "- Detalhes dos gatilhos observados nos pavios/corpos anteriores do print ou o motivo exato da rejeição.\n"
-    "- Descrição minuciosa da combinação (Exaustão com pavio, Parada de movimento com reversão, etc).\n"
+    "- Tipo de operacional isolado ativado (Exemplos permitidos: 'OPERACIONAL DE FLUXO DE CONTINUIDADE', 'OPERACIONAL DE REVERSÃO POR ATRAÇÃO DE REGIAO FORTE' ou 'OPERAÇÃO ABORTADA').\n"
+    "- Gatilho específico acionado (Ex: 'Fluxo de X velas perto da região de reversão, ativando exaustão contra o movimento' ou 'Fluxo isolado sem barreiras próximas').\n"
+    "- Descrição minuciosa da combinação (Exaustão com pavio, Parada de movimento com reversão, Continuidade de fluxo, etc).\n"
     "🌐 MODO DE MERCADO DETECTADO: [MERCADO ABERTO ou MERCADO OTC]\n"
     "📊 CONTEXTO DO MERCADO MACRO E MICRO (ALINHAMENTO): [Tendência]\n"
-    "📊 JUSTIFICATIVA DA REGIÃO, BUSCA E PROJEÇÃO TEMPORAL: [Explique detalhadamente como a região de pavios ou parada foi identificada no histórico do print, a contagem de candles faltantes até ela, e por que a expiração foi cravada para a mesma vela de M1]\n\n"
+    "📊 JUSTIFICATIVA DA REGIÃO, BUSCA E PROJEÇÃO TEMPORAL: [Explique detalhadamente a contagem das velas de fluxo, a distância detectada até a região forte de pavios/parada no print, o cálculo de candles faltantes para o clique, e por que a expiração foi cravada para a mesma vela de M1]\n\n"
     "🔍 DETALHAMENTO ANATÔMICO, ESTRUTURAL E TÉCNICO:\n"
     "- Ambiente Identificado\n"
     "- Regiões de Reversão Buscadas e Mapeadas no Histórico do Print\n"
-    "- Análise de Filtros de Rejeição (Velas Marubozu? Velas de Anomalia? Tendência Trator?)\n"
+    "- Contagem Analítica de Velas do Fluxo Atual\n"
+    "- Análise de Filtros de Rejeição (Velas Marubozu? Velas de Anomalia? Tendência Trator de Longo Prazo?)\n"
     "- Trajetória e Contagem de Candles pós-Print até a Zona Alvo\n"
     "- Densidade dos Pavios de Retração Localizados\n"
     "- Comportamento de Volume e Parada de Corpos Identificados\n"
