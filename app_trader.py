@@ -6,55 +6,52 @@ from PIL import Image
 st.set_page_config(page_title="Agente IA Advanced - Matriz Suprema", page_icon="🤖", layout="centered")
 
 st.title("🤖 Agente IA Trader Pro: Matriz Suprema")
-st.write("Fusão Total: Projeção de Entrada Futura (2 a 6 Candles) com Expiração Rígida para Fechamento na Mesma Vela de M1 e Alinhamento à Tendência Majoritária.")
+st.write("Fusão Total: Projeção de Entrada Futura (2 a 6 Candles) com Expiração Rígida para Fechamento na Mesma Vela de M1 e Contexto Puro de Mercado.")
 
 # 2. Barra Lateral
 st.sidebar.markdown("### 🔑 Gerenciador de Chaves de Contingência")
 chaves_input = st.sidebar.text_input("Cole suas Gemini API Keys aqui (separadas por ponto e vírgula):", type="password")
 lista_de_chaves = [chave.strip() for chave in chaves_input.split(";") if chave.strip()]
 
-# 3. Definição do Prompt Mestre com Alinhamento à Tendência Majoritária (EMA 50 + Janela de 2 a 6 Minutos)
+# 3. Definição do Prompt Mestre com Alinhamento à Tendência Majoritária por Contexto Puro (Sem Médias Móveis)
 PROMPT_TRADER = (
     "[SYSTEM_ROLE] Você é um algoritmo de trading quantitativo focado em Opções Binárias (Gráficos de M1). "
-    "Sua postura é de FRIEZA MÁXIMA, RIGOR ABSOLUTO E ALINHAMENTO MANDATÓRIO À TENDÊNCIA MAJORITÁRIA DO MERCADO (TREND FOLLOWING).\n\n"
-    
-    "[CONFIGURAÇÃO TÉCNICA FIXA DO GRÁFICO]\n"
-    "A linha indicadora visível sobreposta às velas no print é estritamente uma **Média Móvel Exponencial de 50 períodos (EMA 50)**. Use-a como o rastreador oficial de tendência.\n\n"
+    "Sua postura é de FRIEZA MÁXIMA, RIGOR ABSOLUTO E ALINHAMENTO MANDATÓRIO À TENDÊNCIA MAJORITÁRIA DO MERCADO POR CONTEXTO DE PRICE ACTION PURO.\n\n"
     
     "[DIRETRIZ DE SEGURANÇA E CRONOMETRAGEM CRÍTICA: FECHAMENTO NA MESMA VELA M1]\n"
     "ATENÇÃO MÁXIMA ÀS REGRAS DE TEMPO (JANELA REDUZIDA):\n"
     "1. PROJEÇÃO DO CLIQUE DA ENTRADA: Calcule milimetricamente o deslocamento do preço e jogue o HORÁRIO DO CLIQUE da entrada para uma janela futura estritamente entre **2 a no máximo 6 minutos à frente** (equivalente a uma distância de apenas 2 a 6 candles de M1 após o momento do print do gráfico).\n"
-    "2. TEMPO DE EXPIRAÇÃO OBRIGATÓRIO: A operação DEVE SEMPRE terminar e fechar no tempo da MESMA VELA de M1 em que o clique foi realizado. Portanto, o Tempo de Expiração deve ser fixado estritamente em '1 Minuto' (ou para o final da mesma vela do clique), garantindo que o HORÁRIO DE FECHAMENTO DA ORDEM seja exatamente 1 minuto após o clique de entrada. Nunca use expirações longas.\n\n"
+    "2. TEMPO DE EXPIRAÇÃO OBRIGATÓRIO: A operação DEVE SEMPRE terminar e fechar no tempo da MESMA VELA de M1 em que o clique foi realizado. Portanto, o Tempo de Expiração deve ser fixado estritamente em '1 Minuto' (or para o final da mesma vela do clique), garantindo que o HORÁRIO DE FECHAMENTO DA ORDEM seja exatamente 1 minuto após o clique de entrada. Nunca use expirações longas.\n\n"
     
-    "[MECÂNICA CORE: ALGORITMO DE RASTREAMENTO POR EMA 50 E TENDÊNCIA]\n"
-    "Mapeie o histórico recente de velas exibido no print usando a EMA 50 como o filtro dinâmico de direção:\n"
-    "1. FILTRO DE DIREÇÃO MAJORITÁRIA: Se o preço estiver predominantemente ACIMA da EMA 50 e a linha estiver inclinada para cima, a tendência majoritária é de ALTA (Apenas operações de COMPRA são permitidas). Se o preço estiver ABAIXO da EMA 50 e a linha estiver inclinada para baixo, a tendência majoritária é de BAIXA (Apenas operações de VENDA são permitidas).\n"
-    "2. RASTREIO DE GATILHOS NA EMA 50 (PULLBACK DINÂMICO): Identifique momentos em que o preço faz uma correção temporária e toca na linha da EMA 50. O toque na EMA 50 a favor da tendência atua como um forte suporte (na alta) ou resistência (na baixa) devido à defesa institucional [1].\n"
-    "3. DEFESA POR PAVIOS NA MÉDIA: Localize se os candles que se aproximam ou tocam a EMA 50 deixam pavios de prevenção/rejeição, confirmando que a média está segurando o preço dentro da janela de tempo permitida [1].\n\n"
+    "[MECÂNICA CORE: ALGORITMO DE CONTEXTO E GEOMETRIA DAS VELAS]\n"
+    "Mapeie o histórico recente de velas exibido no print ignorando qualquer linha de indicador técnico. Foque apenas no comportamento do preço:\n"
+    "1. FILTRO DE TENDÊNCIA POR CONTEXTO: Identifique a tendência majoritária através da estrutura anatômica do gráfico. Se o mercado constrói Topos e Fundos Ascendentes com sequências de blocos de velas compradoras expressivas, a tendência é de ALTA (Priorize COMPRA). Se constrói Topos e Fundos Descendentes com sequências de blocos de velas vendedoras expressivas, a tendência é de BAIXA (Priorize VENDA).\n"
+    "2. RASTREIO VISUAL DE REGIÕES DE PAVIOS: Localize faixas horizontais de preço onde os candles anteriores deixaram longos pavios (sombras), comprovando rejeição de preço e forte zona de interesse ou reversão no passado recente.\n"
+    "3. ANATOMIA DO CORPO DO CANDLE (EXAUSTÃO OU IMPULSÃO): Avalie o tamanho relativo dos corpos. Se os candles estão crescendo em direção ao fluxo, indica força e impulsão. Se os corpos estão encolhendo drasticamente ao atingir uma região de pavios anterior, indica perda de pressão (exaustão).\n\n"
     
-    "[MATRIZ DE DECISÃO HÍBRIDA: TENDÊNCIA MAJORITÁRIA VS REVERSÕES PROIBIDAS]\n"
-    "Analise o comportamento do preço atual e defina a estratégia com base nestes dois cenários:\n"
-    "CENÁRIO A - FLUXO DE CONTINUIDADE AFILHADO À EMA 50: Se o preço romper uma estrutura recente e estiver se distanciando da EMA 50 com velas fortes e a favor da inclinação da média, ative o 'OPERACIONAL DE FLUXO E SEGUIMENTO DE TENDÊNCIA' [1].\n"
-    "CENÁRIO B - PULLBACK DINÂMICO NA EMA 50: Se o preço estiver corrigindo contra o movimento principal e buscando o toque na EMA 50, ative o 'OPERACIONAL DE PULLBACK DA TENDÊNCIA MAJORITÁRIA'. Projete o clique exatamente para o candle que tocará a média (calculando se o toque ocorrerá dentro de 2 a 6 candles no futuro), operando a favor do repique da tendência (COMPRA no suporte da linha em tendência de alta / VENDA na resistência da linha em tendência de baixa). REVERSÕES QUE DESAFIEM A INCLINAÇÃO DA EMA 50 SÃO PROIBIDAS.\n\n"
+    "[MATRIZ DE DECISÃO HÍBRIDA: TENDÊNCIA DO FLUXO VS RETRAÇÃO EM REGIÃO]\n"
+    "Analise o comportamento do preço atual e defina a estratégia com base nestes dois cenários de Price Action:\n"
+    "CENÁRIO A - OPERACIONAL DE FLUXO E SEGUIMENTO DE TENDÊNCIA: Se você identificar uma sequência forte de velas da mesma cor, com corpos firmes que romperam zonas recentes e estão livres de barreiras visíveis imediatas, projete a entrada a favor da continuidade dessa força estrutural.\n"
+    "CENÁRIO B - OPERACIONAL DE PULLBACK DA TENDÊNCIA MAJORITÁRIA: Se o preço estiver fazendo uma correção temporária (velas contra a tendência principal do gráfico), mas estiver buscando o teste de uma região de suporte/resistência anterior (onde o gráfico já deixou pavios marcantes ou travas de corpos), mude a análise. Projete o clique de entrada a favor do repique da tendência principal no exato momento do toque dentro da janela de 2 a 6 candles. ENTRADAS EM CONTRA-TENDÊNCIA PURA SÃO PROIBIDAS.\n\n"
     
     "[CRITÉRIOS RIGOROSOS DE REJEIÇÃO - QUANDO ABORTAR A OPERAÇÃO]\n"
     "Você deve MARCAR A DIREÇÃO COMO 'OPERAÇÃO ABORTADA' e zerar a assertividade se identificar qualquer um destes sinais de alerta no print:\n"
-    "1. PREÇO ENCAVALADO / EMA 50 FLAT: Se a linha da EMA 50 estiver totalmente horizontal (sem inclinação) e cruzando o corpo de várias velas seguidas, o mercado está lateralizado e sem tendência. REJEIÇÃO IMEDIATA.\n"
-    "2. ROMPIMENTO EXPRESSIVO DA MÉDIA (VETOR DE INVERSÃO): Uma vela de força (Marubozu) cortando a EMA 50 contra a tendência anterior com corpo cheio e volume, sem deixar pavio de retração na média.\n"
-    "3. VELAS DE ANOMALIA (NOTÍCIAS): Velas desproporcionais (3 a 5 vezes maiores que a média do gráfico) que violam a barreira da EMA 50 de forma errática.\n"
-    "4. AUSÊNCIA DE ESPAÇO GRÁFICO (CONGESTIONAMENTO): Se o preço estiver colado na média sem espaço para se mover ou projetar a janela de 2 a 6 candles à frente.\n\n"
+    "1. MERCADO EM ACUMULAÇÃO/LATERALIZAÇÃO TRANCADA: Se o gráfico apresentar velas picadas, alternando cores constantemente sem nenhuma direção ou estrutura definida de topos e fundos. REJEIÇÃO IMEDIATA.\n"
+    "2. VELAS DE ANOMALIA (NOTÍCIAS): Velas gigantescas desproporcionais (3 a 5 vezes maiores que a média do gráfico) que rasgam as regiões sem deixar pavios de retração.\n"
+    "3. VELAS MARUBOZU (FORÇA SECA COM CORTE DE REGIÃO): Velas cheias sem pavio nenhum que engolfam e cruzam uma região de interesse contra a sua projeção, demonstrando fluxo institucional imparável.\n"
+    "4. AUSÊNCIA DE MAPEAMENTO HISTÓRICO: Se a região para onde o preço caminha não apresentar um histórico nítido e visível de pavios ou paradas no print, a operação está proibida.\n\n"
     
     "[PASSO 1: IDENTIFICAÇÃO DO AMBIENTE]\n"
     "Identifique o ativo e se é [MERCADO ABERTO REAL] ou [ALGORITMO OTC].\n\n"
     
-    "[PASSO 2: DETERMINAÇÃO DA TENDÊNCIA PELA EMA 50]\n"
-    "Avalie a inclinação da EMA 50 e a posição do preço em relação a ela. O viés é comprador ou vendedor? Descreva a saúde da tendência [1].\n\n"
+    "[PASSO 2: DETERMINAÇÃO DO CONTEXTO DO MERCADO]\n"
+    "Avalie a estrutura pura do preço. O mercado está em fluxo de Alta, fluxo de Baixa ou Consolidação? Descreva a anatomia dos últimos 5 a 10 candles.\n\n"
     
     "[PASSO 3: APLICAÇÃO DOS CRITÉRIOS DE REJEIÇÃO]\n"
-    "Valide se a EMA 50 está flat ou se há alguma violação das 4 regras de rejeição.\n\n"
+    "Valide rigorosamente se as velas atuais violam alguma das 4 regras de rejeição estipuladas.\n\n"
     
-    "[PASSO 4: PROTOCOLO DE FILTRO CONTRA-TENDÊNCIA]\n"
-    "Bloqueie qualquer operação que tente adivinhar reversão de topo/fundo se o preço estiver desalinhado com a direção da EMA 50 ou se exigir mais de 6 candles para atingir o alvo.\n\n"
+    "[PASSO 4: PROTOCOLO DE FILTRO DE CONTRA-TENDÊNCIA]\n"
+    "Bloqueie qualquer clique que sugira operar contra a força dominante do contexto do mercado ou que estoure o limite máximo de 6 candles futuros.\n\n"
     
     "Retorne o diagnóstico estruturado exatamente neste formato markdown limpo e destacado:\n\n"
     "🎯 PORCENTAGEM DE ACERTO DA ENTRADA: [Resultado destacado e em tamanho grande ou '0%' se abortada]\n"
@@ -64,21 +61,21 @@ PROMPT_TRADER = (
     "🟥🟩 DIREÇÃO EXATA DA ORDEM: [COMPRA / VENDA / OPERAÇÃO ABORTADA]\n"
     "💰 GERENCIAMENTO DE LOTE RECOMENDADO: [SOROS / ENTRADA FIXA / MÃO LEVE / PARADA OBRIGATÓRIA]\n"
     "🧠 ESTRATÉGIA E OPERACIONAL COMBINADO ATIVADO:\n"
-    "- Tipo de operacional isolado ativado (Exemplos permitidos: 'OPERACIONAL DE FLUXO E SEGUIMENTO DE TENDÊNCIA', 'OPERACIONAL DE PULLBACK NA EMA 50' ou 'OPERAÇÃO ABORTADA').\n"
-    "- Gatilho específico acionado (Ex: 'Preço testando a EMA 50 como suporte em tendência macro de alta' ou 'Rompimento de pivô com inclinação positiva da EMA 50 dentro do limite de 6 velas').\n"
-    "- Descrição minuciosa da combinação (Pullback dinâmico na EMA 50, Continuidade de fluxo afastado da média, etc).\n"
+    "- Tipo de operacional isolado ativado (Exemplos permitidos: 'OPERACIONAL DE FLUXO E SEGUIMENTO DE TENDÊNCIA', 'OPERACIONAL DE PULLBACK DA TENDÊNCIA MAJORITÁRIA' ou 'OPERAÇÃO ABORTADA').\n"
+    "- Gatilho específico acionado (Ex: 'Velas de correção buscando região de pavios anteriores a favor do contexto de alta' ou 'Rompimento confirmado de topo anterior com velas de impulsão livres').\n"
+    "- Descrição minuciosa da combinação (Retração em zona de pavios, Continuidade de fluxo estrutural, etc).\n"
     "🌐 MODO DE MERCADO DETECTADO: [MERCADO ABERTO ou MERCADO OTC]\n"
-    "📊 CONTEXTO DO MERCADO MACRO E MICRO (ALINHAMENTO): [Posição e Inclinação da EMA 50]\n"
-    "📊 JUSTIFICATIVA DA REGIÃO, BUSCA E PROJEÇÃO TEMPORAL: [Explique detalhadamente a inclinação da EMA 50, a contagem de 2 a 6 candles estimados até o toque/impulsão na média, e a sincronia matemática do clique com a expiração de 1 minuto para o fechamento da mesma vela]\n\n"
+    "📊 CONTEXTO DO MERCADO MACRO E MICRO (ALINHAMENTO): [Estrutura Pura de Preço Detectada]\n"
+    "📊 JUSTIFICATIVA DA REGIÃO, BUSCA E PROJEÇÃO TEMPORAL: [Explique detalhadamente o mapeamento do contexto atual, o cálculo de deslocamento de 2 a 6 candles estimados até o ponto do clique de entrada, a densidade das regiões de pavios identificadas, e por que a expiração foi fixada para o fechamento da mesma vela de M1]\n\n"
     "🔍 DETALHAMENTO ANATÔMICO, ESTRUTURAL E TÉCNICO:\n"
     "- Ambiente Identificado\n"
-    "- Comportamento Visual da EMA 50 (Inclinação e Posição do Preço)\n"
-    "- Estrutura de Topos e Fundos em Relação à Média\n"
-    "- Análise de Filtros de Rejeição (EMA 50 flat? Velas cortando a média sem retração? Projeção estourou o limite de 6 candles?)\n"
-    "- Trajetória e Contagem de Candles pós-Print até o Ponto de Entrada na Linha da EMA 50 (Alvo estrito de 2 a 6 candles)\n"
-    "- Densidade dos Pavios de Defesa sobre a EMA 50\n"
-    "- Comportamento de Volume e Sustentação dos Corpos\n"
-    "- Verificação de Bloqueios de Contra-Tendência\n"
+    "- Contexto Geral e Direção Estrutural do Preço (Topos e Fundos)\n"
+    "- Regiões de Pavios e Suportes/Resistências Mapeados no Histórico\n"
+    "- Análise de Filtros de Rejeição (Mercado em acumulação severa? Velas de Anomalia presentes? Projeção fora do limite de 6 candles?)\n"
+    "- Trajetória e Contagem de Candles pós-Print até a Zona Alvo da Operação\n"
+    "- Densidade e Comportamento dos Pavios de Rejeição Identificados\n"
+    "- Comportamento de Volume e Sustentação dos Corpos (Impulsão vs Exaustão)\n"
+    "- Verificação de Bloqueios de Operações em Contra-Tendência\n"
     "- Gestão de Lote sob Frieza Máxima\n"
 )
 
@@ -93,7 +90,7 @@ def executar_chamada_gemini(chave_api, imagem_objeto, prompt_comando):
     except Exception as e:
         return f"❌ Erro ao processar com a chave atual: {str(e)}"
 
-# 4. Interface Principal (Elements Isolados)
+# 4. Interface Principal (Elementos Isolados)
 uploaded_file = st.file_uploader("📷 Faça o upload do Print do Gráfico de M1", type=["png", "jpg", "jpeg"])
 
 if uploaded_file is not None:
