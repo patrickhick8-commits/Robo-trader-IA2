@@ -45,7 +45,7 @@ PROMPT_TRADER = (
     "Identifique o ativo e se é [MERCADO ABERTO REAL] ou [ALGORITMO OTC].\n\n"
     
     "[PASSO 2: DETERMINAÇÃO DO CONTEXTO DO MERCADO]\n"
-    "Avalie a estrutura pura do preço. O mercado está em fluxo de Alta, fluxo de Baixa ou Consolidação? Descreva a anatomyia dos últimos 5 a 10 candles.\n\n"
+    "Avalie a estrutura pura do preço. O mercado está em fluxo de Alta, fluxo de Baixa ou Consolidação? Descreva a anatomia dos últimos 5 a 10 candles.\n\n"
     
     "[PASSO 3: APLICAÇÃO DOS CRITÉRIOS DE REJEIÇÃO]\n"
     "Valide rigorosamente se as velas atuais violam alguma das 4 regras de rejeição estipuladas.\n\n"
@@ -59,10 +59,10 @@ PROMPT_TRADER = (
     "⏳ TEMPO DE EXPIRAÇÃO: 1 Minuto (Configuração fixa para fechar na mesma vela M1 do clique, ou 'N/A' se abortada)\n"
     "🏁 HORÁRIO DE FECHAMENTO DA ORDEM: [HH:MM:00 exato correspondente ao final da mesma vela do clique, ou 'N/A' se abortada]\n"
     "🟥🟩 DIREÇÃO EXATA DA ORDEM: [COMPRA / VENDA / OPERAÇÃO ABORTADA]\n"
-    "💰 GERENCIAMENTO DE LOTE RECOMENDADO: [SOROS / ENTRADA FIXA / MÃO LEVE / PARADA OBRIGATÓRIA]\n"
+    "💰 GERENCIAMENTO DE LOTE RECOMENDADO: [SOROS / ENTRADA FIXA / MÃO LEVE / PARADA OBRIGATÓORA]\n"
     "🧠 ESTRATÉGIA E OPERACIONAL COMBINADO ATIVADO:\n"
     "- Tipo de operacional isolado ativado (Exemplos permitidos: 'OPERACIONAL DE FLUXO E SEGUIMENTO DE TENDÊNCIA', 'OPERACIONAL DE PULLBACK DA TENDÊNCIA MAJORITÁRIA' ou 'OPERAÇÃO ABORTADA').\n"
-    "- Gatilho específico acionado (Ex: 'Velas de correção buscando região de pavios anteriores a favor do contexto de alta' ou 'Rompimento confirmed de topo anterior com velas de impulsão livres').\n"
+    "- Gatilho específico acionado (Ex: 'Velas de correção buscando região de pavios anteriores a favor do contexto de alta' ou 'Rompimento confirmado de topo anterior com velas de impulsão livres').\n"
     "- Descrição minuciosa da combinação (Retração em zona de pavios, Continuidade de fluxo estrutural, etc).\n"
     "🌐 MODO DE MERCADO DETECTADO: [MERCADO ABERTO ou MERCADO OTC]\n"
     "📊 CONTEXTO DO MERCADO MACRO E MICRO (ALINHAMENTO): [Estrutura Pura de Preço Detectada]\n"
@@ -90,7 +90,7 @@ def executar_chamada_gemini(chave_api, imagem_objeto, prompt_comando):
     except Exception as e:
         return f"❌ Erro ao processar com a chave atual: {str(e)}"
 
-# 4. Interface Principal (Elementos Isolados)
+# 4. Interface Principal
 uploaded_file = st.file_uploader("📷 Faça o upload do Print do Gráfico de M1", type=["png", "jpg", "jpeg"])
 
 if uploaded_file is not None:
@@ -114,4 +114,4 @@ if uploaded_file is not None:
                     sucesso = True
                     progresso.progress(100)
                     break
-                else:
+                
