@@ -3,24 +3,20 @@ from google import genai
 from google.genai import types
 from PIL import Image
 
-# 1. Configuração da Página
 st.set_page_config(page_title="Agente IA Advanced - Matriz Suprema", page_icon="🤖", layout="centered")
 
 st.title("🤖 Agente IA Trader Pro: Matriz Suprema")
 st.write("Fusão Total: Projeção de Entrada Futura (3 a 10 Candles) com Expiração Rígida para Fechamento na Mesma Vela de M1.")
 
-# Inicialização da memória interna da sessão
 if "sinal_gerado" not in st.session_state:
     st.session_state.sinal_gerado = ""
 if "analisado" not in st.session_state:
     st.session_state.analisado = False
 
-# 2. Barra Lateral
 st.sidebar.markdown("### 🔑 Gerenciador de Chaves de Contingência")
 chaves_input = st.sidebar.text_input("Cole suas Gemini API Keys aqui (separadas por ponto e vírgula):", type="password")
 lista_de_chaves = [chave.strip() for chave in chaves_input.split(";") if chave.strip()]
 
-# 3. Definição Limpa do Prompt Mestre
 PROMPT_TRADER = (
     "[SYSTEM_ROLE] Você é um algoritmo de trading quantitativo focado em Opções Binárias (Gráficos de M1). "
     "Sua postura é de FRIEZA MÁXIMA, RIGOR ABSOLUTO E PRECISÃO CIRÚRGICA.\n\n"
@@ -98,14 +94,15 @@ def executar_chamada_gemini(chave_api, imagem_pil, prompt_comando):
     except Exception as e:
         return f"❌ Erro: {str(e)}"
 
-# 4. Interface Totalmente Linear na Raiz do Código
+# 4. Elementos de Interface Puros na Raiz Esquerda do Código
 uploaded_file = st.file_uploader("📷 Faça o upload do Print do seu Gráfico (M1):", type=["png", "jpg", "jpeg"])
-
 botao_disparar = st.button("🧠 Iniciar Análise Avançada por IA")
 
-# 5. Execução em Linha Reta Absoluta (Achatamento Completo)
-if botao_disparar and not uploaded_file:
-    st.error("⚠️ Por favor, faça o upload de uma imagem do gráfico antes de iniciar a análise.")
-    st.stop()
-
-if botao_disparar and not lista_de_chaves:
+# 5. Processamento Linear Unificado (Garante 0% de chances de erro de indentação)
+if botao_disparar:
+    if not uploaded_file:
+        st.error("⚠️ Por favor, faça o upload de uma imagem do gráfico antes de iniciar a análise.")
+    elif not lista_de_chaves:
+        st.error("⚠️ Insira pelo menos uma Gemini API Key válida na barra lateral esquerda antes de analisar.")
+    else:
+        imagem_viva = Image.open(uploaded_file)
