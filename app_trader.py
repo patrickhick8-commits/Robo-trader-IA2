@@ -71,6 +71,7 @@ PROMPT_TRADER = (
 
 def executar_chamada_gemini(chave_api, imagem_objeto, prompt_comando):
     try:
+        # Inicializa o cliente usando a nova biblioteca google-genai
         client = genai.Client(api_key=chave_api)
         response = client.models.generate_content(
             model='gemini-2.5-flash',
@@ -78,7 +79,8 @@ def executar_chamada_gemini(chave_api, imagem_objeto, prompt_comando):
         )
         return response.text
     except Exception as e:
-        return f"❌ Erro ao processar com a chave atual: {str(e)}"
+        # Retorna o erro real detalhado gerado pela API do Google
+        return f"❌ Erro na API: {str(e)}"
 
 # 4. Interface Principal (Elementos Isolados de Qualquer Condicional)
 uploaded_file = st.file_uploader("📷 Faça o upload do Print do seu Gráfico (M1):", type=["png", "jpg", "jpeg"])
@@ -101,17 +103,20 @@ if botao_analise:
                 st.write(f"Tentando analisar com a chave de contingência {i+1}...")
                 resultado = executar_chamada_gemini(chave, imagem, PROMPT_TRADER)
                 
-                if "❌ Erro" not in resultado:
+                # Verifica se a resposta não contém o marcador de erro detalhado
+                if "❌ Erro na API:" not in resultado:
                     st.success("Análise concluída com sucesso!")
                     st.markdown(resultado)
                     sucesso = True
                     break
                 else:
-                    st.warning(f"Chave {i+1} falhou ou está instável. Tentando próxima da lista...")
+                    # Mostra o erro real na tela para te ajudar no diagnóstico
+                    st.warning(f"Chave {i+1} falhou. Detalhes: {resultado}")
+                    st.write("Tentando próxima chave da lista...")
             
-            # CORREÇÃO AQUI: Mudado de 'success' para 'sucesso'
+            # Correção do NameError: usando a variável correta em português
             if not sucesso:
-                st.error("Todas as chaves de contingência fornecidas falharam. Verifique as chaves na Google AI Studio.")
+                st.error("Todas as chaves de contingência fornecidas falharam. Verifique suas chaves e permissões no Google AI Studio.")
 
 if not lista_de_chaves:
     st.info("💡 Lembrete: Insira as chaves de API na barra lateral esquerda para liberar o processamento.")
