@@ -13,7 +13,7 @@ st.sidebar.markdown("### 🔑 Gerenciador de Chaves de Contingência")
 chaves_input = st.sidebar.text_input("Cole suas Gemini API Keys aqui (separadas por ponto e vírgula):", type="password")
 lista_de_chaves = [chave.strip() for chave in chaves_input.split(";") if chave.strip()]
 
-# 3. Definição Limpa do Prompt Mestre (Refinamento de Tempo Exato por Velocidade de Candle)
+# 3. Definição Limpa do Prompt Mestre
 PROMPT_TRADER = (
     "[SYSTEM_ROLE] Você é um algoritmo de trading quantitativo focado em Opções Binárias (Gráficos de M1). "
     "Sua postura é de FRIEZA MÁXIMA, RIGOR ABSOLUTO E PRECISÃO CIRÚRGICA.\n\n"
@@ -21,7 +21,7 @@ PROMPT_TRADER = (
     "[DIRETRIZ DE SEGURANÇA E CRONOMETRAGEM CRÍTICA: FECHAMENTO NA MESMA VELA M1]\n"
     "ATENÇÃO MÁXIMA ÀS REGRAS DE TEMPO:\n"
     "1. PROJEÇÃO DO CLIQUE DA ENTRADA: Calcule milimetricamente o deslocamento do preço e jogue o HORÁRIO DO CLIQUE da entrada para uma janela futura entre **3 a 10 minutos à frente** (equivalente a uma distância de 3 a 10 candles de M1 após o momento do print do gráfico).\n"
-    "2. TEMPO DE EXPIRAÇÃO OBRIGATÓRIO: A operation DEVE SEMPRE terminar e fechar no tempo da MESMA VELA de M1 em que o clique foi realizado. Portanto, o Tempo de Expiração deve ser fixado estritamente em '1 Minuto' (ou para o final da mesma vela do clique), garantindo que o HORÁRIO DE FECHAMENTO DA ORDEM seja exatamente 1 minuto após o clique de entrada. Nunca use expirações longas.\n\n"
+    "2. TEMPO DE EXPIRAÇÃO OBRIGATÓRIO: A operação DEVE SEMPRE terminar e fechar no tempo da MESMA VELA de M1 em que o clique foi realizado. Portanto, o Tempo de Expiração deve ser fixado estritamente em '1 Minuto' (ou para o final da mesma vela do clique), garantindo que o HORÁRIO DE FECHAMENTO DA ORDEM seja exatamente 1 minuto após o clique de entrada. Nunca use expirações longas.\n\n"
     
     "[MECÂNICA CORE: ALGORITMO DE BUSCA DE REGIÃO VISUAL (PRICE ACTION PURO)]\n"
     "Mapeie o histórico recente de velas exibido no print para localizar ZONAS DE INTERESSE DE REVERSÃO baseando-se estritamente em dois padrões anatômicos visuais:\n"
@@ -38,7 +38,7 @@ PROMPT_TRADER = (
     "- VELAS EXPLOSIVAS (Corpos longos e sem pavios): O preço se move rápido. Projete o toque na região forte para apenas **3 a 4 candles à frente** do momento do print.\n"
     "- VELAS CONSTANTES (Corpos médios e profissionais): O preço se move em ritmo normal. Projete o toque para **5 a 7 candles à frente** do momento do print.\n"
     "- VELAS CANSADAS (Corpos decrescentes ou deixando pavio contra o fluxo): O preço está perdendo força mas ainda busca a região. Projete o toque lento para **8 a 10 candles à frente** do momento do print.\n"
-    "O Horário do Clique deve refleter esse cálculo de forma cirúrgica (HH:MM:00).\n\n"
+    "O Horário do Clique deve refletir esse cálculo de forma cirúrgica (HH:MM:00).\n\n"
     
     "[CRITÉRIOS RIGOROSOS DE REJEIÇÃO - QUANDO ABORTAR A OPERAÇÃO]\n"
     "Você deve MARCAR A DIREÇÃO COMO 'OPERAÇÃO ABORTADA' e zerar a assertividade se identificar qualquer um destes sinais de alerta no print:\n"
@@ -99,7 +99,6 @@ def executar_chamada_gemini(chave_api, imagem_objeto, prompt_comando):
 
 # 4. Interface Principal (Elementos Isolados)
 uploaded_file = st.file_uploader("📷 Faça o upload do Print do seu Gráfico (M1):", type=["png", "jpg", "jpeg"])
-
 botao_analise = st.button("🧠 Iniciar Análise Avançada por IA")
 
 # 5. Execução Lógica Controlada pós-Clique
@@ -112,5 +111,6 @@ if botao_analise:
         imagem = Image.open(uploaded_file)
         st.image(imagem, caption="Gráfico Carregado com Sucesso", use_container_width=True)
         
-        sucesso = False
-        with st.spinner("Analisando deslocamento de velas, regiões históricas e exaustão de retração..."):
+        # Mensagem fixa substituindo o spinner para evitar aninhamento problemático
+        st.info("🔄 Processando: Analisando deslocamento de velas, regiões históricas e exaustão...")
+        
