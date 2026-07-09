@@ -108,16 +108,16 @@ def executar_chamada_gemini(chave_api, imagem_pil, prompt_comando):
 # 4. Interface Principal
 uploaded_file = st.file_uploader("📷 Faça o upload do Print do seu Gráfico (M1):", type=["png", "jpg", "jpeg"])
 
-# Força o reset do estado se o usuário trocar a imagem enviada
+# Exibe a imagem caso o upload esteja preenchido
 if uploaded_file:
-    imagem_carregada = Image.open(uploaded_file)
-    st.image(imagem_carregada, caption="Gráfico Carregado com Sucesso", use_container_width=True)
-else:
-    st.session_state.analisado = False
-    st.session_state.resultado_texto = ""
+    imagem_aberta = Image.open(uploaded_file)
+    st.image(imagem_aberta, caption="Gráfico Carregado com Sucesso", use_container_width=True)
 
 botao_analise = st.button("🧠 Iniciar Análise Avançada por IA")
 
-# 5. Execução Blindada com Session State
-if botao_analise and uploaded_file:
-    if not lista_de_chaves:
+# 5. Execução Plana Segura
+if botao_analise:
+    if not uploaded_file:
+        st.error("⚠️ Por favor, faça o upload de uma imagem do gráfico antes de iniciar a análise.")
+        st.stop()
+
