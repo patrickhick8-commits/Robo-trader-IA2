@@ -1,3 +1,32 @@
+# Instale no seu terminal caso ainda não tenha feito: pip install streamlit google-genai pillow
+import streamlit as st
+from google import genai
+from PIL import Image
+
+# 1. Configuração da Página do Site Separado
+st.set_page_config(page_title="Agente IA M1 - Mesma Vela", page_icon="⏱️", layout="centered")
+
+st.title("⏱️ Agente IA: Projeção de Tempo + Mesma Vela (M1)")
+st.write("Analisa o print em M1, identifica se é Mercado Aberto ou OTC, ajusta o operacional e projeta o clique para 2 a 5 minutos à frente.")
+
+# 2. Configuração da Chave da IA
+API_KEY = st.sidebar.text_input("Cole sua Gemini API Key aqui:", type="password")
+
+if API_KEY:
+    # Nova inicialização oficial do SDK google-genai
+    client = genai.Client(api_key=API_KEY)
+    
+    # 3. Campo de Upload do Print
+    uploaded_file = st.file_uploader("Arraste o print do gráfico M1 (com RSI e Relógio visíveis):", type=["png", "jpg", "jpeg"])
+
+    if uploaded_file is not None:
+        image = Image.open(uploaded_file)
+        st.image(image, caption="Gráfico M1 Carregado", use_container_width=True)
+        
+        # Botão de disparo rápido para Opções Binárias
+        if st.button("🚀 CALCULAR PROJEÇÃO DE VELA M1"):
+            with st.spinner("IA identificando cenário e calculando o minuto exato..."):
+                
                 # Prompt calibrado especificamente para CasaTrader, Avalon, IQ Option e Pocket Option
                 prompt = """
                 Você é um robô de trading de alta frequência especialista em Opções Binárias no tempo gráfico de 1 minuto (M1).
@@ -44,3 +73,17 @@
 
                 Seja cirúrgico, rápido e extremamente direto na resposta.
                 """
+                
+                try:
+                    # Executa a geração usando a API atualizada com o prompt alinhado
+                    response = client.models.generate_content(
+                        model='gemini-2.5-flash',
+                        contents=[image, prompt]
+                    )
+                    st.success("Projeção de Vela Concluída!")
+                    st.markdown(response.text)
+                    
+                except Exception as e:
+                    st.error(f"Erro no processamento visual da IA: {e}")
+else:
+    st.info("👈 Insira sua Gemini API Key na barra lateral para ativar o agente.")
