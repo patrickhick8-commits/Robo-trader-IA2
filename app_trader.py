@@ -8,9 +8,9 @@ st.set_page_config(page_title="Agente IA Advanced - Matriz Suprema", page_icon="
 st.title("🤖 Agente IA Trader Pro: Matriz Suprema")
 st.write("Fusão Total: Projeção de Entrada Futura (3 a 10 Candles) com Expiração Rígida para Fechamento na Mesma Vela de M1.")
 
-# Inicialização da memória de estado do Streamlit
-if "resultado_texto" not in st.session_state:
-    st.session_state.resultado_texto = ""
+# Inicialização da memória de estado do Streamlit para reter o sinal na tela
+if "sinal_gerado" not in st.session_state:
+    st.session_state.sinal_gerado = ""
 if "analisado" not in st.session_state:
     st.session_state.analisado = False
 
@@ -34,7 +34,7 @@ PROMPT_TRADER = (
     "[MATRIZ DE DECISÃO HÍBRIDA: FLUXO VS REVERSÃO POR PROXIMIDADE]\n"
     "Analise o comportamento do preço atual e defina a estratégia com base nestes dois cenários:\n"
     "CENÁRIO A - FLUXO DE CONTINUIDADE ISOLADO: Se você identificar uma sequência de a partir de 4 velas consecutivas da mesma cor com corpos expressivos, e o preço estiver longe de qualquer zona forte de reversão, ative o OPERACIONAL DE FLUXO DE CONTINUIDADE acompanhando a cor do movimento.\n"
-    "CENÁRIO B - MUDANÇA PARA REVERSÃO POR ATRAÇÃO: Se você identificar um fluxo forte de velas (mesmo que seja a partir de 4 velas da mesma cor), mas perceber que esse fluxo está buscando e está PERTO de uma região de reversão forte (zona de pavios ou paradas mapeada no histórico), you estão PROIBIDO de seguir o fluxo. O fluxo forte agora funciona como um ÍMÃ. Mude a análise para REVERSÃO EM REGIÃO, projete o número de candles necessários para o preço tocar a zona alvo à frente e mande a ordem contra o fluxo (Reversão) exatamente no momento do toque na região.\n\n"
+    "CENÁRIO B - MUDANÇA PARA REVERSÃO POR ATRAÇÃO: Se você identificar um fluxo forte de velas (mesmo que seja a partir de 4 velas da mesma cor), mas perceber que esse fluxo está buscando e está PERTO de uma região de reversão forte (zona de pavios ou paradas mapeada no histórico), você está PROIBIDO de seguir o fluxo. O fluxo forte agora funciona como um ÍMÃ. Mude a análise para REVERSÃO EM REGIÃO, projete o número de candles necessários para o preço tocar a zona alvo à frente e mande a ordem contra o fluxo (Reversão) exatamente no momento do toque na região.\n\n"
     "[REFINAMENTO DO TEMPO EXATO: PROTOCOLO DE VELOCIDADE VISUAL]\n"
     "Para cravar o minuto exato do HORÁRIO DO CLIQUE (janela de 3 a 10 minutos para o futuro), você deve avaliar a anatomia das últimas 3 velas do fluxo:\n"
     "- VELAS EXPLOSIVAS (Corpos longos e sem pavios): O preço se move rápido. Projete o toque na região forte para apenas **3 a 4 candles à frente** do momento do print.\n"
@@ -95,19 +95,16 @@ def executar_chamada_gemini(chave_api, imagem_pil, prompt_comando):
     except Exception as e:
         return f"❌ Erro: {str(e)}"
 
-# 4. Interface Principal Direta (Sem st.form para evitar congelamento de renderização)
+# 4. Renderização Estável dos Componentes Básicos
 uploaded_file = st.file_uploader("📷 Faça o upload do Print do seu Gráfico (M1):", type=["png", "jpg", "jpeg"])
 
-# Função que altera o estado e executa o processamento imediatamente
-def disparar_analise():
-    st.session_state.analisado = False
-    st.session_state.resultado_texto = ""
+# Se o usuário subir um arquivo, ele desenha o botão e a imagem de forma sequencial na hora
+if uploaded_file:
+    imagem_viva = Image.open(uploaded_file)
+    st.image(imagem_viva, caption="Gráfico Carregado com Sucesso", use_container_width=True)
     
-    if not uploaded_file:
-        st.error("⚠️ Por favor, faça o upload de uma imagem do gráfico antes de iniciar.")
-        return
-        
-    if not lista_de_chaves:
-        st.error("⚠️ Insira pelo menos uma Gemini API Key válida na barra lateral.")
-        return
-
+    # O botão só aparece e fica disponível se a imagem estiver de fato carregada
+    botao_disparar = st.button("🧠 Iniciar Análise Avançada por IA")
+    
+    if botao_disparar:
+        if not lista_de_chaves:
