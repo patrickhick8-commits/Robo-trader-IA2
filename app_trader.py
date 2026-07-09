@@ -1,7 +1,6 @@
 import streamlit as st
 import google.generativeai as genai
 from PIL import Image
-import io
 
 # 1. Configuração da Página
 st.set_page_config(page_title="Agente IA Advanced - Matriz Suprema", page_icon="🤖", layout="centered")
@@ -9,13 +8,11 @@ st.set_page_config(page_title="Agente IA Advanced - Matriz Suprema", page_icon="
 st.title("🤖 Agente IA Trader Pro: Matriz Suprema")
 st.write("Fusão Total: Projeção de Entrada Futura (3 a 10 Candles) com Expiração Rígida para Fechamento na Mesma Vela de M1.")
 
-# Inicialização da memória interna de sessão permanente (State)
+# Inicialização da memória de sessão permanente para os resultados
 if "sinal_gerado" not in st.session_state:
     st.session_state.sinal_gerado = ""
 if "analisado" not in st.session_state:
     st.session_state.analisado = False
-if "imagem_persistente" not in st.session_state:
-    st.session_state.imagem_persistente = None
 
 # 2. Barra Lateral
 st.sidebar.markdown("### 🔑 Gerenciador de Chaves de Contingência")
@@ -85,24 +82,27 @@ PROMPT_TRADER = (
     "- Gestão de Lote sob Frieza Máxima\n"
 )
 
-# Função isolada no topo para evitar desalinhamento de recuos no botão
-def processar_api_gemini(chave, bytes_imagem):
-    try:
-        genai.configure(api_key=chave)
-        model = genai.GenerativeModel('gemini-2.5-flash')
-        imagem_pil = Image.open(io.BytesIO(bytes_imagem))
-        imagem_otimizada = imagem_pil.copy()
-        imagem_otimizada.thumbnail((1024, 576))
-        configuracao = genai.types.GenerationConfig(temperature=0.0)
-        response = model.generate_content([PROMPT_TRADER, imagem_otimizada], generation_config=configuracao)
-        return response.text if response.text else "❌ Resposta nula"
-    except Exception as e:
-        return f"❌ Erro: {str(e)}"
-
-# 4. Interface de Upload Plana
+# 4. Componentes Visuais Fixos na Raiz Esquerda da Tela
 uploaded_file = st.file_uploader("📷 Faça o upload do Print do seu Gráfico (M1):", type=["png", "jpg", "jpeg"])
 
-if uploaded_file is not None:
-    st.session_state.imagem_persistente = uploaded_file.read()
+botao_disparar = st.button("🧠 Iniciar Análise Avançada por IA")
 
-# 5. Renderização e Botão Livres de Blocos Aninhados (0% de chances de erro)
+# 5. Execução Sequencial Síncrona Sem Sub-blocos Ocultos
+if uploaded_file is not None:
+    imagem_viva = Image.open(uploaded_file)
+    st.image(imagem_viva, caption="Gráfico Carregado com Sucesso", use_container_width=True)
+
+if botao_disparar and not uploaded_file:
+    st.error("⚠️ Por favor, faça o upload de uma imagem do gráfico antes de iniciar a análise.")
+
+if botao_disparar and not lista_de_chaves:
+    st.error("⚠️ Insira pelo menos uma Gemini API Key válida na barra lateral esquerda antes de analisar.")
+
+if botao_disparar and uploaded_file and lista_de_chaves:
+    imagem_viva = Image.open(uploaded_file)
+    sucesso = False
+    
+    with st.spinner("Analisando histórico de pavios, fluxo de velas e calculando projeção futura..."):
+        for i, chave in enumerate(lista_de_chaves):
+            st.write(f"Conectando à chave de contingência {i+1}...")
+            try:
