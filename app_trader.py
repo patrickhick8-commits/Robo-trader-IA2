@@ -1,7 +1,6 @@
 import streamlit as st
 from google import genai
 from PIL import Image
-import io
 
 # 1. Configuração da Página
 st.set_page_config(page_title="Agente IA Advanced - Matriz Suprema", page_icon="🤖", layout="centered")
@@ -87,15 +86,11 @@ PROMPT_TRADER = (
     "- Gestão de Lote sob Frieza Máxima\n"
 )
 
-# Alteração crítica: Função reescrita convertendo a imagem em formato estável para a API do Gemini
 def executar_chamada_gemini(chave_api, imagem_pil, prompt_comando):
     try:
         client = genai.Client(api_key=chave_api)
-        
-        # Redimensiona levemente caso a imagem seja 4k para evitar travamento de timeout
         imagem_otimizada = imagem_pil.copy()
         imagem_otimizada.thumbnail((1280, 720))
-        
         response = client.models.generate_content(
             model='gemini-2.5-flash',
             contents=[imagem_otimizada, prompt_comando]
@@ -108,11 +103,17 @@ def executar_chamada_gemini(chave_api, imagem_pil, prompt_comando):
 uploaded_file = st.file_uploader("📷 Faça o upload do Print do seu Gráfico (M1):", type=["png", "jpg", "jpeg"])
 botao_analise = st.button("🧠 Iniciar Análise Avançada por IA")
 
-# 5. Execução Lógica Controlada pós-Clique
+# 5. Execução Lógica Controlada Plana (Blindada contra Erros de Indentação)
 if botao_analise:
     if not uploaded_file:
         st.error("⚠️ Por favor, faça o upload de uma imagem do gráfico antes de iniciar a análise.")
-    elif not lista_de_chaves:
+        st.stop()
+        
+    if not lista_de_chaves:
         st.error("⚠️ Insira pelo menos uma Gemini API Key válida na barra lateral antes de analisar.")
-    else:
-        # Carrega a imagem de forma limpa
+        st.stop()
+
+    # Fluxo principal sem aninhamentos profundos
+    imagem_carregada = Image.open(uploaded_file)
+    st.image(imagem_carregada, caption="Gráfico Carregado com Sucesso", use_container_width=True)
+    
