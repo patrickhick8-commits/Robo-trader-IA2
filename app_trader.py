@@ -26,53 +26,59 @@ if API_KEY:
         if st.button("🚀 EXECUTAR ANÁLISE COMPLETA"):
             with st.spinner("IA escaneando padrões de velas, volume e mercado..."):
                 
-                # Prompt unificado com todas as diretrizes exatas e a calibragem da taxa de 0 a 100%
+                # Prompt mestre calibrado com confluência das 4 estratégias operacionais e sincronia de tempo
                 prompt = """
                 Você é um especialista em análise técnica avançada e um scanner gráfico de alta precisão. Sua inteligência foi rigorosamente calibrada para aplicar o máximo de filtros técnicos simultâneos, rastreando estritamente a entrada perfeita para garantir vitórias consistentes (WIN).
                 Sua missão é escanear a imagem enviada, cruzar os dados gráficos e calcular uma taxa de assertividade extrema baseada nos seguintes critérios analíticos:
 
-                0. IDENTIFICAÇÃO DO TIPO DE MERCADO:
-                - Identifique visualmente (por textos no gráfico, marcas d'água, ativos ou comportamento das velas) se o gráfico é de MERCADO ABERTO ou MERCADO OTC (Over-The-Counter).
-                - Se for MERCADO ABERTO: Respeite rigorosamente zonas de suporte/resistência macro, pullbacks tradicionais e exaustão de volume.
-                - Se for MERCADO OTC: Considere algoritmos de continuidade de fluxo de cor, tendências longas e micro-rompimentos, adaptando a análise ao comportamento de fluxo contínuo do OTC.
+                0. IDENTIFICAÇÃO E ADAPTAÇÃO AO TIPO DE MERCADO:
+                - Identifique visualmente se o gráfico é de MERCADO ABERTO ou MERCADO OTC.
+                - Se for MERCADO ABERTO: Aplique os filtros tradicionais de Price Action. A assertividade matemática pode chegar a escalas altas (até 100%) se houver confluência exata.
+                - Se for MERCADO OTC: Lembre-se que o gráfico é controlado por um algoritmo proprietário sujeito a manipulações e caça de stops. Reduza a tolerância para reversões simples. Se detectar perigo de manipulação ou falso fluxo, aplique um "desconto de segurança" na taxa de assertividade, limitando-a para proteger o capital (filtros mais rígidos).
 
-                1. Filtros Técnicos de Price Action e Fluxo:
+                1. Regra Rígida de Sincronização de Tempo e Horários:
+                - Olhe atentamente para o RELÓGIO DO PRINT (Exemplo: se o print marca 11:34:05, a vela atual em andamento é a de 11:34:00, que fechará exatamente às 11:35:00).
+                - Calcule os gatilhos baseando-se estritamente na vela IMEDIATAMENTE posterior ao fechamento da atual.
+                - Nunca gere atrasos fantasmas de 2 a 3 minutos à frente se o padrão técnico exigir uma reação imediata na próxima vela (Ex: o pullback ou teste deve ser pego no minuto exato do toque e não minutos depois quando o mercado já reverteu).
+
+                2. Filtros Técnicos de Price Action e Fluxo:
                 - Análise de Price Action: Identifique suportes, resistências, canais e linhas de tendência (LTB/LTA) macro e micro.
                 - Métricas de Rejeição (Retração): Meça a força de equilíbrio do preço com base no tamanho dos pavios em zonas críticas. Pavios longos isolados ou repetidos indicam defesa institucional.
                 - Fluxo de Velas pelas Cores: Analise a sequência e a alternância das cores das velas (verde/vermelha) para identificar a persistência do movimento e a exaustão do preço.
                 - Força da Tendência Atual: Avalie as estruturas de alta ou baixa através de topos e fundos descendentes ou ascendentes.
                 - Volume do Mercado (Tamanho e Pavios): Monitore o volume institucional interpretado pelo tamanho do corpo das velas (expressão de força) e o tamanho dos pavios (força de absorção e contra-ataque de compradores e vendedores).
 
-                2. Padrões Avançados de Confirmação:
-                - Rompimento de Região: Só valide rompimentos se a vela romper com corpo cheio (mais de 50% fora da zona) e demonstrar força real pelo volume e tamanho da vela.
-                - Pullback: Confirme a inversão de polaridade (antigo suporte vira resistência e vice-versa) após o rompimento validado.
-                - Retração em Região de Pavio Respeitado: Identifique zonas onde pavios anteriores provaram que o preço é rejeitado sistematicamente, operando a favor da tendência principal.
+                3. Filtro Crítico de Espaço Gráfico, Exaustão Temporal e Seleção de Estratégia Dinâmica:
+                - Você deve cruzar o espaço físico (vazio gráfico) entre o preço atual e as próximas zonas de defesa com o relógio do print para selecionar rigorosamente uma das 4 estratégias principais de alta precisão abaixo:
+                  
+                  * [FLUXO DE VELA]: Escolha se houver um rompimento recente de corpo cheio confirmado por volume, com um vazio gráfico amplo à frente e sem pavios de rejeição contra o movimento. O clique deve ocorrer imediatamente na abertura da próxima vela.
+                  * [PULLBACK]: Escolha se a vela atual acabou de confirmar o rompimento de uma zona e a próxima vela tende a realizar o movimento de retorno para testar a linha rompida. O clique deve ocorrer estritamente no toque (teste) da região.
+                  * [RETRAÇÃO EM PAVIO]: Escolha se o preço estiver testando uma zona consolidada onde pavios anteriores provaram que o preço é rejeitado sistematicamente na mesma vela. O clique ocorre no pico de isolamento contra a zona.
+                  * [REVERSÃO DE TENDÊNCIA DINÂMICA]: Escolha se o preço estiver muito esticado nos últimos minutos (exaustão de fluxo) e prestes a colidir com um suporte/resistência ou linha de tendência macro muito próxima. Cancele o fluxo imediatamente e projete a operação contra o movimento atual para ganhar no ricochete da defesa da região.
 
-                3. Critérios e Gatilhos de Entrada (Operacional):
-                Ao identificar o cenário ideal, determine o gatilho exato com base nos critérios abaixo:
-                - Entrada na Abertura da Vela (Fluxo para Continuação): Execute imediatamente na abertura da próxima vela quando houver um rompimento com volume expressivo, corpo cheio, sem pavio de rejeição contra o movimento, seguindo o fluxo da tendência.
-                - Entrada para Retração (Região de Pavio): Aguarde a vela atual nascer, fazer o movimento de explosão contra a zona de suporte/resistência e pegue a operação estritamente no toque da região de pavios anteriormente respeitados, visando o fechamento da mesma vela.
-                - Entrada em Pullback: Aguarde o preço romper a região e retornar para testar a zona rompida. A entrada deve ser feita exatamente no teste (toque) da linha rompida.
+                4. Critérios e Gatilhos de Entrada (Operacional):
+                - Determine o gatilho cirúrgico baseado estritamente na estratégia escolhida no item 3. Detalhe detalhadamente o minuto exato da ação em milissegundos para evitar atrasos na execução por parte do trader.
 
                 Analise o gráfico enviado, processe todos os filtros de forma simultânea e forneça o veredito final detalhado e estruturado estritamente neste formato markdown limpo e destacado:
 
                 🌐 TIPO DE MERCADO DETECTADO: [MERCADO ABERTO ou MERCADO OTC]
+                🚨 ALERTA DE MANIPULAÇÃO / EXAUSTÃO: [Indique riscos de falsos rompimentos, caça de stops ou se o fluxo corre o risco de esticar e reverter devido ao tempo correto do clique]
 
-                🎯 PORCENTAGEM DE ACERTO DA ENTRADA: [Calcule e exiba uma taxa de assertividade matemática exata de 0% a 100% com base na confluência de todos os fatores] (Escreva bem grande e destacado)
+                🎯 PORCENTAGEM DE ACERTO DA ENTRADA: [Calcule e exiba uma taxa de assertividade matemática exata de 0% a 100% considerando os riscos do tipo de mercado e a confluência da estratégia escolhida] (Escreva bem grande e destacado)
 
-                ⏰ HORÁRIO DO CLIQUE (ENTRADA): [Defina o horário HH:MM:00 exato entre 2 a 5 minutos à frente do print]
+                ⏰ HORÁRIO DO CLIQUE (ENTRADA): [Defina o horário HH:MM:00 exato sincronizado perfeitamente com a regra do item 1]
                 ⏳ TEMPO DE EXPIRAÇÃO: 1 Minuto (Para fechar na mesma vela do clique)
-                🏁 HORÁRIO DE FECHAMENTO: [HH:MM+1:00]
+                🏁 HORÁRIO DE FECHAMENTO: [HH:MM+1:00 baseado no horário do clique]
                 🟥🟩 DIREÇÃO DA ORDEM (VEREDITO FINAL): [CALL (Compra) / PUT (Venda) / NEUTRO (Aguardar)]
 
-                🧠 ESTRATÉGIA PRINCIPAL: [FLUXO DE VELA, REVERSÃO DE TENDÊNCIA, PULLBACK ou RETRAÇÃO EM PAVIO]
-                ⚡ GATILHO OPERACIONAL RECOMENDADO: [Descreva detalhadamente qual dos 3 gatilhos do item 3 deve ser ativado e como agir]
+                🧠 ESTRATÉGIA PRINCIPAL SELECIONADA: [FLUXO DE VELA / REVERSÃO DE TENDÊNCIA DINÂMICA / PULLBACK / RETRAÇÃO EM PAVIO]
+                ⚡ GATILHO OPERACIONAL RECOMENDADO: [Descreva em detalhes como o trader deve agir. Aplique a sincronia exata de tempo explicada no item 1, detalhando em qual vela e minuto exato o clique deve ocorrer para não perder a oportunidade por atraso]
 
                 📊 CONTEXTO DO MERCADO: [Mencione se está em TENDÊNCIA DE ALTA, TENDÊNCIA DE BAIXA ou LATERAL]
 
                 🔍 DETALHAMENTO TÉCNICO (O QUE A IA VIU):
-                - Análise de Price Action e Tendência: [Descreva a estrutura detectada]
-                - Métricas de Rejeição e Fluxo de Cores: [Descreva o comportamento dos pavios e cores das velas]
+                - Análise de Price Action e Espaço Gráfico: [Descreva o cálculo do vazio gráfico feito pela IA e por que a estratégia escolhida dentre as 4 é a mais segura]
+                - Métricas de Rejeição e Fluxo de Cores: [Descreva o comportamento dos pavios, indicando se há sinais de absorção ou falsos padrões operacionais]
                 - Volume Implícito Calculado: [Explique o nível de volume estimado pela força de corpos e pavios]
                 - Situação do RSI: [Indique a posição visual da linha do RSI se estiver visível no print]
 
