@@ -21,7 +21,7 @@ PROMPT_TRADER = (
     "[DIRETRIZ DE SEGURANÇA E CRONOMETRAGEM CRÍTICA: FECHAMENTO NA MESMA VELA M1]\n"
     "ATENÇÃO MÁXIMA ÀS REGRAS DE TEMPO:\n"
     "1. PROJEÇÃO DO CLIQUE DA ENTRADA: Calcule milimetricamente o deslocamento do preço e jogue o HORÁRIO DO CLIQUE da entrada para uma janela futura entre **3 a 10 minutos à frente** (equivalente a uma distância de 3 a 10 candles de M1 após o momento do print do gráfico).\n"
-    "2. TEMPO DE EXPIRAÇÃO OBRIGATÓRIO: A operação DEVE SEMPRE terminar e fechar no tempo da MESMA VELA de M1 em que o clique foi realizado. Portanto, o Tempo de Expiração deve ser fixado estritamente em '1 Minuto' (ou para o final da mesma vela do clique), garantindo que o HORÁRIO DE FECHAMENTO DA ORDEM seja exatamente 1 minuto após o clique de entrada. Nunca use expirações longas.\n\n"
+    "2. TEMPO DE EXPIRAÇÃO OBRIGATÓRIO: A operation DEVE SEMPRE terminar e fechar no tempo da MESMA VELA de M1 em que o clique foi realizado. Portanto, o Tempo de Expiração deve ser fixado estritamente em '1 Minuto' (ou para o final da mesma vela do clique), garantindo que o HORÁRIO DE FECHAMENTO DA ORDEM seja exatamente 1 minuto após o clique de entrada. Nunca use expirações longas.\n\n"
     
     "[MECÂNICA CORE: ALGORITMO DE BUSCA DE REGIÃO VISUAL (PRICE ACTION PURO)]\n"
     "Mapeie o histórico recente de velas exibido no print para localizar ZONAS DE INTERESSE DE REVERSÃO baseando-se estritamente em dois padrões anatômicos visuais:\n"
@@ -38,7 +38,7 @@ PROMPT_TRADER = (
     "- VELAS EXPLOSIVAS (Corpos longos e sem pavios): O preço se move rápido. Projete o toque na região forte para apenas **3 a 4 candles à frente** do momento do print.\n"
     "- VELAS CONSTANTES (Corpos médios e profissionais): O preço se move em ritmo normal. Projete o toque para **5 a 7 candles à frente** do momento do print.\n"
     "- VELAS CANSADAS (Corpos decrescentes ou deixando pavio contra o fluxo): O preço está perdendo força mas ainda busca a região. Projete o toque lento para **8 a 10 candles à frente** do momento do print.\n"
-    "O Horário do Clique deve refletir esse cálculo de forma cirúrgica (HH:MM:00).\n\n"
+    "O Horário do Clique deve refleter esse cálculo de forma cirúrgica (HH:MM:00).\n\n"
     
     "[CRITÉRIOS RIGOROSOS DE REJEIÇÃO - QUANDO ABORTAR A OPERAÇÃO]\n"
     "Você deve MARCAR A DIREÇÃO COMO 'OPERAÇÃO ABORTADA' e zerar a assertividade se identificar qualquer um destes sinais de alerta no print:\n"
