@@ -47,7 +47,7 @@ PROMPT_TRADER = (
     "1. VELAS DE FORÇA SEM PAVIO (MARUBOZU) FORA DE CONTEXTO: Velas cheias sem pavio nenhum tocando a região de forma seca e sem desaceleração prévia quando não há histórico de respeito similar.\n"
     "2. VELAS DE ANOMALIA (VETORES GIGANTES / NOTÍCIAS): Velas desproporcionais (3 a 5 vezes maiores que a média do gráfico) que indicam pico extremo de volatilidade. REJEIÇÃO IMEDIATA.\n"
     "3. MICRO-TENDÊNCIA INSISTENTE (VELAS TRATOR): Sequências longas de mais de 7 velas consecutivas da mesma cor sem deixar pavio contrário relevante, indicando força atípica que romperá a região.\n"
-    "4. AUSÊNCIA DE MAPEAMENTO HISTÓRICO: Se a região para onde o preço está indo não tiver um histórico nítido e visível de pavios ou paradas de corpos anteriores no print, a operation de reversão está proibida.\n\n"
+    "4. AUSÊNCIA DE MAPEAMENTO HISTÓRICO: Se a região para onde o preço está indo não tiver um histórico nítido e visível de pavios ou paradas de corpos anteriores no print, a operação de reversão está proibida.\n\n"
     "[PASSO 1: IDENTIFICAÇÃO DO AMBIENTE]\n"
     "Identifique o ativo e se é [MERCADO ABERTO REAL] ou [ALGORITMO OTC].\n\n"
     "[PASSO 2: CONTAGEM DE FLUXO, PROXIMIDADE E VELOCIDADE]\n"
@@ -63,7 +63,7 @@ PROMPT_TRADER = (
     "🏁 HORÁRIO DE FECHAMENTO DA ORDEM: [HH:MM:00 exato correspondente ao final da mesma vela do clique, ou 'N/A' se abortada]\n"
     "🟥🟩 DIREÇÃO EXATA DA ORDEM: [COMPRA / VENDA / OPERAÇÃO ABORTADA]\n"
     "💰 GERENCIAMENTO DE LOTE RECOMENDADO: [SOROS / ENTRADA FIXA / MÃO LEVE / PARADA OBRIGATÓRIA]\n"
-    "💰 ESTRATÉGIA E OPERACIONAL COMBINADO ATIVADO:\n"
+    "🧠 ESTRATÉGIA E OPERACIONAL COMBINADO ATIVADO:\n"
     "- Tipo de operacional isolado ativado (Exemplos permitidos: 'OPERACIONAL DE FLUXO DE CONTINUIDADE', 'OPERACIONAL DE REVERSÃO POR ATRAÇÃO DE REGIAO FORTE' ou 'OPERAÇÃO ABORTADA').\n"
     "- Gatilho específico acionado (Ex: 'Fluxo Explosivo buscando região forte rápido (3 min)' ou 'Fluxo Cansado esticando devagar até a zona alvo (9 min)').\n"
     "- Descrição minuciosa da combinação (Exaustão com pavio, Parada de movimento com reversão, Continuidade de fluxo, etc).\n"
@@ -98,15 +98,13 @@ def executar_chamada_gemini(chave_api, imagem_pil, prompt_comando):
     except Exception as e:
         return f"❌ Erro: {str(e)}"
 
-# 4. Componentes Globais Lineares (Achatamento Total)
+# 4. Componentes Globais na Raiz do Código (Sem sub-blocos ou travas)
 uploaded_file = st.file_uploader("📷 Faça o upload do Print do seu Gráfico (M1):", type=["png", "jpg", "jpeg"])
 
-# Validação do arquivo na raiz
-if not uploaded_file:
-    st.info("💡 Aguardando o upload do print do gráfico para ativar o painel de análise.")
-    st.stop()
+botao_disparar = st.button("🧠 Iniciar Análise Avançada por IA")
 
-# Abre a imagem de forma direta fora de qualquer bloco condicional
-imagem_viva = Image.open(uploaded_file)
-st.image(imagem_viva, caption="Gráfico Carregado com Sucesso", use_container_width=True)
-
+# 5. Processamento Síncrono Direto
+if botao_disparar:
+    if uploaded_file is None:
+        st.error("⚠️ Por favor, faça o upload de uma imagem do gráfico antes de iniciar a análise.")
+    elif not lista_de_chaves:
