@@ -105,19 +105,15 @@ def executar_chamada_gemini(chave_api, imagem_pil, prompt_comando):
     except Exception as e:
         return f"❌ Erro: {str(e)}"
 
-# 4. Interface Principal
-uploaded_file = st.file_uploader("📷 Faça o upload do Print do seu Gráfico (M1):", type=["png", "jpg", "jpeg"])
+# 4. Interface Principal Embalada em um Formulário Estável
+with st.form(key="formulario_trader"):
+    uploaded_file = st.file_uploader("📷 Faça o upload do Print do seu Gráfico (M1):", type=["png", "jpg", "jpeg"])
+    botao_analise = st.form_submit_button(label="🧠 Iniciar Análise Avançada por IA")
 
-# Exibe a imagem caso o upload esteja preenchido
-if uploaded_file:
-    imagem_aberta = Image.open(uploaded_file)
-    st.image(imagem_aberta, caption="Gráfico Carregado com Sucesso", use_container_width=True)
-
-botao_analise = st.button("🧠 Iniciar Análise Avançada por IA")
-
-# 5. Execução Plana Segura
+# 5. Execução pós-envio do Formulário
 if botao_analise:
     if not uploaded_file:
         st.error("⚠️ Por favor, faça o upload de uma imagem do gráfico antes de iniciar a análise.")
-        st.stop()
-
+    elif not lista_de_chaves:
+        st.error("⚠️ Insira pelo menos uma Gemini API Key válida na barra lateral antes de analisar.")
+    else:
