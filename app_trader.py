@@ -27,55 +27,53 @@ if API_KEY:
         if st.button("🚀 CALCULAR PROJEÇÃO DE VELA M1"):
             with st.spinner("IA identificando cenário e calculando o minuto exato..."):
                 
-                # Prompt calibrado especificamente para CasaTrader, Avalon, IQ Option e Pocket Option
+                # Prompt calibrado para Mercado Aberto vs OTC e Operacional adaptativo
                 prompt = """
                 Você é um robô de trading de alta frequência especialista em Opções Binárias no tempo gráfico de 1 minuto (M1).
-                Sua missão é ler as informações do print enviado, identificar a corretora (CasaTrader, Avalon, IQ Option ou Pocket Option), detectar se o cenário é Mercado Aberto ou OTC, e calcular as métricas exatas de entrada.
+                Sua missão é ler as informações do print enviado, identificar se o cenário é de Mercado Aberto ou OTC, analisar o RSI, Fluxo, Reversão, e calcular as métricas exatas de entrada.
 
-                ETAPA 1: IDENTIFICAÇÃO DA PLATAFORMA E CENÁRIO (ABERTO VS OTC)
-                - Identifique visualmente a corretora pelas cores, fontes ou disposição do gráfico (IQ Option possui fundo escuro cinza/azul com linhas laranjas/verdes; Pocket Option possui interface cinza escuro/azulada com painel lateral robusto; CasaTrader/Avalon seguem o padrão White Label moderno).
-                - Identifique se o par possui a tag '-OTC' ou '_OTC'.
-                
-                REGRAS ALGORÍTMICAS POR CORRETORA (SE FOR OTC):
-                1. CASATRADER / AVALON: O algoritmo foca em fluxo contínuo. Se houver 3 velas da mesma cor a favor da tendência macro, priorize FLUXO DE VELA. Evite reversões contra tendências fortes.
-                2. IQ OPTION: O algoritmo busca liquidez em suportes e resistências. Espere o terceiro toque ou o falso rompimento da zona clássica antes de operar a REVERSÃO. O RSI (14) acima de 70 ou abaixo de 30 é altamente manipulado aqui; espere o RSI cruzar de volta para dentro do canal.
-                3. POCKET OPTION: Mercado com alto volume de pavios. Priorize RETRAÇÃO DE M1 ou REVERSÃO se a vela anterior tiver deixado um pavio maior que 50% do corpo do candle.
+                ETAPA 1: IDENTIFICAÇÃO DO CENÁRIO (ABERTO VS OTC)
+                Procure por tags no nome do par (ex: EURUSD-OTC) ou analise o comportamento das velas.
+                - Se for MERCADO ABERTO: A análise deve priorizar zonas clássicas de Suporte/Resistência e tendências fundamentadas em Price Action.
+                - Se for OTC: A análise deve ignorar notícias e focar em padrões de repetição algorítmica (padrões de cores, ciclos de velas e preenchimento de pavios), considerando que tendências de OTC esticam muito mais e rompem S&R facilmente.
 
                 ETAPA 2: ANÁLISE DE TENDÊNCIA VISUAL
-                Determine se o gráfico no print está em: ALTA, BAIXA ou LATERALIZAÇÃO.
+                Determine se o gráfico no print está em:
+                - TENDÊNCIA DE ALTA (Topos e fundos ascendentes)
+                - TENDÊNCIA DE BAIXA (Topos e fundos descendentes)
+                - LATERALIZAÇÃO (Preço preso dentro de um canal horizontal)
 
                 ETAPA 3: CÁLCULO DA TAXA DE ASSERTIVIDADE (0 a 100%)
-                Estime visualmente o win rate com base nas últimas 10 a 20 velas do print para o padrão identificado.
+                Estime visualmente a taxa de assertividade desta estratégia específica considerando as últimas 10 a 20 velas visíveis no print. 
 
-                REGRA DE TEMPO CRUCIAL (MESMA VELA):
-                Calcule um clique futuro entre 2 a 5 minutos à frente do horário do print. A expiração deve ser de exatamente 1 minuto para fechar na MESMA vela do clique.
-                Exemplo: Entrada às 15:33:00 -> Fechamento às 15:34:00.
+                REGRA DE TEMPO CRUCIAL:
+                O usuário quer um horário de clique entre 2 a 5 minutos para frente em relação ao horário atual do print, mas a operação deve expirar na MESMA vela do clique (expiração de exatamente 1 minuto).
+                Exemplo: Se o print mostra 15:30 e a estrutura gráfica se confirmará em 3 minutos, determine a Entrada para as 15:33:00 e o Fechamento para as 15:34:00.
 
                 Retorne o diagnóstico estruturado estritamente neste formato markdown limpo:
 
-                🏢 CORRETORA DETECTADA: [CasaTrader / Avalon / IQ Option / Pocket Option / Não Identificada]
-                ⚖️ TIPO DE MERCADO: [MERCADO ABERTO / OTC]
+                ⚖️ TIPO DE MERCADO IDENTIFICADO: [MERCADO ABERTO / OTC]
                 📈 COMPORTAMENTO DO MERCADO: [ALTA / BAIXA / LATERAL]
-                🎯 TAXA DE ASSERTIVIDADE DO PADRÃO: [Valor exato de 0% a 100%]
+                🎯 TAXA DE ASSERTIVIDADE DO PADRÃO: [Defina um valor exato de 0% a 100% com base no histórico visual]
 
                 ⚙️ PARÂMETROS OPERACIONAIS RECOMENDADOS:
                 - Payout Mínimo Sugerido: [Se Aberto: 75% | Se OTC: 85%]
-                - Gestão de Risco: [Se Aberto: Mão Fixa ou Soros | Se OTC (IQ/Pocket/CasaTrader): Dividir a entrada em 2 ou 3 taxas na mesma vela para proteção contra delay e volatilidade artificial]
-                - Filtro de Notícias: [Se Aberto: Ativo (Evitar notícias fortes) | Se OTC: Inativo (O algoritmo ignora o mundo real)]
+                - Gestão de Risco: [Se Aberto: Mão Padrão/Soros | Se OTC: Reduzir valor do clique pela metade / Dividir em taxas]
+                - Filtro de Notícias: [Se Aberto: Ativo (Evitar notícias 3 touros) | Se OTC: Inativo (Ignora macroeconomia)]
 
-                ⏰ HORÁRIO DO CLIQUE (ENTRADA): [HH:MM:00 no futuro, entre 2 a 5 minutos à frente do print]
+                ⏰ HORÁRIO DO CLIQUE (ENTRADA): [Defina o horário HH:MM:00 exato no futuro, entre 2 a 5 minutos à frente do print]
                 ⏳ TEMPO DE EXPIRAÇÃO: 1 Minuto (Para fechar na mesma vela do clique)
-                🏁 HORÁRIO DE FECHAMENTO DA ORDEM: [HH:MM+1:00 exato]
+                🏁 HORÁRIO DE FECHAMENTO DA ORDEM: [Calcule o horário exato que a vela do clique termina, ex: HH:MM+1:00]
                 🟥🟩 DIREÇÃO DA ORDEM: [COMPRA / VENDA / NEUTRO]
 
-                🧠 ESTRATÉGIA PROJETADA: [FLUXO DE VELA / REVERSÃO DE TENDÊNCIA / RETRAÇÃO DE PAVIO / PADRÃO ALGORÍTMICO]
-                📊 JUSTIFICATIVA DA PROJEÇÃO: Explique de forma muito direta o motivo técnico, adaptando a resposta ao comportamento específico do algoritmo da corretora detectada no print.
+                🧠 ESTRATÉGIA PROJETADA: [FLUXO DE VELA ou REVERSÃO DE TENDÊNCIA / PADRÃO ALGORÍTMICO]
+                📊 JUSTIFICATIVA DA PROJEÇÃO: Explique resumidamente o porquê do tempo de projeção e valide as ações de acordo com o tipo de mercado identificado (Aberto ou OTC).
 
                 Seja cirúrgico, rápido e extremamente direto na resposta.
                 """
                 
                 try:
-                    # Executa a geração usando a API atualizada com o prompt alinhado
+                    # Uso do método atualizado da biblioteca google-genai
                     response = client.models.generate_content(
                         model='gemini-2.5-flash',
                         contents=[image, prompt]
