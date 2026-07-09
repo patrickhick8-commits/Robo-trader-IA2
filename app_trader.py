@@ -29,7 +29,7 @@ PROMPT_TRADER = (
     "2. TEMPO DE EXPIRAÇÃO OBRIGATÓRIO: A operação DEVE SEMPRE terminar e fechar no tempo da MESMA VELA de M1 em que o clique foi realizado. Portanto, o Tempo de Expiração deve ser fixado estritamente em '1 Minuto' (ou para o final da mesma vela do clique), garantindo que o HORÁRIO DE FECHAMENTO DA ORDEM seja exatamente 1 minuto após o clique de entrada. Nunca use expirações longas.\n\n"
     "[MECÂNICA CORE: ALGORITMO DE BUSCA DE REGIÃO VISUAL (PRICE ACTION PURO)]\n"
     "Mapeie o histórico recente de velas exibido no print para localizar ZONAS DE INTERESSE DE REVERSÃO baseando-se estritamente em dois padrões anatômicos visuais:\n"
-    "1. RASTREIO DE ZONAS COM PAVIOS DE RETRAÇÃO: Identifique regiões onde os candles anteriores deixaram longas sombras/pavios seguidos de rejeição e reversão do movimento, provando forte presença de defesa.\n"
+    "1. RASTREIO DE ZONAS COM PAVIOS DE RETRAÇÃO: Identifique regiões onde os candles anteriores deixaram longas sombras/pavios sequidos de rejeição e reversão do movimento, provando forte presença de defesa.\n"
     "2. RASTREIO DE PARADA DE CORPO (EXAUSTÃO): Identifique regiões onde os candles anteriores vinham com volume, mas perderam drasticamente o tamanho dos corpos (pararam de andar/travaram a movimentação) e mudaram a direção do gráfico nas velas seguintes.\n\n"
     "[MATRIZ DE DECISÃO HÍBRIDA: FLUXO VS REVERSÃO POR PROXIMIDADE]\n"
     "Analise o comportamento do preço atual e defina a estratégia com base nestes dois cenários:\n"
@@ -95,16 +95,17 @@ def executar_chamada_gemini(chave_api, imagem_pil, prompt_comando):
     except Exception as e:
         return f"❌ Erro: {str(e)}"
 
-# 4. Renderização Estável dos Componentes Básicos
+# 4. Renderização Sequencial Limpa
 uploaded_file = st.file_uploader("📷 Faça o upload do Print do seu Gráfico (M1):", type=["png", "jpg", "jpeg"])
 
-# Se o usuário subir um arquivo, ele desenha o botão e a imagem de forma sequencial na hora
-if uploaded_file:
-    imagem_viva = Image.open(uploaded_file)
-    st.image(imagem_viva, caption="Gráfico Carregado com Sucesso", use_container_width=True)
-    
-    # O botão só aparece e fica disponível se a imagem estiver de fato carregada
-    botao_disparar = st.button("🧠 Iniciar Análise Avançada por IA")
-    
-    if botao_disparar:
-        if not lista_de_chaves:
+# Se não há arquivo carregado, interrompe a execução dos elementos abaixo pacificamente
+if not uploaded_file:
+    st.info("Aguardando o upload do print do gráfico para ativar o painel de análise.")
+    st.stop()
+
+imagem_viva = Image.open(uploaded_file)
+st.image(imagem_viva, caption="Gráfico Carregado com Sucesso", use_container_width=True)
+
+botao_disparar = st.button("🧠 Iniciar Análise Avançada por IA")
+
+# 5. Execução em Linha Reta Absoluta (Sem sub-blocos aninhados perigosos)
