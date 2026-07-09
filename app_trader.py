@@ -26,7 +26,7 @@ if API_KEY:
         if st.button("🚀 EXECUTAR ANÁLISE COMPLETA"):
             with st.spinner("IA escaneando padrões de velas, volume e mercado..."):
                 
-                # Prompt unificado com todas as suas diretrizes exatas e inteligência de mercado
+                # Prompt unificado com todas as diretrizes exatas e a calibragem da taxa de 0 a 100%
                 prompt = """
                 Você é um especialista em análise técnica avançada e um scanner gráfico de alta precisão. Sua inteligência foi rigorosamente calibrada para aplicar o máximo de filtros técnicos simultâneos, rastreando estritamente a entrada perfeita para garantir vitórias consistentes (WIN).
                 Sua missão é escanear a imagem enviada, cruzar os dados gráficos e calcular uma taxa de assertividade extrema baseada nos seguintes critérios analíticos:
@@ -49,7 +49,7 @@ if API_KEY:
                 - Retração em Região de Pavio Respeitado: Identifique zonas onde pavios anteriores provaram que o preço é rejeitado sistematicamente, operando a favor da tendência principal.
 
                 3. Critérios e Gatilhos de Entrada (Operacional):
-                Ao identificar o cenário ideal, determine o gatilho exato com base nas regras abaixo:
+                Ao identificar o cenário ideal, determine o gatilho exato com base nos critérios abaixo:
                 - Entrada na Abertura da Vela (Fluxo para Continuação): Execute imediatamente na abertura da próxima vela quando houver um rompimento com volume expressivo, corpo cheio, sem pavio de rejeição contra o movimento, seguindo o fluxo da tendência.
                 - Entrada para Retração (Região de Pavio): Aguarde a vela atual nascer, fazer o movimento de explosão contra a zona de suporte/resistência e pegue a operação estritamente no toque da região de pavios anteriormente respeitados, visando o fechamento da mesma vela.
                 - Entrada em Pullback: Aguarde o preço romper a região e retornar para testar a zona rompida. A entrada deve ser feita exatamente no teste (toque) da linha rompida.
@@ -58,7 +58,7 @@ if API_KEY:
 
                 🌐 TIPO DE MERCADO DETECTADO: [MERCADO ABERTO ou MERCADO OTC]
 
-                🎯 PORCENTAGEM DE ACERTO DA ENTRADA: [Ex: 94%] (Escreva bem grande e destacado)
+                🎯 PORCENTAGEM DE ACERTO DA ENTRADA: [Calcule e exiba uma taxa de assertividade matemática exata de 0% a 100% com base na confluência de todos os fatores] (Escreva bem grande e destacado)
 
                 ⏰ HORÁRIO DO CLIQUE (ENTRADA): [Defina o horário HH:MM:00 exato entre 2 a 5 minutos à frente do print]
                 ⏳ TEMPO DE EXPIRAÇÃO: 1 Minuto (Para fechar na mesma vela do clique)
