@@ -2,21 +2,28 @@ import streamlit as st
 from google import genai
 from google.genai import types
 from PIL import Image
+import io
 
+# 1. Configuração da Página
 st.set_page_config(page_title="Agente IA Advanced - Matriz Suprema", page_icon="🤖", layout="centered")
 
 st.title("🤖 Agente IA Trader Pro: Matriz Suprema")
 st.write("Fusão Total: Projeção de Entrada Futura (3 a 10 Candles) com Expiração Rígida para Fechamento na Mesma Vela de M1.")
 
+# Inicialização segura do Estado de Sessão para persistência de dados
 if "sinal_gerado" not in st.session_state:
     st.session_state.sinal_gerado = ""
 if "analisado" not in st.session_state:
     st.session_state.analisado = False
+if "imagem_bytes" not in st.session_state:
+    st.session_state.imagem_bytes = None
 
+# 2. Barra Lateral
 st.sidebar.markdown("### 🔑 Gerenciador de Chaves de Contingência")
 chaves_input = st.sidebar.text_input("Cole suas Gemini API Keys aqui (separadas por ponto e vírgula):", type="password")
 lista_de_chaves = [chave.strip() for chave in chaves_input.split(";") if chave.strip()]
 
+# 3. Prompt Mestre Quantitativo
 PROMPT_TRADER = (
     "[SYSTEM_ROLE] Você é um algoritmo de trading quantitativo focado em Opções Binárias (Gráficos de M1). "
     "Sua postura é de FRIEZA MÁXIMA, RIGOR ABSOLUTO E PRECISÃO CIRÚRGICA.\n\n"
@@ -33,7 +40,7 @@ PROMPT_TRADER = (
     "CENÁRIO A - FLUXO DE CONTINUIDADE ISOLADO: Se você identificar uma sequência de a partir de 4 velas consecutivas da mesma cor com corpos expressivos, e o preço estiver longe de qualquer zona forte de reversão, ative o OPERACIONAL DE FLUXO DE CONTINUIDADE acompanhando a cor do movimento.\n"
     "CENÁRIO B - MUDANÇA PARA REVERSÃO POR ATRAÇÃO: Se você identificar um fluxo forte de velas (mesmo que seja a partir de 4 velas da mesma cor), mas perceber que esse fluxo está buscando e está PERTO de uma região de reversão forte (zona de pavios ou paradas mapeada no histórico), você está PROIBIDO de seguir o fluxo. O fluxo forte agora funciona como um ÍMÃ. Mude a análise para REVERSÃO EM REGIÃO, projete o número de candles necessários para o preço tocar a zona alvo à frente e mande a ordem contra o fluxo (Reversão) exatamente no momento do toque na região.\n\n"
     "[REFINAMENTO DO TEMPO EXATO: PROTOCOLO DE VELOCIDADE VISUAL]\n"
-    "Para cravar o minuto exato do HORÁRIO DO CLIQUE (janela de 3 a 10 minutos para o futuro), você deve avaliar a anatomy das últimas 3 velas do fluxo:\n"
+    "Para cravar o minuto exato do HORÁRIO DO CLIQUE (janela de 3 a 10 minutos para o futuro), você deve avaliar a anatomia das últimas 3 velas do fluxo:\n"
     "- VELAS EXPLOSIVAS (Corpos longos e sem pavios): O preço se move rápido. Projete o toque na região forte para apenas **3 a 4 candles à frente** do momento do print.\n"
     "- VELAS CONSTANTES (Corpos médios e profissionais): O preço se move em ritmo normal. Projete o toque para **5 a 7 candles à frente** do momento do print.\n"
     "- VELAS CANSADAS (Corpos decrescentes ou deixando pavio contra o fluxo): O preço está perdendo força mas ainda busca a região. Projete o toque lento para **8 a 10 candles à frente** do momento do print.\n"
@@ -63,7 +70,7 @@ PROMPT_TRADER = (
     "- Tipo de operacional isolado ativado (Exemplos permitidos: 'OPERACIONAL DE FLUXO DE CONTINUIDADE', 'OPERACIONAL DE REVERSÃO POR ATRAÇÃO DE REGIAO FORTE' ou 'OPERAÇÃO ABORTADA').\n"
     "- Gatilho específico acionado (Ex: 'Fluxo Explosivo buscando região forte rápido (3 min)' ou 'Fluxo Cansado esticando devagar até a zona alvo (9 min)').\n"
     "- Descrição minuciosa da combinação (Exaustão com pavio, Parada de movimento com reversão, Continuidade de fluxo, etc).\n"
-    "🌐 MODO DE MERCADO DETECTADO: [MERCADO ABERTO ou JSON OTC]\n"
+    "🌐 MODO DE MERCADO DETECTADO: [MERCADO ABERTO ou MERCADO OTC]\n"
     "📊 CONTEXTO DO MERCADO MACRO E MICRO (ALINHAMENTO): [Tendência]\n"
     "📊 JUSTIFICATIVA DA REGIÃO, BUSCA E PROJEÇÃO TEMPORAL: [Explique detalhadamente o cálculo matemático visual realizado: tamanho dos candles atuais, classificação de velocidade (Explosivo/Constante/Cansado), quantidade exata de candles projetados até o alvo, e por que a expiração encerra estritamente na mesma vela]\n\n"
     "🔍 DETALHAMENTO ANATÔMICO, ESTRUTURAL E TÉCNICO:\n"
@@ -79,32 +86,28 @@ PROMPT_TRADER = (
     "- Gestão de Lote sob Frieza Máxima\n"
 )
 
-def executar_chamada_gemini(chave_api, imagem_pil, prompt_comando):
+# 4. Função Otimizada de Transmissão por Bytes
+def executar_chamada_gemini(chave_api, imagem_bytes, prompt_comando):
     try:
         client = genai.Client(api_key=chave_api)
-        imagem_otimizada = imagem_pil.copy()
-        imagem_otimizada.thumbnail((1024, 576))
-        config_ia = types.GenerateContentConfig(temperature=0.0, max_output_tokens=1500)
+        imagem_pil = Image.open(io.BytesIO(imagem_bytes))
+        imagem_pil.thumbnail((800, 450)) # Conversão leve para impedir queda por timeout de rede
         
-        # Correção técnica: Envia a imagem usando o método nativo e estável do novo SDK da Google
+        config_ia = types.GenerateContentConfig(
+            temperature=0.0,
+            max_output_tokens=1000
+        )
         response = client.models.generate_content(
             model='gemini-2.5-flash',
-            contents=[imagem_otimizada, prompt_comando],
+            contents=[imagem_pil, prompt_comando],
             config=config_ia
         )
         return response.text
     except Exception as e:
         return f"❌ Erro: {str(e)}"
 
-with st.form(key="formulario_trader"):
-    uploaded_file = st.file_uploader("Faça o upload do Print do seu Gráfico (M1):", type=["png", "jpg", "jpeg"])
-    botao_analise = st.form_submit_button(label="Iniciar Análise Avançada por IA")
+# 5. Interface Direta com Salvamento Síncrono de Estado
+uploaded_file = st.file_uploader("📷 Faça o upload do Print do seu Gráfico (M1):", type=["png", "jpg", "jpeg"])
 
-if botao_analise:
-    if not uploaded_file:
-        st.error("⚠️ Por favor, envie uma imagem do gráfico antes de rodar.")
-        st.stop()
-    if not lista_de_chaves:
-        st.error("⚠️ Insira suas Gemini API Keys na barra lateral.")
-        st.stop()
-    imagem_processar = Image.open(uploaded_file)
+# Força o armazenamento fixo caso o arquivo seja carregado
+if uploaded_file is not None:
