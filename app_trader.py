@@ -1,6 +1,7 @@
 import streamlit as st
 from google import genai
 from PIL import Image
+import io
 
 # 1. Configuração da Página
 st.set_page_config(page_title="Agente IA Advanced - Matriz Suprema", page_icon="🤖", layout="centered")
@@ -86,16 +87,22 @@ PROMPT_TRADER = (
     "- Gestão de Lote sob Frieza Máxima\n"
 )
 
-def executar_chamada_gemini(chave_api, imagem_objeto, prompt_comando):
+# Alteração crítica: Função reescrita convertendo a imagem em formato estável para a API do Gemini
+def executar_chamada_gemini(chave_api, imagem_pil, prompt_comando):
     try:
         client = genai.Client(api_key=chave_api)
+        
+        # Redimensiona levemente caso a imagem seja 4k para evitar travamento de timeout
+        imagem_otimizada = imagem_pil.copy()
+        imagem_otimizada.thumbnail((1280, 720))
+        
         response = client.models.generate_content(
             model='gemini-2.5-flash',
-            contents=[imagem_objeto, prompt_comando]
+            contents=[imagem_otimizada, prompt_comando]
         )
         return response.text
     except Exception as e:
-        return f"❌ Erro ao processar com a chave atual: {str(e)}"
+        return f"❌ Erro: {str(e)}"
 
 # 4. Interface Principal (Elementos Isolados)
 uploaded_file = st.file_uploader("📷 Faça o upload do Print do seu Gráfico (M1):", type=["png", "jpg", "jpeg"])
@@ -108,9 +115,4 @@ if botao_analise:
     elif not lista_de_chaves:
         st.error("⚠️ Insira pelo menos uma Gemini API Key válida na barra lateral antes de analisar.")
     else:
-        imagem = Image.open(uploaded_file)
-        st.image(imagem, caption="Gráfico Carregado com Sucesso", use_container_width=True)
-        
-        # Mensagem fixa substituindo o spinner para evitar aninhamento problemático
-        st.info("🔄 Processando: Analisando deslocamento de velas, regiões históricas e exaustão...")
-        
+        # Carrega a imagem de forma limpa
