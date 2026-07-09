@@ -26,7 +26,7 @@ if API_KEY:
         if st.button("🚀 EXECUTAR ANÁLISE COMPLETA"):
             with st.spinner("IA escaneando padrões de velas, volume e mercado..."):
                 
-                # Prompt mestre calibrado com confluência das 4 estratégias operacionais e sincronia de tempo
+                # Prompt mestre ultra calibrado com filtros anti-doji e exaustão de volume implícito
                 prompt = """
                 Você é um especialista em análise técnica avançada e um scanner gráfico de alta precisão. Sua inteligência foi rigorosamente calibrada para aplicar o máximo de filtros técnicos simultâneos, rastreando estritamente a entrada perfeita para garantir vitórias consistentes (WIN).
                 Sua missão é escanear a imagem enviada, cruzar os dados gráficos e calcular uma taxa de assertividade extrema baseada nos seguintes critérios analíticos:
@@ -39,32 +39,32 @@ if API_KEY:
                 1. Regra Rígida de Sincronização de Tempo e Horários:
                 - Olhe atentamente para o RELÓGIO DO PRINT (Exemplo: se o print marca 11:34:05, a vela atual em andamento é a de 11:34:00, que fechará exatamente às 11:35:00).
                 - Calcule os gatilhos baseando-se estritamente na vela IMEDIATAMENTE posterior ao fechamento da atual.
-                - Nunca gere atrasos fantasmas de 2 a 3 minutos à frente se o padrão técnico exigir uma reação imediata na próxima vela (Ex: o pullback ou teste deve ser pego no minuto exato do toque e não minutos depois quando o mercado já reverteu).
+                - Nunca gere atrasos fantasmas de 2 a 3 minutos à frente se o padrão técnico exigir uma reação imediata na próxima vela.
 
                 2. Filtros Técnicos de Price Action e Fluxo:
                 - Análise de Price Action: Identifique suportes, resistências, canais e linhas de tendência (LTB/LTA) macro e micro.
                 - Métricas de Rejeição (Retração): Meça a força de equilíbrio do preço com base no tamanho dos pavios em zonas críticas. Pavios longos isolados ou repetidos indicam defesa institucional.
                 - Fluxo de Velas pelas Cores: Analise a sequência e a alternância das cores das velas (verde/vermelha) para identificar a persistência do movimento e a exaustão do preço.
                 - Força da Tendência Atual: Avalie as estruturas de alta ou baixa através de topos e fundos descendentes ou ascendentes.
-                - Volume do Mercado (Tamanho e Pavios): Monitore o volume institucional interpretado pelo tamanho do corpo das velas (expressão de força) e o tamanho dos pavios (força de absorção e contra-ataque de compradores e vendedores).
+                - Volume do Mercado e Filtro Especial de Dojis: Monitore o volume institucional interpretado pelo tamanho do corpo das velas (expressão de força) e o tamanho dos pavios (força de absorção). ATENÇÃO: Velas muito pequenas, sem corpo e cheias de pavios longos (Dojis) indicam que o volume da tendência anterior MORREU. Se um Doji surgir em uma região de suporte/resistência com pavio longo de rejeição, indica exaustão imediata do movimento e alta probabilidade de reversão forte na próxima vela.
 
                 3. Filtro Crítico de Espaço Gráfico, Exaustão Temporal e Seleção de Estratégia Dinâmica:
-                - Você deve cruzar o espaço físico (vazio gráfico) entre o preço atual e as próximas zonas de defesa com o relógio do print para selecionar rigorosamente uma das 4 estratégias principais de alta precisão abaixo:
+                - Você deve cruzar o espaço físico (vazio gráfico) entre o preço atual e as próximas zonas de defesa com o relógio do print para selecionar uma das 4 estratégias principais:
                   
-                  * [FLUXO DE VELA]: Escolha se houver um rompimento recente de corpo cheio confirmado por volume, com um vazio gráfico amplo à frente e sem pavios de rejeição contra o movimento. O clique deve ocorrer imediatamente na abertura da próxima vela.
-                  * [PULLBACK]: Escolha se a vela atual acabou de confirmar o rompimento de uma zona e a próxima vela tende a realizar o movimento de retorno para testar a linha rompida. O clique deve ocorrer estritamente no toque (teste) da região.
-                  * [RETRAÇÃO EM PAVIO]: Escolha se o preço estiver testando uma zona consolidada onde pavios anteriores provaram que o preço é rejeitado sistematicamente na mesma vela. O clique ocorre no pico de isolamento contra a zona.
-                  * [REVERSÃO DE TENDÊNCIA DINÂMICA]: Escolha se o preço estiver muito esticado nos últimos minutos (exaustão de fluxo) e prestes a colidir com um suporte/resistência ou linha de tendência macro muito próxima. Cancele o fluxo imediatamente e projete a operação contra o movimento atual para ganhar no ricochete da defesa da região.
+                  * [FLUXO DE VELA]: Escolha se houver um rompimento recente de corpo cheio confirmado por volume, com um vazio gráfico amplo à frente e sem pavios de rejeição/Dojis contra o movimento.
+                  * [PULLBACK]: Escolha se a vela atual confirmou o rompimento de uma zona e a próxima vela tende a realizar o retorno para testar a linha. ATENÇÃO: Se a vela de teste anterior terminar em Doji com pavio de rejeição contra o rompimento, CANCELE o pullback de continuação imediatamente, pois o volume de rompimento falhou.
+                  * [RETRAÇÃO EM PAVIO]: Escolha se o preço estiver testando uma zona consolidada onde pavios anteriores provaram que o preço é rejeitado sistematicamente na mesma vela.
+                  * [REVERSÃO DE TENDÊNCIA DINÂMICA]: Escolha se o preço estiver muito esticado ou se surgir um Doji de exaustão indicando perda total de volume e força da tendência atual. Cancele o fluxo ou pullback intermediário na hora e projete a operação contra o movimento anterior para ganhar na reversão.
 
                 4. Critérios e Gatilhos de Entrada (Operacional):
-                - Determine o gatilho cirúrgico baseado estritamente na estratégia escolhida no item 3. Detalhe detalhadamente o minuto exato da ação em milissegundos para evitar atrasos na execução por parte do trader.
+                - Determine o gatilho cirúrgico baseado estritamente na estratégia escolhida no item 3. Detalhe o minuto exato da ação em milissegundos para evitar atrasos na execução por parte do trader.
 
                 Analise o gráfico enviado, processe todos os filtros de forma simultânea e forneça o veredito final detalhado e estruturado estritamente neste formato markdown limpo e destacado:
 
                 🌐 TIPO DE MERCADO DETECTADO: [MERCADO ABERTO ou MERCADO OTC]
-                🚨 ALERTA DE MANIPULAÇÃO / EXAUSTÃO: [Indique riscos de falsos rompimentos, caça de stops ou se o fluxo corre o risco de esticar e reverter devido ao tempo correto do clique]
+                🚨 ALERTA DE MANIPULAÇÃO / EXAUSTÃO / DOJI: [Indique riscos de falsos rompimentos, caça de stops ou se a presença de Dojis/pavios longos indica perda de volume e exaustão do movimento atual]
 
-                🎯 PORCENTAGEM DE ACERTO DA ENTRADA: [Calcule e exiba uma taxa de assertividade matemática exata de 0% a 100% considerando os riscos do tipo de mercado e a confluência da estratégia escolhida] (Escreva bem grande e destacado)
+                🎯 PORCENTAGEM DE ACERTO DA ENTRADA: [Calcule e exiba uma taxa de assertividade matemática exata de 0% a 100% considerando os riscos do mercado, Dojis e espaço gráfico] (Escreva bem grande e destacado)
 
                 ⏰ HORÁRIO DO CLIQUE (ENTRADA): [Defina o horário HH:MM:00 exato sincronizado perfeitamente com a regra do item 1]
                 ⏳ TEMPO DE EXPIRAÇÃO: 1 Minuto (Para fechar na mesma vela do clique)
@@ -78,7 +78,7 @@ if API_KEY:
 
                 🔍 DETALHAMENTO TÉCNICO (O QUE A IA VIU):
                 - Análise de Price Action e Espaço Gráfico: [Descreva o cálculo do vazio gráfico feito pela IA e por que a estratégia escolhida dentre as 4 é a mais segura]
-                - Métricas de Rejeição e Fluxo de Cores: [Descreva o comportamento dos pavios, indicando se há sinais de absorção ou falsos padrões operacionais]
+                - Análise de Anatomia (Dojis e Cores): [Descreva o comportamento dos corpos, pavios e se a presença de Dojis validou a exaustão ou continuidade]
                 - Volume Implícito Calculado: [Explique o nível de volume estimado pela força de corpos e pavios]
                 - Situação do RSI: [Indique a posição visual da linha do RSI se estiver visível no print]
 
