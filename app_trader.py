@@ -51,7 +51,7 @@ PROMPT_TRADER = (
     "1. VELAS DE FORÇA SEM PAVIO (MARUBOZU) FORA DE CONTEXTO: Velas cheias sem pavio nenhum tocando a região de forma seca e sem desaceleração prévia quando não há histórico de respeito similar.\n"
     "2. VELAS DE ANOMALIA (VETORES GIGANTES / NOTÍCIAS): Velas desproporcionais (3 a 5 vezes maiores que a média do gráfico) que indicam pico extremo de volatilidade. REJEIÇÃO IMEDIATA.\n"
     "3. MICRO-TENDÊNCIA INSISTENTE (VELAS TRATOR): Sequências longas de mais de 7 velas consecutivas da mesma cor sem deixar pavio contrário relevante, indicando força atípica que romperá a região.\n"
-    "4. AUSÊNCIA DE MAPEAMENTO HISTÓRICO: Se a região para onde o preço está indo não tiver um histórico nítido e visível de pavios ou paradas de corpos anteriores no print, a operação de reversão está proibida.\n\n"
+    "4. AUSÊNCIA DE MAPEAMENTO HISTÓRICO: Se a região para onde o preço está indo não tiver un histórico nítido e visível de pavios ou paradas de corpos anteriores no print, a operação de reversão está proibida.\n\n"
     
     "[PASSO 1: IDENTIFICAÇÃO DO AMBIENTE]\n"
     "Identifique o ativo e se é [MERCADO ABERTO REAL] ou [ALGORITMO OTC].\n\n"
@@ -110,7 +110,7 @@ with st.form(key="formulario_trader"):
     uploaded_file = st.file_uploader("📷 Faça o upload do Print do seu Gráfico (M1):", type=["png", "jpg", "jpeg"])
     botao_analise = st.form_submit_button(label="🧠 Iniciar Análise Avançada por IA")
 
-# 5. Execução Plana Totalmente Segura (Sem blocos else aninhados)
+# 5. Execução 100% Plana e Segura
 if botao_analise:
     if not uploaded_file:
         st.error("⚠️ Por favor, faça o upload de uma imagem do gráfico antes de iniciar a análise.")
