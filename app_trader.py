@@ -13,7 +13,7 @@ st.sidebar.markdown("### 🔑 Gerenciador de Chaves de Contingência")
 chaves_input = st.sidebar.text_input("Cole suas Gemini API Keys aqui (separadas por ponto e vírgula):", type="password")
 lista_de_chaves = [chave.strip() for chave in chaves_input.split(";") if chave.strip()]
 
-# 3. Definição Limpa do Prompt Mestre (Sem RSI + Regra Dinâmica de Fluxo e Reversão por Proximidade)
+# 3. Definição Limpa do Prompt Mestre (Refinamento de Tempo Exato por Velocidade de Candle)
 PROMPT_TRADER = (
     "[SYSTEM_ROLE] Você é um algoritmo de trading quantitativo focado em Opções Binárias (Gráficos de M1). "
     "Sua postura é de FRIEZA MÁXIMA, RIGOR ABSOLUTO E PRECISÃO CIRÚRGICA.\n\n"
@@ -33,6 +33,13 @@ PROMPT_TRADER = (
     "CENÁRIO A - FLUXO DE CONTINUIDADE ISOLADO: Se você identificar uma sequência de a partir de 4 velas consecutivas da mesma cor com corpos expressivos, e o preço estiver longe de qualquer zona forte de reversão, ative o OPERACIONAL DE FLUXO DE CONTINUIDADE acompanhando a cor do movimento.\n"
     "CENÁRIO B - MUDANÇA PARA REVERSÃO POR ATRAÇÃO: Se você identificar um fluxo forte de velas (mesmo que seja a partir de 4 velas da mesma cor), mas perceber que esse fluxo está buscando e está PERTO de uma região de reversão forte (zona de pavios ou paradas mapeada no histórico), você está PROIBIDO de seguir o fluxo. O fluxo forte agora funciona como um ÍMÃ. Mude a análise para REVERSÃO EM REGIÃO, projete o número de candles necessários para o preço tocar a zona alvo à frente e mande a ordem contra o fluxo (Reversão) exatamente no momento do toque na região.\n\n"
     
+    "[REFINAMENTO DO TEMPO EXATO: PROTOCOLO DE VELOCIDADE VISUAL]\n"
+    "Para cravar o minuto exato do HORÁRIO DO CLIQUE (janela de 3 a 10 minutos para o futuro), você deve avaliar a anatomia das últimas 3 velas do fluxo:\n"
+    "- VELAS EXPLOSIVAS (Corpos longos e sem pavios): O preço se move rápido. Projete o toque na região forte para apenas **3 a 4 candles à frente** do momento do print.\n"
+    "- VELAS CONSTANTES (Corpos médios e proporcionais): O preço se move em ritmo normal. Projete o toque para **5 a 7 candles à frente** do momento do print.\n"
+    "- VELAS CANSADAS (Corpos decrescentes ou deixando pavio contra o fluxo): O preço está perdendo força mas ainda busca a região. Projete o toque lento para **8 a 10 candles à frente** do momento do print.\n"
+    "O Horário do Clique deve refletir esse cálculo de forma cirúrgica (HH:MM:00).\n\n"
+    
     "[CRITÉRIOS RIGOROSOS DE REJEIÇÃO - QUANDO ABORTAR A OPERAÇÃO]\n"
     "Você deve MARCAR A DIREÇÃO COMO 'OPERAÇÃO ABORTADA' e zerar a assertividade se identificar qualquer um destes sinais de alerta no print:\n"
     "1. VELAS DE FORÇA SEM PAVIO (MARUBOZU) FORA DE CONTEXTO: Velas cheias sem pavio nenhum tocando a região de forma seca e sem desaceleração prévia quando não há histórico de respeito similar.\n"
@@ -43,8 +50,8 @@ PROMPT_TRADER = (
     "[PASSO 1: IDENTIFICAÇÃO DO AMBIENTE]\n"
     "Identifique o ativo e se é [MERCADO ABERTO REAL] ou [ALGORITMO OTC].\n\n"
     
-    "[PASSO 2: CONTAGEM DE FLUXO E PROXIMIDADE]\n"
-    "Conte a sequência de velas atuais da mesma cor (é maior ou igual a 4?). Calcule visualmente a distância do preço atual até a região forte de reversão mais próxima.\n\n"
+    "[PASSO 2: CONTAGEM DE FLUXO, PROXIMIDADE E VELOCIDADE]\n"
+    "Conte as velas do fluxo. Calcule a distância até a região forte de reversão. Classifique a velocidade do movimento (Explosivo, Constante ou Cansado) com base no tamanho das velas atuais para definir o tempo exato à frente.\n\n"
     
     "[PASSO 3: APLICAÇÃO DOS CRITÉRIOS DE REJEIÇÃO]\n"
     "Valide rigorosamente se a movimentação atual viola alguma das 4 regras de rejeição estipuladas.\n\n"
@@ -54,22 +61,23 @@ PROMPT_TRADER = (
     
     "Retorne o diagnóstico estruturado exatamente neste formato markdown limpo e destacado:\n\n"
     "🎯 PORCENTAGEM DE ACERTO DA ENTRADA: [Resultado destacado e em tamanho grande ou '0%' se abortada]\n"
-    "⏰ HORÁRIO DO CLIQUE (ENTRADA): [HH:MM:00 exato projetado entre 3 a 10 minutos para o futuro pós-print, ou 'N/A' se abortada]\n"
+    "⏰ HORÁRIO DO CLIQUE (ENTRADA): [HH:MM:00 exato projetado com base no protocolo de velocidade e distância pós-print, ou 'N/A' se abortada]\n"
     "⏳ TEMPO DE EXPIRAÇÃO: 1 Minuto (Configuração fixa para fechar na mesma vela M1 do clique, ou 'N/A' se abortada)\n"
     "🏁 HORÁRIO DE FECHAMENTO DA ORDEM: [HH:MM:00 exato correspondente ao final da mesma vela do clique, ou 'N/A' se abortada]\n"
     "🟥🟩 DIREÇÃO EXATA DA ORDEM: [COMPRA / VENDA / OPERAÇÃO ABORTADA]\n"
     "💰 GERENCIAMENTO DE LOTE RECOMENDADO: [SOROS / ENTRADA FIXA / MÃO LEVE / PARADA OBRIGATÓRIA]\n"
     "🧠 ESTRATÉGIA E OPERACIONAL COMBINADO ATIVADO:\n"
     "- Tipo de operacional isolado ativado (Exemplos permitidos: 'OPERACIONAL DE FLUXO DE CONTINUIDADE', 'OPERACIONAL DE REVERSÃO POR ATRAÇÃO DE REGIAO FORTE' ou 'OPERAÇÃO ABORTADA').\n"
-    "- Gatilho específico acionado (Ex: 'Fluxo de X velas perto da região de reversão, ativando exaustão contra o movimento' ou 'Fluxo isolado sem barreiras próximas').\n"
+    "- Gatilho específico acionado (Ex: 'Fluxo Explosivo buscando região forte rápido (3 min)' ou 'Fluxo Cansado esticando devagar até a zona alvo (9 min)').\n"
     "- Descrição minuciosa da combinação (Exaustão com pavio, Parada de movimento com reversão, Continuidade de fluxo, etc).\n"
     "🌐 MODO DE MERCADO DETECTADO: [MERCADO ABERTO ou MERCADO OTC]\n"
     "📊 CONTEXTO DO MERCADO MACRO E MICRO (ALINHAMENTO): [Tendência]\n"
-    "📊 JUSTIFICATIVA DA REGIÃO, BUSCA E PROJEÇÃO TEMPORAL: [Explique detalhadamente a contagem das velas de fluxo, a distância detectada até a região forte de pavios/parada no print, o cálculo de candles faltantes para o clique, e por que a expiração foi cravada para a mesma vela de M1]\n\n"
+    "📊 JUSTIFICATIVA DA REGIÃO, BUSCA E PROJEÇÃO TEMPORAL: [Explique detalhadamente o cálculo matemático visual realizado: tamanho dos candles atuais, classificação de velocidade (Explosivo/Constante/Cansado), quantidade exata de candles projetados até o alvo, e por que a expiração encerra estritamente na mesma vela]\n\n"
     "🔍 DETALHAMENTO ANATÔMICO, ESTRUTURAL E TÉCNICO:\n"
     "- Ambiente Identificado\n"
     "- Regiões de Reversão Buscadas e Mapeadas no Histórico do Print\n"
     "- Contagem Analítica de Velas do Fluxo Atual\n"
+    "- Classificação da Velocidade Visual do Preço (Explosivo / Constante / Cansado)\n"
     "- Análise de Filtros de Rejeição (Velas Marubozu? Velas de Anomalia? Tendência Trator de Longo Prazo?)\n"
     "- Trajetória e Contagem de Candles pós-Print até a Zona Alvo\n"
     "- Densidade dos Pavios de Retração Localizados\n"
@@ -106,20 +114,3 @@ if botao_analise:
         
         sucesso = False
         with st.spinner("Analisando deslocamento de velas, regiões históricas e exaustão de retração..."):
-            for i, chave in enumerate(lista_de_chaves):
-                st.write(f"Tentando analisar com a chave de contingência {i+1}...")
-                resultado = executar_chamada_gemini(chave, imagem, PROMPT_TRADER)
-                
-                if "❌ Erro" not in resultado:
-                    st.success("Análise concluída com sucesso!")
-                    st.markdown(resultado)
-                    sucesso = True
-                    break
-                else:
-                    st.warning(f"Chave {i+1} falhou ou está instável. Tentando próxima da lista...")
-            
-            if not sucesso:
-                st.error("Todas as chaves de contingência fornecidas falharam. Verifique as chaves na Google AI Studio.")
-
-if not lista_de_chaves:
-    st.info("💡 Lembrete: Insira as chaves de API na barra lateral esquerda")
