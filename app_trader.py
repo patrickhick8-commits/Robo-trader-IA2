@@ -36,7 +36,7 @@ PROMPT_TRADER = (
     "[REFINAMENTO DO TEMPO EXATO: PROTOCOLO DE VELOCIDADE VISUAL]\n"
     "Para cravar o minuto exato do HORÁRIO DO CLIQUE (janela de 3 a 10 minutos para o futuro), você deve avaliar a anatomia das últimas 3 velas do fluxo:\n"
     "- VELAS EXPLOSIVAS (Corpos longos e sem pavios): O preço se move rápido. Projete o toque na região forte para apenas **3 a 4 candles à frente** do momento do print.\n"
-    "- VELAS CONSTANTES (Corpos médios e proporcionais): O preço se move em ritmo normal. Projete o toque para **5 a 7 candles à frente** do momento do print.\n"
+    "- VELAS CONSTANTES (Corpos médios e profissionais): O preço se move em ritmo normal. Projete o toque para **5 a 7 candles à frente** do momento do print.\n"
     "- VELAS CANSADAS (Corpos decrescentes ou deixando pavio contra o fluxo): O preço está perdendo força mas ainda busca a região. Projete o toque lento para **8 a 10 candles à frente** do momento do print.\n"
     "O Horário do Clique deve refletir esse cálculo de forma cirúrgica (HH:MM:00).\n\n"
     
