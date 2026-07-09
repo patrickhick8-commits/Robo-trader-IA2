@@ -10,20 +10,18 @@ st.set_page_config(page_title="Agente IA Advanced - Matriz Suprema", page_icon="
 st.title("🤖 Agente IA Trader Pro: Matriz Suprema")
 st.write("Fusão Total: Projeção de Entrada Futura (3 a 10 Candles) com Expiração Rígida para Fechamento na Mesma Vela de M1.")
 
-# Inicialização segura do Estado de Sessão para persistência de dados
+# Inicialização segura da memória interna da sessão
 if "sinal_gerado" not in st.session_state:
     st.session_state.sinal_gerado = ""
 if "analisado" not in st.session_state:
     st.session_state.analisado = False
-if "imagem_bytes" not in st.session_state:
-    st.session_state.imagem_bytes = None
 
 # 2. Barra Lateral
 st.sidebar.markdown("### 🔑 Gerenciador de Chaves de Contingência")
 chaves_input = st.sidebar.text_input("Cole suas Gemini API Keys aqui (separadas por ponto e vírgula):", type="password")
 lista_de_chaves = [chave.strip() for chave in chaves_input.split(";") if chave.strip()]
 
-# 3. Prompt Mestre Quantitativo
+# 3. Definição Limpa do Prompt Mestre
 PROMPT_TRADER = (
     "[SYSTEM_ROLE] Você é um algoritmo de trading quantitativo focado em Opções Binárias (Gráficos de M1). "
     "Sua postura é de FRIEZA MÁXIMA, RIGOR ABSOLUTO E PRECISÃO CIRÚRGICA.\n\n"
@@ -86,28 +84,28 @@ PROMPT_TRADER = (
     "- Gestão de Lote sob Frieza Máxima\n"
 )
 
-# 4. Função Otimizada de Transmissão por Bytes
-def executar_chamada_gemini(chave_api, imagem_bytes, prompt_comando):
+# 4. Função Otimizada da API do Gemini
+def executar_chamada_gemini(chave_api, imagem_pil, prompt_comando):
     try:
         client = genai.Client(api_key=chave_api)
-        imagem_pil = Image.open(io.BytesIO(imagem_bytes))
-        imagem_pil.thumbnail((800, 450)) # Conversão leve para impedir queda por timeout de rede
-        
-        config_ia = types.GenerateContentConfig(
-            temperature=0.0,
-            max_output_tokens=1000
-        )
+        imagem_otimizada = imagem_pil.copy()
+        imagem_otimizada.thumbnail((1024, 576))
+        config_ia = types.GenerateContentConfig(temperature=0.0, max_output_tokens=1500)
         response = client.models.generate_content(
             model='gemini-2.5-flash',
-            contents=[imagem_pil, prompt_comando],
+            contents=[imagem_otimizada, prompt_comando],
             config=config_ia
         )
         return response.text
     except Exception as e:
         return f"❌ Erro: {str(e)}"
 
-# 5. Interface Direta com Salvamento Síncrono de Estado
+# 5. Fluxo Linear e Plano (Sem sub-blocos aninhados ou recuos cruzados)
 uploaded_file = st.file_uploader("📷 Faça o upload do Print do seu Gráfico (M1):", type=["png", "jpg", "jpeg"])
 
-# Força o armazenamento fixo caso o arquivo seja carregado
-if uploaded_file is not None:
+if not uploaded_file:
+    st.info("Aguardando o upload do print do gráfico para ativar o painel de análise.")
+    st.stop()
+
+# Carregamento e renderização sequencial pura
+imagem_viva = Image.open(uploaded_file)
