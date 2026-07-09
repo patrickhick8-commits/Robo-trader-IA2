@@ -109,7 +109,8 @@ if botao_analise:
                 else:
                     st.warning(f"Chave {i+1} falhou ou está instável. Tentando próxima da lista...")
             
-            if not success:
+            # CORREÇÃO AQUI: Mudado de 'success' para 'sucesso'
+            if not sucesso:
                 st.error("Todas as chaves de contingência fornecidas falharam. Verifique as chaves na Google AI Studio.")
 
 if not lista_de_chaves:
