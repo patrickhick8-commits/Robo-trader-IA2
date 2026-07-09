@@ -82,27 +82,25 @@ PROMPT_TRADER = (
     "- Gestão de Lote sob Frieza Máxima\n"
 )
 
-# 4. Componentes Visuais Fixos na Raiz Esquerda da Tela
-uploaded_file = st.file_uploader("📷 Faça o upload do Print do seu Gráfico (M1):", type=["png", "jpg", "jpeg"])
+# Função isolada no topo do arquivo para blindar as margens de erro de indentação
+def chamar_gemini_seguro(chave_api, imagem_objeto):
+    try:
+        genai.configure(api_key=chave_api)
+        model = genai.GenerativeModel('gemini-2.5-flash')
+        imagem_otimizada = imagem_objeto.copy()
+        imagem_otimizada.thumbnail((1024, 576))
+        configuracao = genai.types.GenerationConfig(temperature=0.0)
+        response = model.generate_content([PROMPT_TRADER, imagem_otimizada], generation_config=configuracao)
+        if response.text:
+            return response.text
+        return "❌ Erro: Retorno em branco"
+    except Exception as e:
+        return f"❌ Erro Técnico: {str(e)}"
 
+# 4. Componentes Visuais Fixos na Raiz Esquerda da Tela (Margem Zero)
+uploaded_file = st.file_uploader("📷 Faça o upload do Print do seu Gráfico (M1):", type=["png", "jpg", "jpeg"])
 botao_disparar = st.button("🧠 Iniciar Análise Avançada por IA")
 
-# 5. Execução Sequencial Síncrona Sem Sub-blocos Ocultos
+# 5. Fluxo de Execução Totalmente Plano (Sem sub-blocos aninhados)
 if uploaded_file is not None:
     imagem_viva = Image.open(uploaded_file)
-    st.image(imagem_viva, caption="Gráfico Carregado com Sucesso", use_container_width=True)
-
-if botao_disparar and not uploaded_file:
-    st.error("⚠️ Por favor, faça o upload de uma imagem do gráfico antes de iniciar a análise.")
-
-if botao_disparar and not lista_de_chaves:
-    st.error("⚠️ Insira pelo menos uma Gemini API Key válida na barra lateral esquerda antes de analisar.")
-
-if botao_disparar and uploaded_file and lista_de_chaves:
-    imagem_viva = Image.open(uploaded_file)
-    sucesso = False
-    
-    with st.spinner("Analisando histórico de pavios, fluxo de velas e calculando projeção futura..."):
-        for i, chave in enumerate(lista_de_chaves):
-            st.write(f"Conectando à chave de contingência {i+1}...")
-            try:
