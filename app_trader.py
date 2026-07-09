@@ -70,19 +70,27 @@ PROMPT_TRADER = (
 )
 
 def executar_chamada_gemini(chave_api, imagem_objeto, prompt_comando):
-    try:
-        # Inicializa o cliente usando a nova biblioteca google-genai
-        client = genai.Client(api_key=chave_api)
-        
-        # ATUALIZADO: Usando o modelo estável atualizado gemini-3.5-flash
-        response = client.models.generate_content(
-            model='gemini-3.5-flash',
-            contents=[imagem_objeto, prompt_comando]
-        )
-        return response.text
-    except Exception as e:
-        # Retorna o erro real detalhado gerado pela API do Google
-        return f"❌ Erro na API: {str(e)}"
+    # Lista de modelos compatíveis e ativos na SDK estável
+    modelos_contingencia = ['gemini-2.5-flash', 'gemini-2.5-pro']
+    
+    for modelo in modelos_contingencia:
+        try:
+            client = genai.Client(api_key=chave_api)
+            response = client.models.generate_content(
+                model=modelo,
+                contents=[imagem_objeto, prompt_comando]
+            )
+            return response.text
+        except Exception as e:
+            erro_msg = str(e)
+            # Se for um erro de indisponibilidade (503), avisa e tenta o próximo modelo da lista
+            if "503" in erro_msg or "UNAVAILABLE" in erro_msg:
+                st.write(f"⚠️ Modelo {modelo} instável (Erro 503). Chave ativa buscando modelo alternativo...")
+                continue
+            # Se for outro tipo de erro (ex: chave inválida), retorna imediatamente sem queimar processamento
+            return f"❌ Erro na API: {erro_msg}"
+            
+    return "❌ Erro na API: Todos os modelos disponíveis falharam por instabilidade no servidor do Google."
 
 # 4. Interface Principal (Elementos Isolados de Qualquer Condicional)
 uploaded_file = st.file_uploader("📷 Faça o upload do Print do seu Gráfico (M1):", type=["png", "jpg", "jpeg"])
@@ -106,7 +114,7 @@ if botao_analise:
                 st.write(f"Tentando analisar com a chave de contingência {i+1}...")
                 resultado = executar_chamada_gemini(chave, imagem, PROMPT_TRADER)
                 
-                # Verifica se a resposta não contém o marcador de erro detalhado
+                # Verifica se a resposta não contém o marcador de erro estruturado
                 if "❌ Erro na API:" not in resultado:
                     st.success("Análise concluída com sucesso!")
                     st.markdown(resultado)
@@ -118,7 +126,7 @@ if botao_analise:
                     st.write("Tentando próxima chave da lista...")
             
             if not sucesso:
-                st.error("Todas as chaves de contingência fornecidas falharam. Verifique suas chaves e permissões no Google AI Studio.")
+                st.error("Todas as chaves de contingência fornecidas falharam. O servidor do Google pode estar sobrecarregado universalmente. Tente novamente em alguns instantes.")
 
 if not lista_de_chaves:
     st.info("💡 Lembrete: Insira as chaves de API na barra lateral esquerda para liberar o processamento.")
