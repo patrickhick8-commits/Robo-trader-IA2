@@ -8,6 +8,12 @@ st.set_page_config(page_title="Agente IA Advanced - Matriz Suprema", page_icon="
 st.title("🤖 Agente IA Trader Pro: Matriz Suprema")
 st.write("Fusão Total: Projeção de Entrada Futura (3 a 10 Candles) com Expiração Rígida para Fechamento na Mesma Vela de M1.")
 
+# Inicialização da memória de estado do Streamlit
+if "analisado" not in st.session_state:
+    st.session_state.analisado = False
+if "resultado_texto" not in st.session_state:
+    st.session_state.resultado_texto = ""
+
 # 2. Barra Lateral
 st.sidebar.markdown("### 🔑 Gerenciador de Chaves de Contingência")
 chaves_input = st.sidebar.text_input("Cole suas Gemini API Keys aqui (separadas por ponto e vírgula):", type="password")
@@ -99,21 +105,19 @@ def executar_chamada_gemini(chave_api, imagem_pil, prompt_comando):
     except Exception as e:
         return f"❌ Erro: {str(e)}"
 
-# 4. Interface Principal (Elementos Isolados)
+# 4. Interface Principal
 uploaded_file = st.file_uploader("📷 Faça o upload do Print do seu Gráfico (M1):", type=["png", "jpg", "jpeg"])
-botao_analise = st.button("🧠 Iniciar Análise Avançada por IA")
 
-# 5. Execução Lógica Controlada Plana (Blindada contra Erros de Indentação)
-if botao_analise:
-    if not uploaded_file:
-        st.error("⚠️ Por favor, faça o upload de uma imagem do gráfico antes de iniciar a análise.")
-        st.stop()
-        
-    if not lista_de_chaves:
-        st.error("⚠️ Insira pelo menos uma Gemini API Key válida na barra lateral antes de analisar.")
-        st.stop()
-
-    # Fluxo principal sem aninhamentos profundos
+# Força o reset do estado se o usuário trocar a imagem enviada
+if uploaded_file:
     imagem_carregada = Image.open(uploaded_file)
     st.image(imagem_carregada, caption="Gráfico Carregado com Sucesso", use_container_width=True)
-    
+else:
+    st.session_state.analisado = False
+    st.session_state.resultado_texto = ""
+
+botao_analise = st.button("🧠 Iniciar Análise Avançada por IA")
+
+# 5. Execução Blindada com Session State
+if botao_analise and uploaded_file:
+    if not lista_de_chaves:
