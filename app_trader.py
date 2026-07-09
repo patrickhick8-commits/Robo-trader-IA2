@@ -47,7 +47,7 @@ PROMPT_TRADER = (
     "O Horário do Clique deve refletir esse cálculo de forma cirúrgica (HH:MM:00).\n\n"
     "[CRITÉRIOS RIGOROSOS DE REJEIÇÃO - QUANDO ABORTAR A OPERAÇÃO]\n"
     "Você deve MARCAR A DIREÇÃO COMO 'OPERAÇÃO ABORTADA' e zerar a assertividade se identificar qualquer um destes sinais de alerta no print:\n"
-    "1. VELAS DE FORÇA SEM PAVIO (MARUBOZU) FORA DE CONTEXTO: Velas cheias sem pavio nenhum tocando a região de forma seca e sem desaceleração prévia quando não há histórico de respeito similar.\n"
+    "1. VELAS DE FORÇA SEM PAVIO (MARUBOZU) FORA DE CONTEXTO: Velas cheias sem pavio nenhum tocando a região de forma seca e sem desaceleração prévia quando não hórico de respeito similar.\n"
     "2. VELAS DE ANOMALIA (VETORES GIGANTES / NOTÍCIAS): Velas desproporcionais (3 a 5 vezes maiores que a média do gráfico) que indicam pico extremo de volatilidade. REJEIÇÃO IMEDIATA.\n"
     "3. MICRO-TENDÊNCIA INSISTENTE (VELAS TRATOR): Sequências longas de mais de 7 velas consecutivas da mesma cor sem deixar pavio contrário relevante, indicando força atípica que romperá a região.\n"
     "4. AUSÊNCIA DE MAPEAMENTO HISTÓRICO: Se a região para onde o preço está indo não tiver um histórico nítido e visível de pavios ou paradas de corpos anteriores no print, a operação de reversão está proibida.\n\n"
@@ -103,10 +103,10 @@ def executar_chamada_gemini(chave_api, bytes_imagem, prompt_comando):
     except Exception as e:
         return f"❌ Erro: {str(e)}"
 
-# 5. Interface de Upload Contínua (Guarda os bytes na sessão)
+# 5. Interface de Upload Independente
 uploaded_file = st.file_uploader("📷 Faça o upload do Print do seu Gráfico (M1):", type=["png", "jpg", "jpeg"])
 
+# Sincronização forçada imediata para a memória viva
 if uploaded_file is not None:
     st.session_state.dados_imagem = uploaded_file.read()
 
-# 6. Renderização de Elementos Vinculada à Memória de Sessão
