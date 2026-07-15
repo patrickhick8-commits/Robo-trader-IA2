@@ -143,14 +143,13 @@ Retorne o diagnóstico estruturado exatamente neste formato markdown (mantenha r
 - Gestão de Lote
 """
 
-# Função reescrita com estrutura sequencial linear e limpa de abas ocultas
+# Função reescrita em formato puramente plano (Sem nenhum loop ou indentação profunda)
 def executar_chamada_gemini(chaves, imagem_objeto, prompt_comando):
     if not chaves:
         return "❌ Erro: Nenhuma chave de API configurada."
     
-    modelos = ["gemini-2.5-flash", "gemini-2.5-pro"]
+    chave_final = chaves[0]
     conteudo = [imagem_objeto, prompt_comando]
     
-    for k in chaves:
-        for m in modelos:
-            try:
+    try:
+        client = genai.Client(api_key=chave_final)
