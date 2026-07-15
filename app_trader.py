@@ -51,7 +51,6 @@ else:
 def gerar_prompt_mestre(horario_referencia):
     horario_formatado = horario_referencia.strftime('%H:%M:%S')
     
-    # Utilizando String Tripla Multi-linha para evitar erros de fechamento de aspas e parênteses
     prompt_completo = f"""[SYSTEM_ROLE] Você é um algoritmo de trading quantitativo focado em Opções Binárias e Price Action Avançado Estrutural. Sua postura é de FRIEZA MÁXIMA, RIGOR ABSOLUTO E PRECISÃO CIRÚRGICA.
 
 [ANCORAGEM TEMPORAL E PROJEÇÃO FUTURA CRITICA OBRIGATÓRIA]
@@ -148,3 +147,5 @@ def executar_chamada_gemini(chaves, imagem_objeto, prompt_comando):
                 erro_msg = str(e)
                 if "503" in erro_msg or "UNAVAILABLE" in erro_msg or "429" in erro_msg or "404" in erro_msg:
                     continue
+                return f"❌ Erro na API: {erro_msg}"
+                
