@@ -82,7 +82,7 @@ Sua tomada de decisão sobre zonas estruturais e zonas ocultas deve seguir estri
 2. SE O GRÁFICO APRESENTAR VELAS DE FORÇA OU DE CONTINUAÇÃO (Corpos cheios, expressivos e sem pavio): Você está PROIBIDO de operar retração. Você deve, obrigatoriamente, ESPERAR O ROMPIMENTO E O PULLBACK da região (ou seguir o fluxo momentâneo) para projetar a sua entrada.
 
 [ANÁLISE ESTRUTURAL DO PREÇO E LIQUIDEZ]
-Mapeie topos e fundos majoritários, canais de preço, linhas de tendência (LTA/LTB) e ZONAS OCULTAS de suporte/resistência (Order Blocks, Imbalances ou Acumulações antigas). Avalie a agressividade com que o mercado se move e calcule o espaço livre que o preço tem para correr antes de encontrar uma barreira real.
+Mapeie topos e fundos majoritários, canais de preço, linhas de tendência (LTA/LTB) e ZONAS OCULTAS de suporte/resistência (Order Blocks, Imbalances ou Acumulações antigas). Avalie a agressiveness com que o mercado se move e calcule o espaço livre que o preço tem para correr antes de encontrar uma barreira real.
 
 [DIRETRIZ DE SEGURANÇA MÁXIMA: GATILHO DE REVERSÃO EM REGIÃO VS FLUXO MOMENTÂNEO]
 Mude seu comportamento dinamicamente com base na proximidade do preço em relação às zonas estruturais demarcadas:
@@ -143,13 +143,13 @@ Retorne o diagnóstico estruturado exatamente neste formato markdown (mantenha r
 - Gestão de Lote
 """
 
-# Função reconstruída do zero e blindada contra falhas de indentação
+# Função reescrita de maneira puramente linear com extração indexada da string
 def executar_chamada_gemini(chaves, imagem_objeto, prompt_comando):
     if not chaves:
         return "❌ Erro: Nenhuma chave de API configurada."
     
-    chave_mestre = chaves[0]
-    conteudo_pacote = [imagem_objeto, prompt_comando]
+    # Extrai a primeira chave de texto do array com segurança
+    string_chave = str(chaves[0])
+    pacote = [imagem_objeto, prompt_comando]
     
     try:
-        client_flash = genai.Client(api_key=chave_mestre)
