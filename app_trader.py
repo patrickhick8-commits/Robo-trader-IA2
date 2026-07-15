@@ -71,6 +71,7 @@ PROMPT_TRADER = (
 
 def executar_chamada_gemini(chave_api, imagem_objeto, prompt_comando):
     try:
+        # Inicialização correta usando o novo SDK padrão da Google
         client = genai.Client(api_key=chave_api)
         response = client.models.generate_content(
             model='gemini-2.5-flash',
@@ -80,7 +81,7 @@ def executar_chamada_gemini(chave_api, imagem_objeto, prompt_comando):
     except Exception as e:
         return f"❌ Erro ao processar com a chave atual: {str(e)}"
 
-# 4. Interface Principal (Elementos Isolados de Qualquer Condicional)
+# 4. Interface Principal
 uploaded_file = st.file_uploader("📷 Faça o upload do Print do seu Gráfico (M1):", type=["png", "jpg", "jpeg"])
 
 botao_analise = st.button("🧠 Iniciar Análise Avançada por IA")
@@ -109,7 +110,8 @@ if botao_analise:
                 else:
                     st.warning(f"Chave {i+1} falhou ou está instável. Tentando próxima da lista...")
             
-            if not success:
+            # Correção aplicada com sucesso aqui
+            if not sucesso:
                 st.error("Todas as chaves de contingência fornecidas falharam. Verifique as chaves na Google AI Studio.")
 
 if not lista_de_chaves:
