@@ -27,7 +27,7 @@ st.write("Fusão Total: Estrutura Dinâmica do Preço, Projeção Temporal Avan�
 
 # 2. Barra Lateral e Painel de Assertividade Real
 st.sidebar.markdown("### 🔑 Gerenciador de Chaves de Contingência")
-chaves_input = st.sidebar.text_input("Cole suas Gemini API Keys aqui (separadas por ponto e vírgula):", type="password")
+chaves_input = st.sidebar.text_input("Cole suas Gemini API Keys aqui (separadas por ponto e vírangula):", type="password")
 lista_de_chaves = [chave.strip() for chave in chaves_input.split(";") if chave.strip()]
 
 st.sidebar.markdown("---")
@@ -94,10 +94,8 @@ def gerar_prompt_mestre(horario_referencia):
     )
 
 def executar_chamada_gemini(chaves, imagem_objeto, prompt_comando):
-    # Atualizado com a lista de modelos de produção ativos
     modelos_contingencia = ['gemini-3.5-flash', 'gemini-3.1-pro-preview']
     
-    # Itera sobre todas as chaves fornecidas pelo usuário
     for chave_api in chaves:
         for modelo in modelos_contingencia:
             try:
@@ -108,7 +106,6 @@ def executar_chamada_gemini(chaves, imagem_objeto, prompt_comando):
                 )
                 return response.text
             except Exception as e:
-                # Trata erros conhecidos de cota (429), indisponibilidade (503) ou obsolescência (404)
                 if "503" in str(e) or "UNAVAILABLE" in str(e) or "429" in str(e) or "404" in str(e):
                     continue
                 return f"❌ Erro na API: {str(e)}"
@@ -131,7 +128,6 @@ if botao_analise:
             
             st.markdown("### 📊 Resultado da Análise da IA")
             
-            # Alertas Visuais Baseados no Veredito da IA para proteger o usuário
             if "ABORTAR" in resultado_analise or "Abortada" in resultado_analise:
                 st.error("🚨 ALERTA MÁXIMO: A IA identificou risco extremo. OPERAÇÃO RECOMENDADA COMO ABORTADA!")
             elif "LOTE MÍNIMO" in resultado_analise or "RISCO OCULTO" in resultado_analise:
@@ -141,7 +137,6 @@ if botao_analise:
                 
             st.markdown(resultado_analise)
             
-            # 6. Salvamento no Histórico Local JSON
             nova_entrada = {
                 "data_hora": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                 "horario_print": horario_atual_print.strftime("%H:%M:%S"),
@@ -157,8 +152,8 @@ if historico:
     st.markdown("---")
     st.markdown("### 📝 Auditoria de Resultados (Feedback Manual)")
     
-    # Exibe apenas os registros pendentes para o usuário avaliar
     atualizou_historico = False
+    
     for idx, operacao in enumerate(historico):
         if operacao.get("resultado_manual") == "PENDENTE":
             col1, col2, col3 = st.columns(3)
@@ -170,3 +165,9 @@ if historico:
                     atualizou_historico = True
             with col3:
                 if st.button(f"Definir LOSS #{idx}", key=f"loss_{idx}"):
+                    historico[idx]["resultado_manual"] = "LOSS"
+                    atualizou_historico = True
+                    
+    if atualizou_historico:
+        salvar_historico(historico)
+        st.rerun()
