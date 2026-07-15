@@ -63,7 +63,7 @@ def gerar_prompt_mestre(horario_referencia):
         
         "[REGRA DE OURO: PROIBIDO PADRÕES DE VELAS]\n"
         "ATENÇÃO: Você está PROIBIDO de basear suas decisões em padrões isolados de velas (como Martelo, Engolfo, Doji, etc.). "
-        "Sua análise deve ignorar nomes de velas and focar puramente na ESTRUTURA DINÂMICA DO PREÇO e na anatomia física dos candles.\n\n"
+        "Sua análise deve ignorar nomes de velas e focar puramente na ESTRUTURA DINÂMICA DO PREÇO e na anatomia física dos candles.\n\n"
         
         "[REGRA OPERACIONAL DA ANATOMIA DO PREÇO: RETRAÇÃO VS PULLBACK]\n"
         "Sua tomada de decisão sobre zonas estruturais e zonas ocultas deve seguir estritamente duas regras:\n"
@@ -71,7 +71,7 @@ def gerar_prompt_mestre(horario_referencia):
         "2. SE O GRÁFICO APRESENTAR VELAS DE FORÇA OU DE CONTINUAÇÃO (Corpos cheios, expressivos e sem pavio): Você está PROIBIDO de operar retração. Você deve, obrigatoriamente, ESPERAR O ROMPIMENTO E O PULLBACK da região (ou seguir o fluxo momentâneo) para projetar a sua entrada.\n\n"
         
         "[ANÁLISE ESTRUTURAL DO PREÇO E LIQUIDEZ]\n"
-        "Mapeie topos e fundos majoritários, canais de preço, linhas de tendência (LTA/LTB) e ZONAS OCULTAS de suporte/resistência (Order Blocks, Imbalances ou Acumulações antigas). "
+        "Mapeie topos e fundos majoritários, canais de preço, lines de tendência (LTA/LTB) e ZONAS OCULTAS de suporte/resistência (Order Blocks, Imbalances ou Acumulações antigas). "
         "Avalie a agressividade com que o mercado se move e calcule o espaço livre que o preço tem para correr antes de encontrar uma barreira real.\n\n"
         
         "[DIRETRIZ DE SEGURANÇA MÁXIMA: GATILHO DE REVERSÃO EM REGIÃO VS FLUXO MOMENTÂNEO]\n"
