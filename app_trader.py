@@ -2,7 +2,7 @@ import streamlit as st
 from google import genai
 from PIL import Image
 from datetime import datetime
-from zoneinfo import ZoneInfo
+from zoneinfo import ZoneInfo  # Biblioteca nativa do Python para controle de fuso horário
 import json
 import os
 
@@ -10,15 +10,14 @@ import os
 st.set_page_config(page_title="Agente IA Advanced - Matriz Suprema", page_icon="🤖", layout="centered")
 
 ARQUIVO_HISTORICO = "historico_trader.json"
+
+# Define o fuso horário padrão de Brasília
 FUSO_BRASILIA = ZoneInfo("America/Sao_Paulo")
 
 def carregar_historico():
     if os.path.exists(ARQUIVO_HISTORICO):
-        try:
-            with open(ARQUIVO_HISTORICO, "r", encoding="utf-8") as f:
-                return json.load(f)
-        except:
-            return []
+        with open(ARQUIVO_HISTORICO, "r", encoding="utf-8") as f:
+            return json.load(f)
     return []
 
 def salvar_historico(dados):
@@ -27,11 +26,10 @@ def salvar_historico(dados):
 
 historico = carregar_historico()
 
-# Títulos Principais
 st.title("🤖 Agente IA Trader Pro: Matriz Suprema")
-st.write("Fusão Total: Estrutura Dinâmica do Preço, Projeção Temporal Avançada (3 a 10 Minutos) e Análise de Proximidade.")
+st.write("Fusão Total: Estrutura Dinâmica do Preço, Projeção Temporal Avançada e Análise de Proximidade com Filtro de Confiança Cruzada.")
 
-# 2. Barra Lateral e Painel Estatístico Real
+# 2. Barra Lateral e Painel de Assertividade Real
 st.sidebar.markdown("### 🔑 Gerenciador de Chaves de Contingência")
 chaves_input = st.sidebar.text_input("Cole suas Gemini API Keys aqui (separadas por ponto e vírgula):", type="password")
 lista_de_chaves = [chave.strip() for chave in chaves_input.split(";") if chave.strip()]
@@ -41,115 +39,129 @@ st.sidebar.markdown("### 📊 Painel Estatístico Real")
 if historico:
     total_auditado = sum(1 for x in historico if x.get("resultado_manual") in ["WIN", "LOSS"])
     wins = sum(1 for x in historico if x.get("resultado_manual") == "WIN")
+    
     if total_auditado > 0:
         taxa_acerto = (wins / total_auditado) * 100
         st.sidebar.metric("🏆 Taxa de Acerto Real", f"{taxa_acerto:.1f}%")
         st.sidebar.write(f"Operações avaliadas: {total_auditado}")
     else:
         st.sidebar.info("Aguardando auditoria das ordens no final da página.")
-    st.sidebar.markdown("---")
-    if st.sidebar.button("🗑️ Limpar Histórico Local"):
-        if os.path.exists(ARQUIVO_HISTORICO):
-            os.remove(ARQUIVO_HISTORICO)
-        st.rerun()
 else:
     st.sidebar.info("Nenhuma operação registrada ainda.")
 
 # 3. Interface Principal de Inputs
-st.markdown("### 📷 Entrada de Dados do Gráfico")
-uploaded_file = st.file_uploader("Faça o upload do Print do seu Gráfico (M1):", type=["png", "jpg", "jpeg"])
+uploaded_file = st.file_uploader("📷 Faça o upload do Print do seu Gráfico (M1):", type=["png", "jpg", "jpeg"])
 
-botao_analise = st.button("🧠 Iniciar Análise Avançada por IA", use_container_width=True)
+botao_analise = st.button("🧠 Iniciar Análise Avançada por IA")
 
-# 4. Definição Dinâmica do Prompt Mestre
+# 4. Definição do Prompt Mestre Otimizado (Filtro de Confiança Cruzada Aplicado)
 def gerar_prompt_mestre(horario_referencia):
     horario_formatado = horario_referencia.strftime('%H:%M:%S')
-    return f"""[SYSTEM_ROLE] Você é um algoritmo de trading quantitativo focado em Opções Binárias e Price Action Avançado Estrutural. Sua postura é de FRIEZA MÁXIMA, RIGOR ABSOLUTO E PRECISÃO CIRÚRGICA.
+    return (
+        "[SYSTEM_ROLE] Você é um algoritmo analítico quantitativo sênior de visão computacional voltado para Opções Binárias e Price Action Estrutural Puro. "
+        "Sua postura é de ceticismo extremo, frieza matemática e foco absoluto em proteção de capital.\n\n"
+        
+        "[ANCORAGEM TEMPORAL E PROJEÇÃO FUTURA OBRIGATÓRIA]\n"
+        f"O horário exato em que este print foi capturado é: {horario_formatado}.\n"
+        "REGRAS DE CÁLCULO DE TEMPO DE DESLOCAMENTO FUTURO:\n"
+        "1. Você deve analisar graficamente quanto tempo o preço levará para atingir a zona ou concluir o movimento desejado (Projete um tempo futuro de 2 a 10 minutos).\n"
+        f"2. O 'HORÁRIO DO CLIQUE (ENTRADA)' deve ser o horário ideal calculado para executar a ordem baseado no tempo gráfico de reação estimado. Se a entrada for imediata pós-gatilho, considere um leve delay de deslocamento (ex: de 1 a 3 minutos à frente de {horario_formatado}).\n"
+        "3. O 'HORÁRIO DE FECHAMENTO DA ORDEM' deve ser estritamente igual ao (HORÁRIO DO CLIQUE + TEMPO DE EXPIRAÇÃO DEFINIDO). Faça a soma matemática dos minutos com precisão absoluta.\n\n"
+        
+        "[REGRA DE OURO IMPRESCINDÍVEL: PROIBIDO PADRÕES DE VELAS]\n"
+        "Você está TERMINANTEMENTE PROIBIDO de basear suas decisões em nomenclaturas de velas isoladas (como Martelo, Engolfo, Doji, etc.). "
+        "Ignore nomes de velas. Concentre sua visão puramente na ESTRUTURA DINÂMICA DO PREÇO: deslocamento vetorial, velocidade visual de aproximação, "
+        "topos/fundos majoritários, canais (LTA/LTB), zonas de simetria e o espaço vazio (vácuo de liquidez) que o preço tem para correr antes de bater em uma barreira.\n\n"
+        
+        "[DIRETRIZ DE SEGURANÇA: REVERSÃO EM REGIÃO VS FLUXO MOMENTÂNEO]\n"
+        "Avalie a distância geométrica do preço atual até as zonas de suporte/resistência mais fortes visíveis no print:\n"
+        "- Se o preço JÁ ESTIVER tocando ou dentro da zona cinza de rejeição (testando topos/fundos relevantes), ative o [OPERACIONAL DE REVERSÃO EM REGIÃO], projetando exaustão estrutural para uma contra-tendência.\n"
+        "- Se o preço ESTIVER DISTANTE e houver espaço livre até o próximo alvo, ative o [FLUXO MOMENTÂNEO DO GRÁFICO] para surfar a continuidade até o alvo estrutural. É proibido antecipar reversões no meio do caminho.\n\n"
+        
+        "[PROTOCOLO DE FILTRO DE CONFIANÇA CRUZADA - OBRIGATÓRIO]\n"
+        "Antes de definir a direção, você deve confrontar rigidamente a sua própria análise. Mesmo que os indicadores ou o Price Action apontem uma probabilidade estatística teórica alta (como 90% a 98%), "
+        "você deve procurar ativamente por motivos para NÃO entrar na operação. Procure por: aproximações aceleradas demais em direção à taxa, falta de pavios de retração nas velas anteriores, "
+        "proximidade de horários cheios de virada de vela macro, ou RSI sem angulação clara. "
+        "Se encontrar qualquer um desses sinais de risco estrutural, você deve obrigatoriamente rebaixar a recomendação ou ordenar o aborto da entrada, explicando o perigo oculto na linha de risco.\n\n"
+        
+        "Retorne o diagnóstico estruturado exatamente neste formato markdown (não mude uma linha sequer do layout):\n\n"
+        "🎯 PORCENTAGEM DE ACERTO DA ENTRADA: [Resultado de 75% a 98% ou Abortada 0%]\n"
+        "🚨 VEREDITO REAL DE CONFIANÇA: [ENTRAR COM CONFIANÇA / ENTRAR COM LOTE MÍNIMO POR RISCO OCULTO / ABORTAR OPERAÇÃO]\n"
+        "⚠️ DETECTADO RISCO OCULTO NA ESTRUTURA? [Sim (especifique em uma frase curta qual é o risco) / Não, estrutura totalmente limpa]\n"
+        "⏰ HORÁRIO DO CLIQUE (ENTRADA): [HH:MM:SS - Lembre-se de calcular projetando de 2 a 10 minutos no futuro]\n"
+        "⏳ TEMPO DE EXPIRAÇÃO: [Ex: 5 Minutos]\n"
+        "🏁 HORÁRIO DE FECHAMENTO DA ORDEM: [HH:MM:SS - Deve ser exatamente o horário do clique + tempo de expiração]\n"
+        "🟥🟩 DIREÇÃO EXATA DA ORDEM: [COMPRA/VENDA/ABORTADA]\n"
+        "💰 GERENCIAMENTO DE LOTE RECOMENDADO: [Conservador / Moderado / Abortar]\n"
+        "🧠 ESTRATÉGIA E OPERACIONAL COMBINADO ATIVADO:\n"
+        "- Tipo de operacional ativo: ['REVERSÃO EM REGIÃO', 'FLUXO MOMENTÂNEO', ou 'RETRAÇÃO ESTRUTURAL']\n"
+        "- Detalhes explicativos estruturais.\n\n"
+        "🔍 DETALHAMENTO ANATÔMICO, ESTRUTURAL E TÉCNICO:\n"
+        "- Resumo analítico do comportamento visual das massas do mercado na imagem."
+    )
 
-[ANCORAGEM TEMPORAL E PROJEÇÃO FUTURA CRITICA OBRIGATÓRIA]
-O horário exato em que este print foi capturado no fuso do Brasil é: {horario_formatado}.
-REGRAS CRUCIAL DE CÁLCULO DE TEMPO DE DESLOCAMENTO FUTURO:
-1. Você deve analisar graficamente quantos minutos o preço levará para atingir a zona ou concluir o movimento desejado. Projete e escolha obrigatoriamente um tempo futuro de expiração de 3 a 10 minutos à frente.
-2. O 'HORÁRIO DO CLIQUE (ENTRADA)' NÃO pode ser igual ao horário do print ({horario_formatado}). Calcule e projete o clique alguns minutos à frente (ex: de 1 a 4 minutos à frente de {horario_formatado}) dependendo do gatilho gráfico estimado.
-3. O 'HORÁRIO DE FECHAMENTO DA ORDEM' deve ser rigorosamente igual à soma matemática: (HORÁRIO DO CLIQUE + TEMPO DE EXPIRAÇÃO DEFINIDO). Faça a soma dos minutos com precisão absoluta.
-
-[REGRA DE OURO: PROIBIDO PADRÕES DE VELAS]
-ATENÇÃO: Você está PROIBIDO de basear suas decisões em padrões isolados de velas (como Martelo, Engolfo, Doji, etc.). Sua análise deve ignorar nomes de velas e focar puramente na ESTRUTURA DINÂMICA DO PREÇO e na anatomia física dos candles.
-
-[REGRA OPERACIONAL DA ANATOMIA DO PREÇO: RETRAÇÃO VS PULLBACK]
-Sua tomada de decisão sobre zonas estruturais e zonas ocultas deve seguir estritamente duas regras:
-1. SE O GRÁFICO APRESENTAR BASTANTE PAVIO (Alta densidade de pavios e rejeição): Você deve operar focado em RETRAÇÃO INSTANTÂNEA nas zonas estruturais ou ocultas mapeadas.
-2. SE O GRÁFICO APRESENTAR VELAS DE FORÇA OU DE CONTINUAÇÃO (Corpos cheios, expressivos e sem pavio): Você está PROIBIDO de operar retração. Você deve, obrigatoriamente, ESPERAR O ROMPIMENTO E O PULLBACK da região (ou seguir o fluxo momentâneo) para projetar a sua entrada.
-
-[ANÁLISE ESTRUTURAL DO PREÇO E LIQUIDEZ]
-Mapeie topos e fundos majoritários, canais de preço, linhas de tendência (LTA/LTB) e ZONAS OCULTAS de suporte/resistência (Order Blocks, Imbalances ou Acumulações antigas). Avalie a agressividade com que o mercado se move e calcule o espaço livre que o preço tem para correr antes de encontrar uma barreira real.
-
-[DIRETRIZ DE SEGURANÇA MÁXIMA: GATILHO DE REVERSÃO EM REGIÃO VS FLUXO MOMENTÂNEO]
-Mude seu comportamento dinamicamente com base na proximidade do preço em relação às zonas estruturais demarcadas:
-- Se você detectar que o preço JÁ ESTIVER NA REGIÃO de reversão forte (testando topos/fundos relevantes ou simetrias fortes), ative o [OPERACIONAL DE REVERSÃO EM REGIÃO], aplicando o filtro de anatomia (retração se houver pavio, ou aguardando o pullback se for vela de força).
-- CASO CONTRÁRIO (se o preço estiver distante da região de reversão), você está PROIBIDO de antecipar reversões. Nesse cenário, entre imediatamente a favor do [FLUXO MOMENTÂNEO DO GRÁFICO], surfando a continuidade do movimento atual até o próximo alvo estrutural de liquidez.
-
-[PASSO 1: IDENTIFICAÇÃO DO AMBIENTE]
-Identifique o ativo e se é [MERCADO ABERTO REAL] ou [ALGORITMO OTC].
-
-[PASSO 2: FILTROS DE TENDÊNCIA E FLUXO DE CORES (MÍNIMO 4 VELAS)]
-Identifique se há uma sequência de 4 velas ou mais consecutivas da mesma cor com corpos expressivos e poucos pavios para fluxo de continuidade.
-
-[PASSO 3: FILTROS DE FLUXO PARA RETRAÇÃO]
-Identifique se o preço se movimenta com candles médios que deixam bastante pavio buscando regiões estruturais de S/R ou LTA/LTB.
-
-[PASSO 4: LOGICA DE OPERAÇÃO DINÂMICA (REVERSÃO OU FLUXO MOMENTÂNEO)]
-Avalie a distância até a zona de respeito baseado na estrutura do preço. Se estiver nela, projete o clique de reversão de 3 à 10 minutos (ideal 5 a 6 min). Se estiver longe, configure a entrada para seguir o fluxo momentâneo da tendência atual.
-
-[PASSO 5: REGRA DO RSI]
-Proibido reverter se o RSI estiver cruzando de forma reta e agressiva os extremos. Aguarde a perda de angulação ou siga o fluxo estrutural.
-
-[PASSO 6: MATRIZ DE ESTRATÉGIA COMBINADA ATIVADA]
-Avalie com base em: 1. LEITURA DA ESTRUTURA DO PREÇO (ALTA ASSERTIVIDADE), 2. ANATOMIA DA VELA (PAVIO = RETRAÇÃO | FORÇA = PULLBACK), 3. OPERACIONAL DE REVERSÃO EM REGIÃO (SE JÁ NA REGIÃO), 4. FLUXO MOMENTÂNEO DO GRÁFICO (SE LONGE DA REGIÃO), 5. FLUXO DE CONTINUIDADE (4+ VELAS).
-
-[PASSO 7: PROTOCOLO DE BLOQUEIO]
-Bloqueie retrações contra velas de força cheias. Aborte operações que vão contra a estrutura vigente sem confirmação de rompimento ou sem alvo claro.
-
-[PASSO 8: CRONOMETRAGEM E GESTÃO DE ALTA ASSERTIVIDADE]
-Projete o clique entre 3 a 10 minutos à frente. Atribua taxas rigorosas de assertividade entre 75% a 98% baseando-se unicamente na confluência dos fatores estruturais filtrados. Se não houver clareza técnica total na estrutura, ordene a operação como Abortada (0%).
-
-Retorne o diagnóstico estruturado exatamente neste formato markdown (mantenha rigidamente os rótulos abaixo):
-
-🎯 PORCENTAGEM DE ACERTO DA ENTRADA: [Resultado de 75% a 98% ou Abortada 0%]
-⏰ HORÁRIO DO CLIQUE (ENTRADA): [HH:MM:SS - Calcule obrigatoriamente projetando minutos à frente no futuro]
-⏳ TEMPO DE EXPIRAÇÃO: [Ex: 5 Minutos]
-🏁 HORÁRIO DE FECHAMENTO DA ORDEM: [HH:MM:SS - Deve ser exatamente o horário do clique + tempo de expiração]
-🟥🟩 DIREÇÃO EXATA DA ORDEM: [COMPRA/VENDA/ABORTADA]
-💰 GERENCIAMENTO DE LOTE RECOMENDADO: [Gerenciamento]
-🧠 ESTRATÉGIA E OPERACIONAL COMBINADO ATIVADO:
-- Tipo de operacional isolado ativado (Exemplos: 'OPERACIONAL DE REVERSÃO EM REGIÃO', 'FLUXO MOMENTÂNEO DO GRÁFICO', 'OPERACIONAL DE PULLBACK', ou 'OPERACIONAL DE RETRAÇÃO EM ZONA STRUCT').
-- Detalhes dos gatilhos, anatomia observada nos candles (força ou pavio) e a proximidade da região alvo estrutural.
-- Descrição minuciosa da combinação (Estrutura do preço + Retração por pavio em zona oculta, Vela de força + Espera de Pullback, Quebra de pivô + Fluxo momentâneo, etc).
-🌐 MODO DE MERCADO DETECTADO: [Mercado]
-📊 CONTEXTO DO MERCADO MACRO E MICRO (ALINHAMENTO): [Tendência e Padrão Estrutural de Topos/Fundos]
-📈 LEITURA DO RSI PADRÃO E GATILHO CONTRA/A FAVOR DO MOMENTUM: [RSI]
-📊 JUSTIFICATIVA DA REGIÃO E PROJEÇÃO TEMPORAL: [Justificativa baseada no deslocamento estrutural, anatomia das velas e tempo]
-
-🔍 DETALHAMENTO ANATÔMICO, ESTRUTURAL E TÉCNICO:
-- Ambiente Identificado
-- Trajetória pós-Print e Leitura de Estrutura do Preço (Topos, Fundos e Pivôs)
-- Análise de Reversão em Região vs Fluxo Momentâneo (Filtro de Posição Estrutural)
-- Decisão por Anatomia: Presença de pavios expressivos (Retração) ou corpo cheio (Pullback/Fluxo)
-- Padrão Sequencial de Cores e Força do Fluxo
-- Densidade dos Pavios e Regiões de Retração Estrutural
-- Comportamento do RSI e Angulação do Preço
-- Verificação de Bloqueios de Estrutura (Filtro de proteção contra velas cheias)
-- Regiões de Respeito e Alvos Disponíveis na Estrutura (Incluindo Zonas Ocultas)
-- Gestão de Lote
-"""
-
-# Função reescrita em formato puramente plano (Sem nenhum loop ou indentação profunda)
 def executar_chamada_gemini(chaves, imagem_objeto, prompt_comando):
-    if not chaves:
-        return "❌ Erro: Nenhuma chave de API configurada."
+    modelos_contingencia = ['gemini-3.5-flash', 'gemini-3.1-pro-preview']
     
-    chave_final = chaves[0]
-    conteudo = [imagem_objeto, prompt_comando]
+    for chave_api in chaves:
+        for modelo in modelos_contingencia:
+            try:
+                client = genai.Client(api_key=chave_api)
+                response = client.models.generate_content(
+                    model=modelo, 
+                    contents=[imagem_objeto, prompt_comando]
+                )
+                return response.text
+            except Exception as e:
+                if "503" in str(e) or "UNAVAILABLE" in str(e) or "429" in str(e) or "404" in str(e):
+                    continue
+                return f"❌ Erro na API: {str(e)}"
+                
+    return "❌ Erro na API: Todas as chaves e modelos falharam por instabilidade ou exaustão de limite."
+
+# 5. Execução Lógica Controlada pós-Clique
+if botao_analise:
+    if not uploaded_file:
+        st.error("⚠️ Por favor, faça o upload de uma imagem do gráfico antes de iniciar a análise.")
+    elif not lista_de_chaves:
+        st.error("⚠️ Insira pelo menos uma Gemini API Key válida na barra lateral antes de analisar.")
+    else:
+        imagem = Image.open(uploaded_file).convert("RGB")
+        st.image(imagem, caption="Gráfico Carregado com Sucesso", use_container_width=True)
+        
+        with st.spinner("Analisando estrutura pura do preço, distância e tempo futuro..."):
+            # CAPTURA O HORÁRIO CORRETO DE BRASÍLIA
+            agora_brasilia = datetime.now(FUSO_BRASILIA)
+            horario_atual_print = agora_brasilia.time()
+            
+            prompt_dinamico = gerar_prompt_mestre(horario_atual_print)
+            resultado_analise = executar_chamada_gemini(lista_de_chaves, imagem, prompt_dinamico)
+            
+            st.markdown("### 📊 Resultado da Análise da IA")
+            
+            if "ABORTAR" in resultado_analise or "Abortada" in resultado_analise:
+                st.error("🚨 ALERTA MÁXIMO: A IA identificou risco extremo. OPERAÇÃO RECOMENDADA COMO ABORTADA!")
+            elif "LOTE MÍNIMO" in resultado_analise or "RISCO OCULTO" in resultado_analise:
+                st.warning("⚠️ ATENÇÃO: Embora haja sinal, existem riscos ocultos na estrutura. Use lote mínimo!")
+            else:
+                st.success("🟢 SINAL VALIDADO: Estrutura gráfica limpa e confluente para operação.")
+                
+            st.markdown(resultado_analise)
+            
+            nova_entrada = {
+                "data_hora": agora_brasilia.strftime("%Y-%m-%d %H:%M:%S"),
+                "horario_print": horario_atual_print.strftime("%H:%M:%S"),
+                "analise_ia": resultado_analise,
+                "resultado_manual": "PENDENTE"
+            }
+            historico.append(nova_entrada)
+            salvar_historico(historico)
+            st.toast("Análise salva no histórico local com sucesso!")
+
+# 7. Painel de Auditoria e Feedback (Final da Página)
+if historico:
+    st.markdown("---")
+    st.markdown("### 📝 Auditoria de Resultados (Feedback Manual)")
     
-    try:
-        client = genai.Client(api_key=chave_final)
+    atualizou_historico = False
+    
