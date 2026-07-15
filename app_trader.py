@@ -1,8 +1,8 @@
 import streamlit as st
 from google import genai
 from PIL import Image
-from datetime import datetime, timedelta
-from zoneinfo import ZoneInfo  # Biblioteca nativa para fuso horário de Brasília
+from datetime import datetime
+from zoneinfo import ZoneInfo
 import json
 import os
 
@@ -14,8 +14,11 @@ FUSO_BRASILIA = ZoneInfo("America/Sao_Paulo")
 
 def carregar_historico():
     if os.path.exists(ARQUIVO_HISTORICO):
-        with open(ARQUIVO_HISTORICO, "r", encoding="utf-8") as f:
-            return json.load(f)
+        try:
+            with open(ARQUIVO_HISTORICO, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except:
+            return []
     return []
 
 def salvar_historico(dados):
@@ -24,6 +27,7 @@ def salvar_historico(dados):
 
 historico = carregar_historico()
 
+# Títulos Principais
 st.title("🤖 Agente IA Trader Pro: Matriz Suprema")
 st.write("Fusão Total: Estrutura Dinâmica do Preço, Projeção Temporal Avançada (3 a 10 Minutos) e Análise de Proximidade.")
 
@@ -44,14 +48,25 @@ if historico:
         st.sidebar.write(f"Operações avaliadas: {total_auditado}")
     else:
         st.sidebar.info("Aguardando auditoria das ordens no final da página.")
+        
+    st.sidebar.markdown("---")
+    if st.sidebar.button("🗑️ Limpar Histórico Local"):
+        if os.path.exists(ARQUIVO_HISTORICO):
+            os.remove(ARQUIVO_HISTORICO)
+        st.rerun()
 else:
     st.sidebar.info("Nenhuma operação registrada ainda.")
 
-# 3. Definição Dinâmica do Prompt Mestre com Cálculo de Tempo Futuro Embutido
+# 3. Interface Principal de Inputs (Garantindo Renderização)
+st.markdown("### 📷 Entrada de Dados do Gráfico")
+uploaded_file = st.file_uploader("Faça o upload do Print do seu Gráfico (M1):", type=["png", "jpg", "jpeg"])
+
+botao_analise = st.button("🧠 Iniciar Análise Avançada por IA", use_container_width=True)
+
+# 4. Definição Dinâmica do Prompt Mestre
 def gerar_prompt_mestre(horario_referencia):
     horario_formatado = horario_referencia.strftime('%H:%M:%S')
-    
-    prompt_completo = f"""[SYSTEM_ROLE] Você é um algoritmo de trading quantitativo focado em Opções Binárias e Price Action Avançado Estrutural. Sua postura é de FRIEZA MÁXIMA, RIGOR ABSOLUTO E PRECISÃO CIRÚRGICA.
+    return f"""[SYSTEM_ROLE] Você é um algoritmo de trading quantitativo focado em Opções Binárias e Price Action Avançado Estrutural. Sua postura é de FRIEZA MÁXIMA, RIGOR ABSOLUTO E PRECISÃO CIRÚRGICA.
 
 [ANCORAGEM TEMPORAL E PROJEÇÃO FUTURA CRITICA OBRIGATÓRIA]
 O horário exato em que este print foi capturado no fuso do Brasil é: {horario_formatado}.
@@ -129,23 +144,12 @@ Retorne o diagnóstico estruturado exatamente neste formato markdown (mantenha r
 - Regiões de Respeito e Alvos Disponíveis na Estrutura (Incluindo Zonas Ocultas)
 - Gestão de Lote
 """
-    return prompt_completo
 
 def executar_chamada_gemini(chaves, imagem_objeto, prompt_comando):
     modelos_contingencia = ['gemini-2.5-flash', 'gemini-2.5-pro']
-    
     for chave_api in chaves:
         for modelo in modelos_contingencia:
             try:
                 client = genai.Client(api_key=chave_api)
                 response = client.models.generate_content(
                     model=modelo,
-                    contents=[imagem_objeto, prompt_comando]
-                )
-                return response.text
-            except Exception as e:
-                erro_msg = str(e)
-                if "503" in erro_msg or "UNAVAILABLE" in erro_msg or "429" in erro_msg or "404" in erro_msg:
-                    continue
-                return f"❌ Erro na API: {erro_msg}"
-                
