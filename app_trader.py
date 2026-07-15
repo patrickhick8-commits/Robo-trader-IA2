@@ -57,7 +57,7 @@ if historico:
 else:
     st.sidebar.info("Nenhuma operação registrada ainda.")
 
-# 3. Interface Principal de Inputs (Garantindo Renderização)
+# 3. Interface Principal de Inputs
 st.markdown("### 📷 Entrada de Dados do Gráfico")
 uploaded_file = st.file_uploader("Faça o upload do Print do seu Gráfico (M1):", type=["png", "jpg", "jpeg"])
 
@@ -147,9 +147,9 @@ Retorne o diagnóstico estruturado exatamente neste formato markdown (mantenha r
 
 def executar_chamada_gemini(chaves, imagem_objeto, prompt_comando):
     modelos_contingencia = ['gemini-2.5-flash', 'gemini-2.5-pro']
+    conteudo_envio = [imagem_objeto, prompt_comando]
+    
     for chave_api in chaves:
         for modelo in modelos_contingencia:
             try:
                 client = genai.Client(api_key=chave_api)
-                response = client.models.generate_content(
-                    model=modelo,
