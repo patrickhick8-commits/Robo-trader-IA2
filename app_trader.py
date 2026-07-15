@@ -86,7 +86,7 @@ Mapeie topos e fundos majoritários, canais de preço, linhas de tendência (LTA
 
 [DIRETRIZ DE SEGURANÇA MÁXIMA: GATILHO DE REVERSÃO EM REGIÃO VS FLUXO MOMENTÂNEO]
 Mude seu comportamento dinamicamente com base na proximidade do preço em relação às zonas estruturais demarcadas:
-- Sec você detectar que o preço JÁ ESTIVER NA REGIÃO de reversão forte (testando topos/fundos relevantes ou simetrias fortes), ative o [OPERACIONAL DE REVERSÃO EM REGIÃO], aplicando o filtro de anatomia (retração se houver pavio, ou aguardando o pullback se for vela de força).
+- Se você detectar que o preço JÁ ESTIVER NA REGIÃO de reversão forte (testando topos/fundos relevantes ou simetrias fortes), ative o [OPERACIONAL DE REVERSÃO EM REGIÃO], aplicando o filtro de anatomia (retração se houver pavio, ou aguardando o pullback se for vela de força).
 - CASO CONTRÁRIO (se o preço estiver distante da região de reversão), você está PROIBIDO de antecipar reversões. Nesse cenário, entre imediatamente a favor do [FLUXO MOMENTÂNEO DO GRÁFICO], surfando a continuidade do movimento atual até o próximo alvo estrutural de liquidez.
 
 [PASSO 1: IDENTIFICAÇÃO DO AMBIENTE]
@@ -143,13 +143,13 @@ Retorne o diagnóstico estruturado exatamente neste formato markdown (mantenha r
 - Gestão de Lote
 """
 
-# Função reescrita de forma linear e limpa (Livre de Erros de Indentação)
+# Função reconstruída do zero e blindada contra falhas de indentação
 def executar_chamada_gemini(chaves, imagem_objeto, prompt_comando):
     if not chaves:
-        return "❌ Erro: Nenhuma chave de API fornecida."
+        return "❌ Erro: Nenhuma chave de API configurada."
     
-    chave_ativa = chaves[0]
-    conteudo = [imagem_objeto, prompt_comando]
+    chave_mestre = chaves[0]
+    conteudo_pacote = [imagem_objeto, prompt_comando]
     
     try:
-        client = genai.Client(api_key=chave_api)
+        client_flash = genai.Client(api_key=chave_mestre)
