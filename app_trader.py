@@ -23,7 +23,7 @@ def salvar_historico(dados):
 historico = carregar_historico()
 
 st.title("🤖 Agente IA Trader Pro: Matriz Suprema")
-st.write("Fusão Total: Estrutura Dinâmica do Preço e Análise de Risco com Filtro de Confiança Cruzada.")
+st.write("Fusão Total: Estrutura Dinâmica do Preço, Projeção Temporal Avançada e Análise de Proximidade com Filtro de Confiança Cruzada.")
 
 # 2. Barra Lateral e Painel de Assertividade Real
 st.sidebar.markdown("### 🔑 Gerenciador de Chaves de Contingência")
@@ -51,7 +51,7 @@ horario_atual_print = st.time_input("⏰ Que horas o print foi tirado no gráfic
 
 botao_analise = st.button("🧠 Iniciar Análise Avançada por IA")
 
-# 4. Definição do Prompt Mestre Otimizado (Filtro de Confiança Cruzada)
+# 4. Definição do Prompt Mestre Otimizado (Filtro de Confiança Cruzada Aplicado)
 def gerar_prompt_mestre(horario_referencia):
     return (
         "[SYSTEM_ROLE] Você é um algoritmo analítico quantitativo sênior de visão computacional voltado para Opções Binárias e Price Action Estrutural Puro. "
@@ -64,14 +64,17 @@ def gerar_prompt_mestre(horario_referencia):
         "[REGRA DE OURO IMPRESCINDÍVEL: PROIBIDO PADRÕES DE VELAS]\n"
         "Você está TERMINANTEMENTE PROIBIDO de basear suas decisões em nomenclaturas de velas isoladas (como Martelo, Engolfo, Doji, etc.). "
         "Ignore nomes de velas. Concentre sua visão puramente na ESTRUTURA DINÂMICA DO PREÇO: deslocamento vetorial, velocidade visual de aproximação, "
-        "topos/fundos majoritários, canais (LTA/LTB), zonas de simetria e o espaço vazio que o preço tem para correr.\n\n"
+        "topos/fundos majoritários, canais (LTA/LTB), zonas de simetria e o espaço vazio (vácuo de liquidez) que o preço tem para correr antes de bater em uma barreira.\n\n"
         
         "[DIRETRIZ DE SEGURANÇA: REVERSÃO EM REGIÃO VS FLUXO MOMENTÂNEO]\n"
-        "- Se o preço JÁ ESTIVER tocando ou dentro da zona cinza de rejeição (testando topos/fundos relevantes), ative o [OPERACIONAL DE REVERSÃO EM REGIÃO], projetando exaustão estrutural para uma contra-tendência.\n"
-        "- Se o preço ESTIVER DISTANTE e houver espaço livre até o próximo alvo, ative o [FLUXO MOMENTÂNEO DO GRÁFICO] para surfar a continuidade.\n\n""[PROTOCOLO DE FILTRO DE CONFIANÇA CRUZADA - OBRIGATÓRIO]\n"
-        "Antes de definir a direção, você deve confrontar rigidamente a sua própria análise. Mesmo que os indicadores apontem probabilidade teórica alta (como 90% a 98%), "
-        "procure ativamente por motivos para NÃO entrar na operação (aproximações aceleradas demais, falta de pavios de retração nas velas anteriores, etc.). "
-        "Se encontrar riscos, rebaixe a recomendação ou ordene o aborto da entrada, explicando o perigo na linha de risco.\n\n"
+        "Avalie a distância geométrica do preço atual até as zonas de suporte/resistência mais fortes visíveis no print:\n"
+        "- Se o preço JÁ ESTIVER tocando ou dentro da zona cinza de rejeição (testando topos/fundos relevantes), ative o [OPERACIONAL DE REVERSÃO EM REGIÃO], projetando exaustão estrutural para uma contra-tendência.\n""- Se o preço ESTIVER DISTANTE e houver espaço livre até o próximo alvo, ative o [FLUXO MOMENTÂNEO DO GRÁFICO] para surfar a continuidade até o alvo estrutural. É proibido antecipar reversões no meio do caminho.\n\n"
+        
+        "[PROTOCOLO DE FILTRO DE CONFIANÇA CRUZADA - OBRIGATÓRIO]\n"
+        "Antes de definir a direção, você deve confrontar rigidamente a sua própria análise. Mesmo que os indicadores ou o Price Action apontem uma probabilidade estatística teórica alta (como 90% a 98%), "
+        "você deve procurar ativamente por motivos para NÃO entrar na operação. Procure por: aproximações aceleradas demais em direção à taxa, falta de pavios de retração nas velas anteriores, "
+        "proximidade de horários cheios de virada de vela macro, ou RSI sem angulação clara. "
+        "Se encontrar qualquer um desses sinais de risco estrutural, você deve obrigatoriamente rebaixar a recomendação ou ordenar o aborto da entrada, explicando o perigo oculto na linha de risco.\n\n"
         
         "Retorne o diagnóstico estruturado exatamente neste formato markdown (não mude uma linha sequer do layout):\n\n"
         "🎯 PORCENTAGEM DE ACERTO DA ENTRADA: [Resultado de 75% a 98% ou Abortada 0%]\n"
@@ -119,14 +122,15 @@ if botao_analise:
             st.markdown("### 📊 Resultado da Análise da IA")
             
             # Alertas Visuais Baseados no Veredito da IA para proteger o usuário
-            if "ABORTAR" in resultado_analise or "Abortada" in resultado_analise:
-                st.error("🚨 ALERTA MÁXIMO: A IA identificou risco extremo. OPERAÇÃO RECOMENDADA COMO ABORTADA!")
+            if "ABORTAR" in resultado_analise or "Abortada" in resultado_analise:st.error("🚨 ALERTA MÁXIMO: A IA identificou risco extremo. OPERAÇÃO RECOMENDADA COMO ABORTADA!")
             elif "LOTE MÍNIMO" in resultado_analise or "RISCO OCULTO" in resultado_analise:
                 st.warning("⚠️ ATENÇÃO: Embora haja sinal, existem riscos ocultos na estrutura. Use lote mínimo!")
             else:
                 st.success("🟢 SINAL VALIDADO: Estrutura gráfica limpa e confluente para operação.")
                 
-            st.markdown(resultado_analise)# Salva no histórico local JSON
+            st.markdown(resultado_analise)
+            
+            # Salva no histórico local JSON
             nova_entrada = {
                 "id": len(historico) + 1,
                 "data_registro": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
@@ -153,7 +157,7 @@ if historico:
             
             st.write(f"Status Atual da Auditoria: {item['resultado_manual']}")
             
-            col1, col2, col3 = st.columns(3)
+            col1, col2, col3, col4 = st.columns(4)
             with col1:
                 if st.button(f"Definir como WIN 🟢", key=f"win_{item['id']}"):
                     historico[len(historico) - 1 - idx]["resultado_manual"] = "WIN"
@@ -165,9 +169,3 @@ if historico:
                     salvar_historico(historico)
                     st.rerun()
             with col3:
-                if st.button(f"Definir como Cancelada ⚪", key=f"canc_{item['id']}"):
-                    historico[len(historico) - 1 - idx]["resultado_manual"] = "Cancelada"
-                    salvar_historico(historico)
-                    st.rerun()
-else:
-    st.info("Nenhuma análise no banco de dados. Faça o upload de um print para iniciar.")
