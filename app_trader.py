@@ -110,7 +110,7 @@ Proibido reverter se o RSI estiver cruzando de forma reta e agressiva os extremo
 Avalie com base em: 1. LEITURA DA ESTRUTURA DO PREÇO (ALTA ASSERTIVIDADE), 2. ANATOMIA DA VELA (PAVIO = RETRAÇÃO | FORÇA = PULLBACK), 3. OPERACIONAL DE REVERSÃO EM REGIÃO (SE JÁ NA REGIÃO), 4. FLUXO MOMENTÂNEO DO GRÁFICO (SE LONGE DA REGIÃO), 5. FLUXO DE CONTINUIDADE (4+ VELAS).
 
 [PASSO 7: PROTOCOLO DE BLOQUEIO]
-Bloqueie retrações contra velas de força cheias. Aborte operações que vão contra a estrutura vigente sem confirmação de rompimento ou sem alvo claro.
+Bloqueie retrações contra velas de força cheias. Aborte operações que vão contra a estrutura vigente sem confirmation de rompimento ou sem alvo claro.
 
 [PASSO 8: CRONOMETRAGEM E GESTÃO DE ALTA ASSERTIVIDADE]
 Projete o clique entre 3 a 10 minutos à frente. Atribua taxas rigorosas de assertividade entre 75% a 98% baseando-se unicamente na confluência dos fatores estruturais filtrados. Se não houver clareza técnica total na estrutura, ordene a operação como Abortada (0%).
