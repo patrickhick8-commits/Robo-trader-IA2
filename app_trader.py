@@ -94,7 +94,8 @@ def gerar_prompt_mestre(horario_referencia):
     )
 
 def executar_chamada_gemini(chaves, imagem_objeto, prompt_comando):
-    modelos_contingencia = ['gemini-2.5-flash', 'gemini-2.5-pro']
+    # Atualizado com a lista de modelos de produção ativos
+    modelos_contingencia = ['gemini-3.5-flash', 'gemini-3.1-pro-preview']
     
     # Itera sobre todas as chaves fornecidas pelo usuário
     for chave_api in chaves:
@@ -107,8 +108,8 @@ def executar_chamada_gemini(chaves, imagem_objeto, prompt_comando):
                 )
                 return response.text
             except Exception as e:
-                # Se for erro de limite (429) ou indisponibilidade (503), pula pro próximo
-                if "503" in str(e) or "UNAVAILABLE" in str(e) or "429" in str(e):
+                # Trata erros conhecidos de cota (429), indisponibilidade (503) ou obsolescência (404)
+                if "503" in str(e) or "UNAVAILABLE" in str(e) or "429" in str(e) or "404" in str(e):
                     continue
                 return f"❌ Erro na API: {str(e)}"
                 
@@ -169,6 +170,3 @@ if historico:
                     atualizou_historico = True
             with col3:
                 if st.button(f"Definir LOSS #{idx}", key=f"loss_{idx}"):
-                    historico[idx]["resultado_manual"] = "LOSS"
-                    atualizou_historico = True
-                    
