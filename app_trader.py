@@ -27,7 +27,7 @@ st.write("Fusão Total: Estrutura Dinâmica do Preço, Projeção Temporal Avan�
 
 # 2. Barra Lateral e Painel de Assertividade Real
 st.sidebar.markdown("### 🔑 Gerenciador de Chaves de Contingência")
-chaves_input = st.sidebar.text_input("Cole suas Gemini API Keys aqui (separadas por ponto e vírangula):", type="password")
+chaves_input = st.sidebar.text_input("Cole suas Gemini API Keys aqui (separadas por ponto e vírgula):", type="password")
 lista_de_chaves = [chave.strip() for chave in chaves_input.split(";") if chave.strip()]
 
 st.sidebar.markdown("---")
@@ -47,7 +47,8 @@ else:
 
 # 3. Interface Principal de Inputs
 uploaded_file = st.file_uploader("📷 Faça o upload do Print do seu Gráfico (M1):", type=["png", "jpg", "jpeg"])
-horario_atual_print = st.time_input("⏰ Que horas o print foi tirado no gráfico?", datetime.now().time())
+
+# O campo de horário manual foi removido daqui
 
 botao_analise = st.button("🧠 Iniciar Análise Avançada por IA")
 
@@ -123,6 +124,9 @@ if botao_analise:
         st.image(imagem, caption="Gráfico Carregado com Sucesso", use_container_width=True)
         
         with st.spinner("Analisando estrutura pura do preço, distância e tempo futuro..."):
+            # Captura o horário exato em que o botão foi clicado
+            horario_atual_print = datetime.now().time()
+            
             prompt_dinamico = gerar_prompt_mestre(horario_atual_print)
             resultado_analise = executar_chamada_gemini(lista_de_chaves, imagem, prompt_dinamico)
             
