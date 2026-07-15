@@ -2,6 +2,7 @@ import streamlit as st
 from google import genai
 from PIL import Image
 from datetime import datetime
+from zoneinfo import ZoneInfo  # Biblioteca nativa do Python para controle de fuso horário
 import json
 import os
 
@@ -9,6 +10,9 @@ import os
 st.set_page_config(page_title="Agente IA Advanced - Matriz Suprema", page_icon="🤖", layout="centered")
 
 ARQUIVO_HISTORICO = "historico_trader.json"
+
+# Define o fuso horário padrão de Brasília
+FUSO_BRASILIA = ZoneInfo("America/Sao_Paulo")
 
 def carregar_historico():
     if os.path.exists(ARQUIVO_HISTORICO):
@@ -48,8 +52,6 @@ else:
 # 3. Interface Principal de Inputs
 uploaded_file = st.file_uploader("📷 Faça o upload do Print do seu Gráfico (M1):", type=["png", "jpg", "jpeg"])
 
-# O campo de horário manual foi removido daqui
-
 botao_analise = st.button("🧠 Iniciar Análise Avançada por IA")
 
 # 4. Definição do Prompt Mestre Otimizado (Filtro de Confiança Cruzada Aplicado)
@@ -81,7 +83,7 @@ def gerar_prompt_mestre(horario_referencia):
         "Retorne o diagnóstico estruturado exatamente neste formato markdown (não mude uma linha sequer do layout):\n\n"
         "🎯 PORCENTAGEM DE ACERTO DA ENTRADA: [Resultado de 75% a 98% ou Abortada 0%]\n"
         "🚨 VEREDITO REAL DE CONFIANÇA: [ENTRAR COM CONFIANÇA / ENTRAR COM LOTE MÍNIMO POR RISCO OCULTO / ABORTAR OPERAÇÃO]\n"
-        "⚠️ DETECTADO RISCO OCULTO NA ESTRUTURA? [Sim (especifique em uma frase curta qual é o risco) / Não, estrutura totalmente limpa]\n"
+        "⚠️ DETECTADO RISCO OCULTO NA ESTRUTURA? [Sim (especifique em uma frase corta qual é o risco) / Não, estrutura totalmente limpa]\n"
         "⏰ HORÁRIO DO CLIQUE (ENTRADA): [HH:MM:SS]\n"
         "⏳ TEMPO DE EXPIRAÇÃO: [Ex: 5 Minutos]\n"
         "🏁 HORÁRIO DE FECHAMENTO DA ORDEM: [HH:MM:SS]\n"
@@ -124,8 +126,9 @@ if botao_analise:
         st.image(imagem, caption="Gráfico Carregado com Sucesso", use_container_width=True)
         
         with st.spinner("Analisando estrutura pura do preço, distância e tempo futuro..."):
-            # Captura o horário exato em que o botão foi clicado
-            horario_atual_print = datetime.now().time()
+            # CAPTURA O HORÁRIO CORRETO DE BRASÍLIA
+            agora_brasilia = datetime.now(FUSO_BRASILIA)
+            horario_atual_print = agora_brasilia.time()
             
             prompt_dinamico = gerar_prompt_mestre(horario_atual_print)
             resultado_analise = executar_chamada_gemini(lista_de_chaves, imagem, prompt_dinamico)
@@ -142,7 +145,7 @@ if botao_analise:
             st.markdown(resultado_analise)
             
             nova_entrada = {
-                "data_hora": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                "data_hora": agora_brasilia.strftime("%Y-%m-%d %H:%M:%S"),
                 "horario_print": horario_atual_print.strftime("%H:%M:%S"),
                 "analise_ia": resultado_analise,
                 "resultado_manual": "PENDENTE"
@@ -174,4 +177,3 @@ if historico:
                     
     if atualizou_historico:
         salvar_historico(historico)
-        st.rerun()
