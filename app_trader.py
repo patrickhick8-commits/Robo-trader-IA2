@@ -56,13 +56,17 @@ botao_analise = st.button("🧠 Iniciar Análise Avançada por IA")
 
 # 4. Definição do Prompt Mestre Otimizado (Filtro de Confiança Cruzada Aplicado)
 def gerar_prompt_mestre(horario_referencia):
+    horario_formatado = horario_referencia.strftime('%H:%M:%S')
     return (
         "[SYSTEM_ROLE] Você é um algoritmo analítico quantitativo sênior de visão computacional voltado para Opções Binárias e Price Action Estrutural Puro. "
         "Sua postura é de ceticismo extremo, frieza matemática e foco absoluto em proteção de capital.\n\n"
         
-        f"[ANCORAGEM TEMPORAL OBRIGATÓRIA]\n"
-        f"O horário exato em que este print foi capturado é: {horario_referencia.strftime('%H:%M:%S')}. "
-        "Qualquer cálculo de projeção de tempo (expiração de 3 a 10 minutos) DEVE usar este horário exato como ponto de partida inicial zero.\n\n"
+        "[ANCORAGEM TEMPORAL E PROJEÇÃO FUTURA OBRIGATÓRIA]\n"
+        f"O horário exato em que este print foi capturado é: {horario_formatado}.\n"
+        "REGRAS DE CÁLCULO DE TEMPO DE DESLOCAMENTO FUTURO:\n"
+        "1. Você deve analisar graficamente quanto tempo o preço levará para atingir a zona ou concluir o movimento desejado (Projete um tempo futuro de 2 a 10 minutos).\n"
+        f"2. O 'HORÁRIO DO CLIQUE (ENTRADA)' deve ser o horário ideal calculado para executar a ordem baseado no tempo gráfico de reação estimado. Se a entrada for imediata pós-gatilho, considere um leve delay de deslocamento (ex: de 1 a 3 minutos à frente de {horario_formatado}).\n"
+        "3. O 'HORÁRIO DE FECHAMENTO DA ORDEM' deve ser estritamente igual ao (HORÁRIO DO CLIQUE + TEMPO DE EXPIRAÇÃO DEFINIDO). Faça a soma matemática dos minutos com precisão absoluta.\n\n"
         
         "[REGRA DE OURO IMPRESCINDÍVEL: PROIBIDO PADRÕES DE VELAS]\n"
         "Você está TERMINANTEMENTE PROIBIDO de basear suas decisões em nomenclaturas de velas isoladas (como Martelo, Engolfo, Doji, etc.). "
@@ -83,10 +87,10 @@ def gerar_prompt_mestre(horario_referencia):
         "Retorne o diagnóstico estruturado exatamente neste formato markdown (não mude uma linha sequer do layout):\n\n"
         "🎯 PORCENTAGEM DE ACERTO DA ENTRADA: [Resultado de 75% a 98% ou Abortada 0%]\n"
         "🚨 VEREDITO REAL DE CONFIANÇA: [ENTRAR COM CONFIANÇA / ENTRAR COM LOTE MÍNIMO POR RISCO OCULTO / ABORTAR OPERAÇÃO]\n"
-        "⚠️ DETECTADO RISCO OCULTO NA ESTRUTURA? [Sim (especifique em uma frase corta qual é o risco) / Não, estrutura totalmente limpa]\n"
-        "⏰ HORÁRIO DO CLIQUE (ENTRADA): [HH:MM:SS]\n"
+        "⚠️ DETECTADO RISCO OCULTO NA ESTRUTURA? [Sim (especifique em uma frase curta qual é o risco) / Não, estrutura totalmente limpa]\n"
+        "⏰ HORÁRIO DO CLIQUE (ENTRADA): [HH:MM:SS - Lembre-se de calcular projetando de 2 a 10 minutos no futuro]\n"
         "⏳ TEMPO DE EXPIRAÇÃO: [Ex: 5 Minutos]\n"
-        "🏁 HORÁRIO DE FECHAMENTO DA ORDEM: [HH:MM:SS]\n"
+        "🏁 HORÁRIO DE FECHAMENTO DA ORDEM: [HH:MM:SS - Deve ser exatamente o horário do clique + tempo de expiração]\n"
         "🟥🟩 DIREÇÃO EXATA DA ORDEM: [COMPRA/VENDA/ABORTADA]\n"
         "💰 GERENCIAMENTO DE LOTE RECOMENDADO: [Conservador / Moderado / Abortar]\n"
         "🧠 ESTRATÉGIA E OPERACIONAL COMBINADO ATIVADO:\n"
@@ -161,19 +165,3 @@ if historico:
     
     atualizou_historico = False
     
-    for idx, operacao in enumerate(historico):
-        if operacao.get("resultado_manual") == "PENDENTE":
-            col1, col2, col3 = st.columns(3)
-            with col1:
-                st.write(f"Op de {operacao['horario_print']} (Salva em: {operacao['data_hora']})")
-            with col2:
-                if st.button(f"Definir WIN #{idx}", key=f"win_{idx}"):
-                    historico[idx]["resultado_manual"] = "WIN"
-                    atualizou_historico = True
-            with col3:
-                if st.button(f"Definir LOSS #{idx}", key=f"loss_{idx}"):
-                    historico[idx]["resultado_manual"] = "LOSS"
-                    atualizou_historico = True
-                    
-    if atualizou_historico:
-        salvar_historico(historico)
