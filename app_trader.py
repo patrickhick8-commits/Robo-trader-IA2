@@ -41,14 +41,12 @@ st.sidebar.markdown("### 📊 Painel Estatístico Real")
 if historico:
     total_auditado = sum(1 for x in historico if x.get("resultado_manual") in ["WIN", "LOSS"])
     wins = sum(1 for x in historico if x.get("resultado_manual") == "WIN")
-    
     if total_auditado > 0:
         taxa_acerto = (wins / total_auditado) * 100
-        st.sidebar.metric("🏆 Taxa de Acerto Real", f"{taxa_acerto:.1f}%")
+        st.sidebar.metric("🏆 Taxa de Acerto Real", f"{taxor_acerto:.1f}%")
         st.sidebar.write(f"Operações avaliadas: {total_auditado}")
     else:
         st.sidebar.info("Aguardando auditoria das ordens no final da página.")
-        
     st.sidebar.markdown("---")
     if st.sidebar.button("🗑️ Limpar Histórico Local"):
         if os.path.exists(ARQUIVO_HISTORICO):
@@ -110,7 +108,7 @@ Proibido reverter se o RSI estiver cruzando de forma reta e agressiva os extremo
 Avalie com base em: 1. LEITURA DA ESTRUTURA DO PREÇO (ALTA ASSERTIVIDADE), 2. ANATOMIA DA VELA (PAVIO = RETRAÇÃO | FORÇA = PULLBACK), 3. OPERACIONAL DE REVERSÃO EM REGIÃO (SE JÁ NA REGIÃO), 4. FLUXO MOMENTÂNEO DO GRÁFICO (SE LONGE DA REGIÃO), 5. FLUXO DE CONTINUIDADE (4+ VELAS).
 
 [PASSO 7: PROTOCOLO DE BLOQUEIO]
-Bloqueie retrações contra velas de força cheias. Aborte operações que vão contra a estrutura vigente sem confirmation de rompimento ou sem alvo claro.
+Bloqueie retrações contra velas de força cheias. Aborte operações que vão contra a estrutura vigente sem confirmação de rompimento ou sem alvo claro.
 
 [PASSO 8: CRONOMETRAGEM E GESTÃO DE ALTA ASSERTIVIDADE]
 Projete o clique entre 3 a 10 minutos à frente. Atribua taxas rigorosas de assertividade entre 75% a 98% baseando-se unicamente na confluência dos fatores estruturais filtrados. Se não houver clareza técnica total na estrutura, ordene a operação como Abortada (0%).
@@ -146,10 +144,12 @@ Retorne o diagnóstico estruturado exatamente neste formato markdown (mantenha r
 """
 
 def executar_chamada_gemini(chaves, imagem_objeto, prompt_comando):
-    modelos_contingencia = ['gemini-2.5-flash', 'gemini-2.5-pro']
-    conteudo_envio = [imagem_objeto, prompt_comando]
-    
-    for chave_api in chaves:
-        for modelo in modelos_contingencia:
+    modelos = ['gemini-2.5-flash', 'gemini-2.5-pro']
+    conteudo = [imagem_objeto, prompt_comando]
+    for k in chaves:
+        for m in modelos:
             try:
-                client = genai.Client(api_key=chave_api)
+                cli = genai.Client(api_key=k)
+                res = cli.models.generate_content(model=m, contents=conteudo)
+                return res.text
+            except Exception as e:
