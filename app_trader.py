@@ -43,7 +43,7 @@ if historico:
     wins = sum(1 for x in historico if x.get("resultado_manual") == "WIN")
     if total_auditado > 0:
         taxa_acerto = (wins / total_auditado) * 100
-        st.sidebar.metric("🏆 Taxa de Acerto Real", f"{taxor_acerto:.1f}%")
+        st.sidebar.metric("🏆 Taxa de Acerto Real", f"{taxa_acerto:.1f}%")
         st.sidebar.write(f"Operações avaliadas: {total_auditado}")
     else:
         st.sidebar.info("Aguardando auditoria das ordens no final da página.")
@@ -86,7 +86,7 @@ Mapeie topos e fundos majoritários, canais de preço, linhas de tendência (LTA
 
 [DIRETRIZ DE SEGURANÇA MÁXIMA: GATILHO DE REVERSÃO EM REGIÃO VS FLUXO MOMENTÂNEO]
 Mude seu comportamento dinamicamente com base na proximidade do preço em relação às zonas estruturais demarcadas:
-- Se você detectar que o preço JÁ ESTIVER NA REGIÃO de reversão forte (testando topos/fundos relevantes ou simetrias fortes), ative o [OPERACIONAL DE REVERSÃO EM REGIÃO], aplicando o filtro de anatomia (retração se houver pavio, ou aguardando o pullback se for vela de força).
+- Sec você detectar que o preço JÁ ESTIVER NA REGIÃO de reversão forte (testando topos/fundos relevantes ou simetrias fortes), ative o [OPERACIONAL DE REVERSÃO EM REGIÃO], aplicando o filtro de anatomia (retração se houver pavio, ou aguardando o pullback se for vela de força).
 - CASO CONTRÁRIO (se o preço estiver distante da região de reversão), você está PROIBIDO de antecipar reversões. Nesse cenário, entre imediatamente a favor do [FLUXO MOMENTÂNEO DO GRÁFICO], surfando a continuidade do movimento atual até o próximo alvo estrutural de liquidez.
 
 [PASSO 1: IDENTIFICAÇÃO DO AMBIENTE]
@@ -143,13 +143,13 @@ Retorne o diagnóstico estruturado exatamente neste formato markdown (mantenha r
 - Gestão de Lote
 """
 
+# Função reescrita de forma linear e limpa (Livre de Erros de Indentação)
 def executar_chamada_gemini(chaves, imagem_objeto, prompt_comando):
-    modelos = ['gemini-2.5-flash', 'gemini-2.5-pro']
+    if not chaves:
+        return "❌ Erro: Nenhuma chave de API fornecida."
+    
+    chave_ativa = chaves[0]
     conteudo = [imagem_objeto, prompt_comando]
-    for k in chaves:
-        for m in modelos:
-            try:
-                cli = genai.Client(api_key=k)
-                res = cli.models.generate_content(model=m, contents=conteudo)
-                return res.text
-            except Exception as e:
+    
+    try:
+        client = genai.Client(api_key=chave_api)
