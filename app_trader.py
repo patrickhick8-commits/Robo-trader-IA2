@@ -33,8 +33,8 @@ lista_de_chaves = [chave.strip() for chave in chaves_input.split(";") if chave.s
 st.sidebar.markdown("---")
 st.sidebar.markdown("### 📊 Painel Estatístico Real")
 if historico:
-    total_auditado = sum(1 for x in historico if x["resultado_manual"] in ["WIN", "LOSS"])
-    wins = sum(1 for x in historico if x["resultado_manual"] == "WIN")
+    total_auditado = sum(1 for x in historico if x.get("resultado_manual") in ["WIN", "LOSS"])
+    wins = sum(1 for x in historico if x.get("resultado_manual") == "WIN")
     
     if total_auditado > 0:
         taxa_acerto = (wins / total_auditado) * 100
@@ -68,7 +68,8 @@ def gerar_prompt_mestre(horario_referencia):
         
         "[DIRETRIZ DE SEGURANÇA: REVERSÃO EM REGIÃO VS FLUXO MOMENTÂNEO]\n"
         "Avalie a distância geométrica do preço atual até as zonas de suporte/resistência mais fortes visíveis no print:\n"
-        "- Se o preço JÁ ESTIVER tocando ou dentro da zona cinza de rejeição (testando topos/fundos relevantes), ative o [OPERACIONAL DE REVERSÃO EM REGIÃO], projetando exaustão estrutural para uma contra-tendência.\n""- Se o preço ESTIVER DISTANTE e houver espaço livre até o próximo alvo, ative o [FLUXO MOMENTÂNEO DO GRÁFICO] para surfar a continuidade até o alvo estrutural. É proibido antecipar reversões no meio do caminho.\n\n"
+        "- Se o preço JÁ ESTIVER tocando ou dentro da zona cinza de rejeição (testando topos/fundos relevantes), ative o [OPERACIONAL DE REVERSÃO EM REGIÃO], projetando exaustão estrutural para uma contra-tendência.\n"
+        "- Se o preço ESTIVER DISTANTE e houver espaço livre até o próximo alvo, ative o [FLUXO MOMENTÂNEO DO GRÁFICO] para surfar a continuidade até o alvo estrutural. É proibido antecipar reversões no meio do caminho.\n\n"
         
         "[PROTOCOLO DE FILTRO DE CONFIANÇA CRUZADA - OBRIGATÓRIO]\n"
         "Antes de definir a direção, você deve confrontar rigidamente a sua própria análise. Mesmo que os indicadores ou o Price Action apontem uma probabilidade estatística teórica alta (como 90% a 98%), "
@@ -92,18 +93,26 @@ def gerar_prompt_mestre(horario_referencia):
         "- Resumo analítico do comportamento visual das massas do mercado na imagem."
     )
 
-def executar_chamada_gemini(chave_api, imagem_objeto, prompt_comando):
+def executar_chamada_gemini(chaves, imagem_objeto, prompt_comando):
     modelos_contingencia = ['gemini-2.5-flash', 'gemini-2.5-pro']
-    for modelo in modelos_contingencia:
-        try:
-            client = genai.Client(api_key=chave_api)
-            response = client.models.generate_content(model=modelo, contents=[imagem_objeto, prompt_comando])
-            return response.text
-        except Exception as e:
-            if "503" in str(e) or "UNAVAILABLE" in str(e):
-                continue
-            return f"❌ Erro na API: {str(e)}"
-    return "❌ Erro na API: Todos os modelos falharam por instabilidade."
+    
+    # Itera sobre todas as chaves fornecidas pelo usuário
+    for chave_api in chaves:
+        for modelo in modelos_contingencia:
+            try:
+                client = genai.Client(api_key=chave_api)
+                response = client.models.generate_content(
+                    model=modelo, 
+                    contents=[imagem_objeto, prompt_comando]
+                )
+                return response.text
+            except Exception as e:
+                # Se for erro de limite (429) ou indisponibilidade (503), pula pro próximo
+                if "503" in str(e) or "UNAVAILABLE" in str(e) or "429" in str(e):
+                    continue
+                return f"❌ Erro na API: {str(e)}"
+                
+    return "❌ Erro na API: Todas as chaves e modelos falharam por instabilidade ou exaustão de limite."
 
 # 5. Execução Lógica Controlada pós-Clique
 if botao_analise:
@@ -122,7 +131,8 @@ if botao_analise:
             st.markdown("### 📊 Resultado da Análise da IA")
             
             # Alertas Visuais Baseados no Veredito da IA para proteger o usuário
-            if "ABORTAR" in resultado_analise or "Abortada" in resultado_analise:st.error("🚨 ALERTA MÁXIMO: A IA identificou risco extremo. OPERAÇÃO RECOMENDADA COMO ABORTADA!")
+            if "ABORTAR" in resultado_analise or "Abortada" in resultado_analise:
+                st.error("🚨 ALERTA MÁXIMO: A IA identificou risco extremo. OPERAÇÃO RECOMENDADA COMO ABORTADA!")
             elif "LOTE MÍNIMO" in resultado_analise or "RISCO OCULTO" in resultado_analise:
                 st.warning("⚠️ ATENÇÃO: Embora haja sinal, existem riscos ocultos na estrutura. Use lote mínimo!")
             else:
@@ -130,42 +140,35 @@ if botao_analise:
                 
             st.markdown(resultado_analise)
             
-            # Salva no histórico local JSON
+            # 6. Salvamento no Histórico Local JSON
             nova_entrada = {
-                "id": len(historico) + 1,
-                "data_registro": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                "data_hora": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                 "horario_print": horario_atual_print.strftime("%H:%M:%S"),
-                "analise_texto": resultado_analise,
-                "resultado_manual": "Pendente"
+                "analise_ia": resultado_analise,
+                "resultado_manual": "PENDENTE"
             }
             historico.append(nova_entrada)
             salvar_historico(historico)
-            st.success("✅ Análise arquivada com sucesso! Verifique a auditoria no rodapé da página.")
-            st.rerun()
+            st.toast("Análise salva no histórico local com sucesso!")
 
-# 6. Painel de Auditoria de Resultados (Fim da Página)
-st.markdown("---")
-st.markdown("### 🔍 Auditoria de Sinais Gerados")
-
+# 7. Painel de Auditoria e Feedback (Final da Página)
 if historico:
-    for idx, item in enumerate(reversed(historico)):
-        with st.container(border=True):
-            st.write(f"Operação #{item['id']} | Registrada em: {item['data_registro']} (Horário do Print: {item['horario_print']})")
-            
-            with st.expander("Ver texto completo da análise gerada pela IA"):
-                st.code(item['analise_texto'])
-            
-            st.write(f"Status Atual da Auditoria: {item['resultado_manual']}")
-            
-            col1, col2, col3, col4 = st.columns(4)
+    st.markdown("---")
+    st.markdown("### 📝 Auditoria de Resultados (Feedback Manual)")
+    
+    # Exibe apenas os registros pendentes para o usuário avaliar
+    atualizou_historico = False
+    for idx, operacao in enumerate(historico):
+        if operacao.get("resultado_manual") == "PENDENTE":
+            col1, col2, col3 = st.columns(3)
             with col1:
-                if st.button(f"Definir como WIN 🟢", key=f"win_{item['id']}"):
-                    historico[len(historico) - 1 - idx]["resultado_manual"] = "WIN"
-                    salvar_historico(historico)
-                    st.rerun()
+                st.write(f"Op de {operacao['horario_print']} (Salva em: {operacao['data_hora']})")
             with col2:
-                if st.button(f"Definir como LOSS 🔴", key=f"loss_{item['id']}"):
-                    historico[len(historico) - 1 - idx]["resultado_manual"] = "LOSS"
-                    salvar_historico(historico)
-                    st.rerun()
+                if st.button(f"Definir WIN #{idx}", key=f"win_{idx}"):
+                    historico[idx]["resultado_manual"] = "WIN"
+                    atualizou_historico = True
             with col3:
+                if st.button(f"Definir LOSS #{idx}", key=f"loss_{idx}"):
+                    historico[idx]["resultado_manual"] = "LOSS"
+                    atualizou_historico = True
+                    
