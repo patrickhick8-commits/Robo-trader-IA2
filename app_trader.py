@@ -18,7 +18,6 @@ st.write("Fusão Total: Estrutura Dinâmica do Preço, Contexto de Mercado e Vol
 st.sidebar.markdown("### 🔑 Gerenciador de Chaves de Contingência")
 chaves_input = st.sidebar.text_input("Cole suas Gemini API Keys aqui (separadas por ponto e vírgula):", type="password")
 
-# Gera uma lista limpa eliminando espaços e itens vazios
 lista_de_chaves = [chave.strip() for chave in chaves_input.split(";") if chave.strip()]
 
 if lista_de_chaves:
@@ -105,12 +104,26 @@ Sua missão é identificar um GATILHO OPERACIONAL exato baseado em uma das três
 Você está TERMINANTEMENTE PROIBIDO de basear suas decisões em nomenclaturas de velas isoladas (como Martelo, Engolfo, Doji, etc.). Ignore nomes de velas. Concentre sua visão puramente na ESTRUTURA DINÂMICA DO PREÇO: deslocamento vetorial, velocidade visual de aproximação, topos/fundos majoritários, canais (LTA/LTB), zonas de simetria e o espaço vazio que o preço tem para correr.
 
 [DIRETRIZ DE SEGURANÇA E FILTRO DE CONFIANÇA CRUZADA]
-- TRAVA DE EXAUSTÃO VISUAL NO FLUXO: Avalie o tamanho do candle de força atual. Se o corpo do candle atual for visualmente discrepante e desproporcional (cerca de 80% ou mais maior do que o tamanho médio dos últimos 5 candles anteriores) e estiver colidindo diretamente com o núcleo de uma região forte de Oferta/Demanda institucional sem espaço vácuo para continuar, ordene o ABORTO por risco crítico de exaustão imediata e reversão abrupta. Não compre topo nem venda fundo de velas esticadas.
+- TRAVA DE EXAUSTÃO VISUAL NO FLUXO: Avalie o tamanho do candle de força atual. Se o corpo do candle atual for visualmente discrepante e desproporcional (cerca de 80% ou mais maior do que o tamanho médio dos últimos 5 candles anteriores) e estiver colidindo diretamente com o núcleo de uma região forte_de Oferta/Demanda institucional sem espaço vácuo para continuar, ordene o ABORTO por risco crítico de exaustão imediata e reversão abrupta. Não compre topo nem venda fundo de velas esticadas.
 - Se escolher Reversão/Retração, mas o preço estiver em Movimento Trator saudável (velas de tamanho padrão e sequenciais) sem deixar pavios contrários significativos, priorize o fluxo e aborte contra-tendências precoces.
 - Responda sempre em um formato limpo, direto, objetivo e estruturado por tópicos."""
 
 # ==============================================================================
-# 5. EXECUÇÃO DA ANÁLISE COM CHAMADA À API DO GEMINI
+# 5. FUNÇÃO AUXILIAR PARA CHAMADA ISOLADA DA API (EVITA ERRO DE INDENTAÇÃO)
+# ==============================================================================
+def executar_chamada_gemini(api_key, imagem, prompt):
+    try:
+        client = genai.Client(api_key=api_key)
+        response = client.models.generate_content(
+            model='gemini-2.5-flash',
+            contents=[imagem, prompt]
+        )
+        return response.text
+    except Exception as e:
+        return f"ERRO_API: {str(e)}"
+
+# ==============================================================================
+# 6. EXECUÇÃO DA ANÁLISE AO CLICAR NO BOTÃO
 # ==============================================================================
 if botao_analise:
     if not lista_de_chaves:
@@ -122,14 +135,3 @@ if botao_analise:
         imagem_operacao = Image.open(uploaded_file)
         sucesso = False
         
-        for i, api_key in enumerate(lista_de_chaves):
-            try:
-                with st.spinner(f"🧠 Analisando estrutura com a Chave [{i+1}]..."):
-                    client = genai.Client(api_key=api_key)
-                    response = client.models.generate_content(
-                        model='gemini-2.5-flash',
-                        contents=[imagem_operacao, prompt_final]
-                    )
-                    st.markdown("### 📊 VEREDITO DA MATRIZ SUPREMA")
-                    st.write(response.text)
-                    sucesso = True
