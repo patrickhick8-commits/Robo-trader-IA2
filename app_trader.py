@@ -2,7 +2,6 @@ import streamlit as st
 from google import genai
 from google.genai import types
 from PIL import Image
-from datetime import datetime
 
 # ==============================================================================
 # 1. CONFIGURAÇÃO DA PÁGINA
@@ -34,8 +33,6 @@ if uploaded_file:
     imagem_carregada = Image.open(uploaded_file)
     st.image(imagem_carregada, caption="Gráfico Carregado com Sucesso", use_container_width=True)
 
-horario_atual_print = st.time_input("⏰ Que horas o print foi tirado no gráfico?", datetime.now().time())
-
 st.markdown("##### 🌐 Tipo de Mercado do Ativo Atual")
 tipo_mercado_selecionado = st.radio(
     "Selecione o tipo de mercado do par que você está operando agora:",
@@ -49,9 +46,9 @@ preco_atual_tela = st.number_input("Preço atual do mercado na tela (Ex: 1.08532
 botao_analise = st.button("🧠 Iniciar Análise Avançada por IA")
 
 # ==============================================================================
-# 4. DEFINIÇÃO DO PROMPT MESTRE OTIMIZADO
+# 4. DEFINIÇÃO DO PROMPT MESTRE OTIMIZADO (COM VARREDURA VISUAL DE HORÁRIO)
 # ==============================================================================
-def gerar_prompt_mestre(horario_referencia, preco_referencia, escolha_mercado):
+def gerar_prompt_mestre(preco_referencia, escolha_mercado):
     preco_texto = f"{preco_referencia:.5f}" if preco_referencia > 0 else "Não informado pelo usuário (leia estritamente do eixo vertical direito do print)"
     
     if "OTC" in escolha_mercado:
@@ -75,10 +72,15 @@ def gerar_prompt_mestre(horario_referencia, preco_referencia, escolha_mercado):
 Sua postura é de ceticismo extremo, frieza matemática e foco absoluto em proteção de capital.
 CONTEXTO DO DIA ATUAL: {tipo_mercado}.
 
-[ANCORAGEM TEMPORAL E ESPACIAL OBRIGATÓRIA]
-- O horário exato em que este print foi capturado é: {horario_referencia.strftime('%H:%M:%S')}.
+[ESCANEAMENTO TEMPORAL VISUAL OBRIGATÓRIO (OCR)]
+Sua primeira missão Crítica antes de analisar o gráfico é identificar o horário da operação.
+1. Localize visualmente no print o relógio da plataforma da corretora (geralmente no topo ou rodapé do gráfico) ou o relógio do sistema operacional/computador (no canto inferior direito).
+2. Extraia o horário exato (Horas e Minutos) e use-o estritamente como seu Ponto Inicial de Tempo Zero (Candle 0).
+3. Escreva claramente no início da sua resposta: '⏰ HORÁRIO DETECTADO NO PRINT: [Insira o horário encontrado]'.
+Qualquer cálculo de projeção de tempo futuro DEVE usar este horário extraído da imagem como referência.
+
+[ANCORAGEM ESPACIAL OBRIGATÓRIA]
 - O preço de referência do último candle atual na tela é: {preco_texto}.
-Qualquer cálculo de projeção de tempo futuro DEVE usar este horário exato como ponto de partida inicial zero (Candle 0).
 
 [DIRETRIZ CRÍTICA DE FILTRAGEM BASEADA NO TIPO DE MERCADO]
 {diretriz_comportamento}
@@ -96,20 +98,20 @@ Você deve olhar para o lado direito da tela (o espaço vazio para onde o preço
 Sua missão é identificar um GATILHO OPERACIONAL exato baseado em uma das três estratégias abaixo, aplicando estritamente o tempo de expiração correto para cada uma delas para evitar perdas por milissegundos.
 
 [MATRIZ DE ESTRATÉGIAS PERMITIDAS - SELECIONE A IDEAL PARA O CONTEXTO]
-1. RETRAÇÃO EM TAXA FUTURA DE M1: Ative se houver volatilidade saudável com velas deixando muitos pavios recentes. Identifique a taxa de colisão forte onde o preço baterá e deixará pavio na mesma vela. (Para esta estratégia, a expiração DEVE ser para a MESMA VELA do toque).
-2. REVERSÃO EM REGIÃO FORTE RESPEITADA: Ative se o preço estiver perdendo força e se aproximando de uma zona forte de Oferta/Demanda ou suporte/resistência macro que foi muito respeitada no passado do print. (Para esta estratégia, a expiração DEVE ser para a PRÓXIMA VELA, dando +1 minuto de respiro para a virada de cor).
+1. RETRAÇÃO EM TAXA FUTURA DE M1: Ative se houver volatilidade saudável com velas deixando muitos pavios recentes. Identifique a taxa de colisão forte onde o preço baterá e deixará pavio na mesma vela. (Para esta estratégia, a expiração DEVE ser para a MESMA VELA do toque. Informe o horário exato limite de expiração com base no relógio detectado).
+2. REVERSÃO EM REGIÃO FORTE RESPEITADA: Ative se o preço estiver perdendo força e se aproximando de uma zona forte de Oferta/Demanda ou suporte/resistência macro que foi muito respeitada no passado do print. (Para esta estratégia, a expiração DEVE ser para a PRÓXIMA VELA, dando +1 minuto de respiro para a virada de cor. Calcule o horário exato da próxima vela somando ao relógio detectado).
 3. FLUXO DE VELA / MOMENTUM FORTE (MOVIMENTO TRATOR): Ative se notar velas sequenciais de força (corpos grandes, sem pavio contra, volume visual crescente) indo em direção a uma zona de Oferta/Demanda. Se identificar que o movimento é um 'Trator Institucional' com alta probabilidade de rompimento e ainda houver espaço vazio (vácuo) até o alvo principal, emita uma ordem de FLUXO. Pegue a continuidade surfando a favor da força do movimento atual. (Para esta estratégia, a expiração DEVE ser para a PRÓXIMA VELA para surfar o corpo cheio do momentum seguinte).
 
 [REGRA DE OURO IMPRESCINDÍVEL: PROIBIDO PADRÕES DE VELAS]
 Você está TERMINANTEMENTE PROIBIDO de basear suas decisões em nomenclaturas de velas isoladas (como Martelo, Engolfo, Doji, etc.). Ignore nomes de velas. Concentre sua visão puramente na ESTRUTURA DINÂMICA DO PREÇO: deslocamento vetorial, velocidade visual de aproximação, topos/fundos majoritários, canais (LTA/LTB), zonas de simetria e o espaço vazio que o preço tem para correr.
 
 [DIRETRIZ DE SEGURANÇA E FILTRO DE CONFIANÇA CRUZADA]
-- TRAVA DE EXAUSTÃO VISUAL NO FLUXO: Avalie o tamanho do candle de força atual. Se o corpo do candle atual for visualmente discrepante e desproporcional (cerca de 80% ou mais maior do que o tamanho médio dos últimos 5 candles anteriores) e estiver colidindo diretamente com o núcleo de uma região forte_de Oferta/Demanda institucional sem espaço vácuo para continuar, ordene o ABORTO por risco crítico de exaustão imediata e reversão abrupta. Não compre topo nem venda fundo de velas esticadas.
+- TRAVA DE EXAUSTÃO VISUAL NO FLUXO: Avalie o tamanho do candle de força atual. Se o corpo do candle atual for visualmente discrepante e desproporcional (cerca de 80% ou mais maior do que o tamanho médio dos últimos 5 candles anteriores) e estiver colidindo diretamente com o núcleo de uma região forte de Oferta/Demanda institucional sem espaço vácuo para continuar, ordene o ABORTO por risco crítico de exaustão imediata e reversão abrupta. Não compre topo nem venda fundo de velas esticadas.
 - Se escolher Reversão/Retração, mas o preço estiver em Movimento Trator saudável (velas de tamanho padrão e sequenciais) sem deixar pavios contrários significativos, priorize o fluxo e aborte contra-tendências precoces.
 - Responda sempre em um formato limpo, direto, objetivo e estruturado por tópicos."""
 
 # ==============================================================================
-# 5. FUNÇÃO AUXILIAR PARA CHAMADA ISOLADA DA API (EVITA ERRO DE INDENTAÇÃO)
+# 5. FUNÇÃO AUXILIAR PARA CHAMADA ISOLADA DA API
 # ==============================================================================
 def executar_chamada_gemini(api_key, imagem, prompt):
     try:
@@ -127,11 +129,3 @@ def executar_chamada_gemini(api_key, imagem, prompt):
 # ==============================================================================
 if botao_analise:
     if not lista_de_chaves:
-        st.error("❌ Erro: Nenhuma chave de API fornecida na barra lateral.")
-    elif not uploaded_file:
-        st.error("❌ Erro: Por favor, faça o upload de uma imagem do gráfico antes de iniciar.")
-    else:
-        prompt_final = gerar_prompt_mestre(horario_atual_print, preco_atual_tela, tipo_mercado_selecionado)
-        imagem_operacao = Image.open(uploaded_file)
-        sucesso = False
-        
