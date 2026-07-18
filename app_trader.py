@@ -32,7 +32,6 @@ else:
 uploaded_file = st.file_uploader("📷 Faça o upload do Print do seu Gráfico (M1):", type=["png", "jpg", "jpeg"])
 
 if uploaded_file:
-    # Exibe o preview da imagem carregada para o usuário
     imagem_carregada = Image.open(uploaded_file)
     st.image(imagem_carregada, caption="Gráfico Carregado com Sucesso", use_container_width=True)
 
@@ -42,7 +41,7 @@ st.markdown("##### 🌐 Tipo de Mercado do Ativo Atual")
 tipo_mercado_selecionado = st.radio(
     "Selecione o tipo de mercado do par que você está operando agora:",
     ("Mercado Aberto (Regular / Forex)", "Mercado OTC (Algoritmo da Corretora)"),
-    index=1  # Padrão inicia em OTC
+    index=1
 )
 
 st.markdown("##### 📐 Calibrador de Precisão Geométrica")
@@ -121,16 +120,16 @@ if botao_analise:
     else:
         prompt_final = gerar_prompt_mestre(horario_atual_print, preco_atual_tela, tipo_mercado_selecionado)
         imagem_operacao = Image.open(uploaded_file)
-        
         sucesso = False
         
         for i, api_key in enumerate(lista_de_chaves):
             try:
-                with st.spinner(f"🧠 Analisando estrutura com a Chave [{i+1}]... Aguarde."):
+                with st.spinner(f"🧠 Analisando estrutura com a Chave [{i+1}]..."):
                     client = genai.Client(api_key=api_key)
-                    
                     response = client.models.generate_content(
                         model='gemini-2.5-flash',
                         contents=[imagem_operacao, prompt_final]
                     )
-                    
+                    st.markdown("### 📊 VEREDITO DA MATRIZ SUPREMA")
+                    st.write(response.text)
+                    sucesso = True
