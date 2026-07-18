@@ -68,7 +68,7 @@ Faça uma varredura visual profunda na imagem para mapear a ESTRUTURA, o CONTEXT
 
 [OBJETIVO OPERACIONAL: PROJEÇÃO PARA 2 A 7 CANDLES FUTUROS EM M1]
 O usuário opera em gráficos de 1 minuto (M1). O objetivo NÃO É operar na próxima vela imediatamente sem critério.
-Você deve olhar para o lado direito da tela (o espaço vazio para onde o preço vai se mover) e calcular a trajetória do preço para os próximos 2 a 7 minutos (2 a 7 candles à frente).
+Você deve olhar para o lado direito da tela (o espaço vazio para onde o preço vai se mover) e calcular a trajetória do preço para os próximos 2 a 7 minutes (2 a 7 candles à frente).
 Sua missão é identificar um GATILHO OPERACIONAL exato baseado em uma das três estratégias abaixo, aplicando estritamente o tempo de expiração correto para cada uma delas para evitar perdas por milissegundos.
 
 [MATRIZ DE ESTRATÉGIAS PERMITIDAS - SELECIONE A IDEAL PARA O CONTEXTO]
