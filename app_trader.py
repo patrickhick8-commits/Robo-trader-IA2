@@ -99,7 +99,7 @@ Sua missão é identificar um GATILHO OPERACIONAL exato baseado em uma das três
 
 [MATRIZ DE ESTRATÉGIAS PERMITIDAS - SELECIONE A IDEAL PARA O CONTEXTO]
 1. RETRAÇÃO EM TAXA FUTURA DE M1: Ative se houver volatilidade saudável com velas deixando muitos pavios recentes. Identifique a taxa de colisão forte onde o preço baterá e deixará pavio na mesma vela. (Para esta estratégia, a expiração DEVE ser para a MESMA VELA do toque. Informe o horário exato limite de expiração com base no relógio detectado).
-2. REVERSÃO EM REGIÃO FORTE RESPEITADA: Ative se o preço estiver perdendo força e se aproximando de uma zona forte de Oferta/Demanda ou suporte/resistência macro que foi muito respeitada no passado do print. (Para esta estratégia, a expiração DEVE ser para a PRÓXIMA VELA, dando +1 minuto de respiro para a virada de cor. Calcule o horário exato da próxima vela somando ao relógio detectado).
+2. REVERSÃO EM REGIÃO FORTE RESPEITADA: Ative se o preço estiver perdendo força e se aproximando de uma zona forte de Oferta/Demanda ou suporte/resistência macro que foi muito respeitada no passado do print. (Para esta estratégia, a expiração DEVE ser para a PRÓXIMA VELA, dando +1 minuto de respiro para a virada de cor).
 3. FLUXO DE VELA / MOMENTUM FORTE (MOVIMENTO TRATOR): Ative se notar velas sequenciais de força (corpos grandes, sem pavio contra, volume visual crescente) indo em direção a uma zona de Oferta/Demanda. Se identificar que o movimento é um 'Trator Institucional' com alta probabilidade de rompimento e ainda houver espaço vazio (vácuo) até o alvo principal, emita uma ordem de FLUXO. Pegue a continuidade surfando a favor da força do movimento atual. (Para esta estratégia, a expiração DEVE ser para a PRÓXIMA VELA para surfar o corpo cheio do momentum seguinte).
 
 [REGRA DE OURO IMPRESCINDÍVEL: PROIBIDO PADRÕES DE VELAS]
@@ -125,7 +125,7 @@ def executar_chamada_gemini(api_key, imagem, prompt):
         return f"ERRO_API: {str(e)}"
 
 # ==============================================================================
-# 6. EXECUÇÃO DA ANÁLISE AO CLICAR NO BOTÃO
+# 6. PROCESSAMENTO ISOLADO DO BOTÃO (ANTI-INDENTATION ERROR)
 # ==============================================================================
-if botao_analise:
+def processar_analise_grafica():
     if not lista_de_chaves:
