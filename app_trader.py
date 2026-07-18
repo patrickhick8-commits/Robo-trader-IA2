@@ -2,7 +2,6 @@ import streamlit as st
 from google import genai
 from google.genai import types
 from PIL import Image
-from datetime import datetime
 
 # 1. Configuração da Página
 st.set_page_config(page_title="Agente IA Advanced - Matriz Suprema", page_icon="🤖", layout="centered")
@@ -15,9 +14,8 @@ st.sidebar.markdown("### 🔑 Gerenciador de Chaves de Contingência")
 chaves_input = st.sidebar.text_input("Cole suas Gemini API Keys aqui (separadas por ponto e vírgula):", type="password")
 lista_de_chaves = [chave.strip() for chave in chaves_input.split(";") if chave.strip()]
 
-# 3. Interface Principal de Inputs
+# 3. Interface Principal de Inputs (AGORA 100% AUTOMÁTICA)
 uploaded_file = st.file_uploader("📷 Faça o upload do Print do seu Gráfico (M1):", type=["png", "jpg", "jpeg"])
-horario_atual_print = st.time_input("⏰ Que horas o print foi tirado no gráfico?", datetime.now().time())
 
 # SELETOR DE MERCADO INDEPENDENTE DO DIA DA SEMANA
 st.markdown("##### 🌐 Tipo de Mercado do Ativo Atual")
@@ -27,14 +25,10 @@ tipo_mercado_selecionado = st.radio(
     index=1  # Padrão inicia em OTC
 )
 
-st.markdown("##### 📐 Calibrador de Precisão Geométrica")
-preco_atual_tela = st.number_input("Preço atual do mercado na tela (Ex: 1.08532):", format="%.5f", value=0.00000)
-
 botao_analise = st.button("🧠 Iniciar Análise Avançada por IA")
 
-# 4. Definição do Prompt Mestre Otimizado (Filtro de Confiança Cruzada + Adaptação Inteligente Aberto/OTC)
-def gerar_prompt_mestre(horario_referencia, preco_referencia, escolha_mercado):
-    preco_texto = f"{preco_referencia:.5f}" if preco_referencia > 0 else "Não informado pelo usuário (leia estritamente do eixo vertical direito do print)"
+# 4. Definição do Prompt Mestre com Escaneamento Visual Automático de Tempo e Preço
+def gerar_prompt_mestre(escolha_mercado):
     
     # DIRECIONAMENTO INJETADO BASEADO NA ESCOLHA DO USUÁRIO
     if "OTC" in escolha_mercado:
@@ -59,15 +53,16 @@ def gerar_prompt_mestre(horario_referencia, preco_referencia, escolha_mercado):
         f"Sua postura é de ceticismo extremo, frieza matemática e foco absoluto em proteção de capital.\n"
         f"CONTEXTO DO DIA ATUAL: {tipo_mercado}.\n\n"
         
-        f"[ANCORAGEM TEMPORAL E ESPACIAL OBRIGATÓRIA]\n"
-        f"- O horário exato em que este print foi capturado é: {horario_referencia.strftime('%H:%M:%S')}.\n"
-        f"- O preço de referência do último candle atual na tela é: {preco_texto}.\n""Qualquer cálculo de projeção de tempo futuro DEVE usar este horário exato como ponto de partida inicial zero (Candle 0).\n\n"
+        "[PROTOCOLO OBRIGATÓRIO DE ESCANEAMENTO OCR E GEOMETRIA GRÁFICA]\n"
+        "Antes de analisar a estrutura técnica, você deve fazer uma leitura de dados na imagem:\n"
+        "1. CALIBRADOR DE PRECISÃO GEOMÉTRICA AUTOMÁTICO: Localize o eixo vertical direito do gráfico. Identifique visualmente qual é o preço/taxa da última vela (candle atual). Utilize este valor exato como sua referência espacial de preço zero.\n"
+        "2. ANCORAGEM TEMPORAL AUTOMÁTICA: Procure no print (seja no rodapé do gráfico, no relógio da plataforma ou no eixo de tempo inferior) o horário exato em que a imagem foi gerada. Se você localizar um horário como por exemplo '23:10', assuma este valor como seu ponto de partida de tempo zero (Candle 0).\n""Qualquer cálculo de projeção de tempo futuro DEVE usar este horário extraído visualmente como base cronológica inicial.\n\n"
         
         "[DIRETRIZ CRÍTICA DE FILTRAGEM BASEADA NO TIPO DE MERCADO]\n"
         f"{diretriz_comportamento}\n\n"
         
         "[PROTOCOLO OBRIGATÓRIO: AUDITORIA VISUAL DE VOLATILIDADE E CONTEXTO AUTOMÁTICO]\n"
-        "Antes de qualquer cálculo de taxa, você deve fazer uma varredura visual profunda na imagem para mapear a ESTRUTURA, o CONTEXTO e a VOLATILIDADE de forma automatizada:\n"
+        "Faça uma varredura visual profunda na imagem para mapear a ESTRUTURA, o CONTEXTO e a VOLATILIDADE de forma automatizada:\n"
         "1. Identifique a macro-tendência visual da tela (Alta, Baixa ou Lateralização Absoluta).\n"
         "2. Identifique a estrutura de pressão (se os compradores ou vendedores dominam o deslocamento atual).\n"
         "3. Avalie o estado da volatilidade: 'Notícia/Anormalidade' (velas gigantescas e sem pavio), 'Mercado Parado/Lateral' (velas minúsculas sem deslocamento) ou 'Volatilidade Saudável' (velas com tamanho proporcional que deixam pavios de retração claros).\n"
@@ -93,7 +88,7 @@ def gerar_prompt_mestre(horario_referencia, preco_referencia, escolha_mercado):
         "topos/fundos majoritários, canais (LTA/LTB), zonas de simetria e o espaço vazio que o preço tem para correr.\n\n"
         
         "[DIRETRIZ DE SEGURANÇA E FILTRO DE CONFIANÇA CRUZADA]\n"
-        "- TRAVA DE EXAUSTÃO VISUAL NO FLUXO: Avalie o tamanho do candle de força atual.Se o corpo do candle atual for visualmente discrepante e desproporcional (cerca de 80% ou mais maior do que o tamanho médio dos últimos 5 candles anteriores) e estiver colidindo diretamente com o núcleo de uma região forte de Oferta/Demanda institucional sem espaço vácuo para continuar, ordene o ABORTO por risco crítico de exaustão imediata e reversão abrupta. Não compre topo nem venda fundo de velas esticadas.\n"
+        "- TRAVA DE EXAUSTÃO VISUAL NO FLUXO: Avalie o tamanho do candle de força atual. Se o corpo do candle atual for visualmente discrepante e desproporcional (cerca de 80% ou mais maior do que o tamanho médio dos últimos 5 candles anteriores) e estiver colidindo diretamente com o núcleo de uma região forte de Oferta/Demanda institucional sem espaço vácuo para continuar, ordene o ABORTO por risco crítico deexaustão imediata e reversão abrupta. Não compre topo nem venda fundo de velas esticadas.\n"
         "- Se escolher Reversão/Retração, mas o preço estiver em Movimento Trator saudável (velas de tamanho padrão e sequenciais) sem deixar pavios anteriores, vire o sinal para FLUXO IMEDIATO a favor do trator, a menos que o preço já tenha colidido de forma exausta no meio da região.\n"
         "- Se a zona alvo calculada estiver muito perto (menos de 2 candles de distância) ou muito longe (mais de 7 candles de distância), recalibre o alvo geométrico.\n"
         "- Se a volatilidade visual for caótica por notícias de impacto extremo (gaps, velas sem corpo lógico), aborte por segurança.\n\n"
@@ -104,7 +99,7 @@ def gerar_prompt_mestre(horario_referencia, preco_referencia, escolha_mercado):
         "🚨 VEREDITO REAL DE CONFIANÇA: [ENTRAR COM CONFIANÇA / ENTRAR COM LOTE MÍNIMO POR RISCO OCULTO / ABORTAR OPERAÇÃO]\n"
         "⚠️ DETECTADO RISCO OCULTO NA ESTRUTURA? [Sim (especifique em uma frase curta se foi Exaustão de Vela ou outro risco) / Não, estrutura totalmente limpa]\n"
         "🧠 OPERACIONAL ATIVADO: ['RETRAÇÃO EM TAXA FUTURA', 'REVERSÃO EM REGIÃO FORTE' ou 'FLUXO DE VELA / MOMENTUM (MOVIMENTO TRATOR)']\n"
-        "🎯 TAXA GATILHO DA OPERAÇÃO: [Insira a taxa/preço exato calculado do eixo vertical para por o alerta ou fazer o clique na corretora]\n"
-        "⏰ JANELA DE MINUTOS PREVISTA: [Ex: Entre 2 e 7 minutos após o horário do print - Estimativa de clique entre HH:MM e HH:MM]\n"
+        "🎯 TAXA GATILHO DA OPERAÇÃO: [Insira a taxa/preço exato extraído do eixo vertical direito para por o alerta ou fazer o clique na corretora]\n"
+        "⏰ JANELA DE MINUTOS PREVISTA: [Ex: Entre 2 e 7 minutos após o horário detectado do print - Estimativa de clique entre HH:MM e HH:MM]\n"
         "⏳ TEMPO DE EXPIRAÇÃO: [Defina estritamente baseado no operacional ativo: 'Mesma vela de M1 (Retração)' ou 'Próxima vela / M1 + 1 Minuto (Reversão ou Fluxo)']\n"
         "🟥🟩 DIREÇÃO EXATA DA ORDEM: [COMPRA/VENDA/ABORTADA]\n"
