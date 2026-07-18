@@ -107,29 +107,30 @@ Você está TERMINANTEMENTE PROIBIDO de basear suas decisões em nomenclaturas d
 
 [DIRETRIZ DE SEGURANÇA E FILTRO DE CONFIANÇA CRUZADA]
 - TRAVA DE EXAUSTÃO VISUAL NO FLUXO: Avalie o tamanho do candle de força atual. Se o corpo do candle atual for visualmente discrepante e desproporcional (cerca de 80% ou mais maior do que o tamanho médio dos últimos 5 candles anteriores) e estiver colidindo diretamente com o núcleo de uma região forte de Oferta/Demanda institucional sem espaço vácuo para continuar, ordene o ABORTO por risco crítico de exaustão imediata e reversão abrupta. Não compre topo nem venda fundo de velas esticadas.
-- Se escolher Reversão/Retração, ma s o preço estiver em Movimento Trator saudável (velas de tamanho padrão e sequenciais) sem deixar pavios contrários significativos, priorize o fluxo e aborte contra-tendências precoces.
+- Se escolher Reversão/Retração, mas o preço estiver em Movimento Trator saudável (velas de tamanho padrão e sequenciais) sem deixar pavios contrários significativos, priorize o fluxo e aborte contra-tendências precoces.
 - Responda sempre em um formato limpo, direto, objetivo e estruturado por tópicos."""
 
 # ==============================================================================
 # 5. EXECUÇÃO DA ANÁLISE COM CHAMADA À API DO GEMINI
 # ==============================================================================
 if botao_analise:
-    # Validações Iniciais
     if not lista_de_chaves:
         st.error("❌ Erro: Nenhuma chave de API fornecida na barra lateral.")
     elif not uploaded_file:
         st.error("❌ Erro: Por favor, faça o upload de uma imagem do gráfico antes de iniciar.")
     else:
-        # Prepara os inputs para a análise
         prompt_final = gerar_prompt_mestre(horario_atual_print, preco_atual_tela, tipo_mercado_selecionado)
         imagem_operacao = Image.open(uploaded_file)
         
         sucesso = False
         
-        # Loop de contingência automática pelas chaves disponíveis
         for i, api_key in enumerate(lista_de_chaves):
             try:
                 with st.spinner(f"🧠 Analisando estrutura com a Chave [{i+1}]... Aguarde."):
-                    # Inicialização do cliente usando a SDK oficial correta (google-genai)
                     client = genai.Client(api_key=api_key)
+                    
+                    response = client.models.generate_content(
+                        model='gemini-2.5-flash',
+                        contents=[imagem_operacao, prompt_final]
+                    )
                     
