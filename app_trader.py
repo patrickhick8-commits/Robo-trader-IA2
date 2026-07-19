@@ -12,7 +12,7 @@ st.write("Fusão Total: Estrutura Dinâmica do Preço, Contexto de Mercado e Vol
 st.sidebar.markdown("### 🔑 Configuração da API")
 api_key = st.sidebar.text_input("Insira sua Gemini API Key:", type="password")
 
-# 3. Interface Principal de Inputs (Inputs Manuais Removidos!)
+# 3. Interface Principal de Inputs (Dados manuais removidos!)
 uploaded_file = st.file_uploader("📷 Faça o upload do Print do seu Gráfico (M1):", type=["png", "jpg", "jpeg"])
 
 st.markdown("##### 🌐 Calibração do Ambiente de Negociação")
@@ -77,7 +77,7 @@ if botao_analise:
     else:
         with st.spinner("🧠 Analisando imagem e extraindo métricas automaticamente..."):
             try:
-                # Inicializa o cliente oficial da nova SDK do Gemini
+                # Inicializa o cliente oficial da SDK do Gemini
                 client = genai.Client(api_key=api_key)
                 
                 # Abre a imagem salva
@@ -86,9 +86,9 @@ if botao_analise:
                 # Gera o prompt dinâmico
                 prompt_final = gerar_prompt_mestre(tipo_mercado)
                 
-                # Executa a chamada multimodal usando o Gemini 2.5 Flash
+                # CORREÇÃO CRÍTICA: Substituído pelo modelo oficial atualizado
                 response = client.models.generate_content(
-                    model='gemini-2.5-flash',
+                    model='gemini-3.5-flash',
                     contents=[imagem, prompt_final]
                 )
                 
