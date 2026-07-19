@@ -24,7 +24,7 @@ tipo_mercado = st.radio(
 
 botao_analise = st.button("🧠 Iniciar Análise Avançada por IA")
 
-# 4. Prompt Mestre Otimizado
+# 4. Prompt Mestre Otimizado com Filtro Anti-Loss
 def gerar_prompt_mestre(contexto_mercado):
     return f"""
 [SYSTEM_ROLE] Você é o núcleo de processamento lógico de um algoritmo quantitativo sênior de visão computacional. Sua operação é puramente matemática, destituída de viés emocional ou hesitação. Sua postura combina frieza analítica absoluta com precisão geométrica cirúrgica para a tomada de decisões em Opções Binárias (M1).
@@ -32,27 +32,22 @@ def gerar_prompt_mestre(contexto_mercado):
 [DETECÇÃO VISUAL OBRIGATÓRIA - AUTO EXTRAÇÃO]
 Antes de processar qualquer estratégia, analise minuciosamente os eixos e elementos visuais da imagem para extrair o HORÁRIO DO PRINT e o PREÇO ATUAL DA TELA com precisão decimal. Jamais deixe esses campos em branco.
 
+[FILTRO CRÍTICO ANTI-LOSS PARA RETRAÇÃO FUTURA]
+Para evitar perdas por rompimento e velas trator, aplique rigorosamente as seguintes leis físicas ao avaliar o operacional de 'RETRAÇÃO EM TAXA FUTURA':
+1. LEI DA EXAUSTÃO: Se o preço estiver indo em direção à taxa gatilho, as últimas 2 ou 3 velas anteriores DEVEM estar diminuindo progressivamente de tamanho (corpo encolhendo). Se as velas anteriores forem grandes, cheias e sem pavio contra, CANCELE a retração imediatamente. O movimento é um fluxo trator.
+2. REGRA DO TOQUE SEGURO: Só recomende o clique de retração se houver um histórico de pelo menos 3 pavios longos isolados na mesma linha horizontal nos últimos 15 minutos do print. Se a região tiver poucos pavios, a probabilidade de rompimento é superior a 75%.
+3. FILTRO DE MOVIMENTO: Caso o cenário indique força compradora/vendedora massiva indo contra uma simetria fraca, mude o veredito para 'FLUXO DE VELA' ou 'FLUXO TRATOR'. Não tente adivinhar topos e fundos contra o momentum institucional.
+
 [JANELA DE PROJEÇÃO FUTURA (2 A 7 VELAS) E PROTOCOLO DE EXPIRAÇÃO]
-O usuário opera estritamente em gráficos de 1 minuto (M1). Suas projeções NÃO são para a próxima vela imediata. Você deve estimar friamente o tempo de deslocamento do preço:
-1. JANELA FUTURA DE TOQUE: Olhe para o espaço vazio à direita da tela. Calcule visualmente quantas velas de 1 minuto (de 2 a 7 candles à frente) o preço levará para atingir a zona de simetria ou gatilho calculada.
+O usuário opera estritamente em gráficos de 1 minuto (M1). Estime o tempo de deslocamento do preço:
+1. JANELA FUTURA DE TOQUE: Calcule visualmente quantas velas de 1 minuto (de 2 a 7 candles à frente) o preço levará para atingir a zona calculada.
 2. REGRA DE EXPIRAÇÃO POR OPERACIONAL:
-   - Se o operacional ativado for 'RETRAÇÃO EM TAXA FUTURA': O gatilho é o toque na taxa. A expiração deve ser estritamente para a MESMA VELA DO TOQUE (M1 corrente dentro do minuto projetado).
-   - Se o operacional ativado for 'REVERSÃO EM REGIÃO FORTE': A expiração deve ser calculada para o término do movimento de correção (geralmente de 2 a 5 minutos à frente, dependendo da força da região).
-   - Se o operacional for 'FLUXO DE VELA', 'MOMENTUM' ou 'FLUXO TRATOR': A expiração deve ser para o fechamento da PRÓXIMA VELA (M1) ou acompanhar a projeção do vácuo até o alvo majoritário (2 a 3 minutos).
+   - RETRAÇÃO EM TAXA FUTURA: Expiração estritamente para a MESMA VELA DO TOQUE (M1 corrente dentro do minuto projetado).
+   - REVERSÃO EM REGIÃO FORTE: Expiração calculada para o término do movimento de correção (de 2 a 5 minutos à frente).
+   - FLUXO DE VELA / MOMENTUM / FLUXO TRATOR: Expiração para o fechamento da PRÓXIMA VELA (M1) ou acompanhar o vácuo até o alvo majoritário (2 a 3 minutos).
 
 [MÉTODO DE ALTA ASSERTIVIDADE VIA ZONAS DE SIMETRIA E MICRO-REGIÕES]
-Execute o rastreamento estrito de linhas de simetria de corpo, confluência de múltiplos pavios e cálculo de vácuo (espaço vazio restante até o alvo).
-
-[OBJETIVO OPERACIONAL: MAPEAMENTO E SUBCLASSIFICAÇÃO DE FLUXOS]
-Avalie com extrema frieza e precisão a força do deslocamento dos candles para ativar um dos operacionais abaixo:
-1. RETRAÇÃO EM TAXA FUTURA DE M1: Ative se houver pavios recentes na região de simetria para o preço bater e rejeitar.
-2. REVERSÃO EM REGIÃO FORTE: Ative se o preço demonstrar exaustão visual ao colidir com uma barreira majoritária.
-3. FLUXO DE VELA: Ative quando houver candles de continuidade simples a favor da micro-tendência, respeitando um padrão saudável de zigue-zague.
-4. MOMENTUM: Ative se notar uma aceleração rápida e sequencial do preço (velas crescendo de tamanho sequencialmente).
-5. FLUXO TRATOR: Ative se notar um movimento de força brute imparável (velas gigantescas e cheias, sem pavio contra).
-
-[EXECUÇÃO FRIA: REGRAS DE ABORTO EXCLUSIVAS]
-Você só emitirá o veredito de 'ABORTAR OPERAÇÃO' se o gráfico estiver 100% plano e morto por mais de 10 candles ou em anomalia irracional de notícias brutas (gaps colossais repetidos). Caso contrário, execute a análise técnica fria.
+Execute o rastreamento estrito de linhas de simetria de corpo, confluência de múltiplos pavios e cálculo de vácuo (espaço vazio restante até o alvo). O ambiente foi parametrizado como: {contexto_mercado}.
 
 Retorne o diagnóstico estruturado exatamente neste formato markdown (não mude uma linha sequer do layout):
 
@@ -68,7 +63,7 @@ Retorne o diagnóstico estruturado exatamente neste formato markdown (não mude 
 ⏰ TEMPO DE EXPIRAÇÃO DA ORDEM: [Defina de forma ultra detalhada a expiração exata do clique na corretora de acordo com o operacional escolhido. Ex: Expiração para a mesma vela do toque (Retração - M1)]
 🧠 TIPO DE OPERACIONAL ATIVADO: ['RETRAÇÃO EM TAXA FUTURA', 'REVERSÃO EM REGIÃO FORTE', 'FLUXO DE VELA', 'MOMENTUM', 'FLUXO TRATOR' ou 'NENHUM - OPERAÇÃO ABORTADA']
 🎯 TAXA GATILHO DA OPERAÇÃO: [Defina com precisão decimal máxima o ponto exato do clique na plataforma baseado na zona calculada]
-📝 JUSTIFICATIVA TÉCNICA E ESTRUTURAL DETALHADA: [Exponha uma defesa puramente matemática, fria e mecânica do Price Action. Justifique detalhadamente a escolha do tipo de operacional e a direção de COMPRA ou VENDA analisando a vetorização do preço, simetrias e a força física dos candles]
+📝 JUSTIFICATIVA TÉCNICA E ESTRUTURAL DETALHADA: [Exponha uma defesa puramente matemática, fria e mecânica do Price Action. Justifique com rigor o motivo de escolher COMPRA ou VENDA e detalhe o porquê a taxa selecionada está protegida contra rompimentos de acordo com o filtro anti-loss de exaustão]
 """
 
 # 5. Execução da Análise
@@ -78,20 +73,20 @@ if botao_analise:
     elif not uploaded_file:
         st.error("Por favor, faça o upload do print do gráfico.")
     else:
-        with st.spinner("🧠 Varrendo eixos gráficos, simetrias e submetendo a análise ao crivo matemático..."):
+        with st.spinner("🧠 Varrendo eixos gráficos, simetrias e aplicando filtros anti-loss de exaustão..."):
             try:
-                # Inicializa o cliente oficial da SDK estável do Gemini
+                # Inicializa o cliente oficial da SDK do Gemini
                 client = genai.Client(api_key=api_key)
                 
                 # Abre a imagem salva
                 imagem = Image.open(uploaded_file)
                 
-                # Gera o prompt dinâmico
+                # Gera o prompt dinâmico blindado
                 prompt_final = gerar_prompt_mestre(tipo_mercado)
                 
-                # Mudança definitiva: endpoint atualizado para gemini-3.5-flash
+                # Executa o modelo de visão de produção
                 response = client.models.generate_content(
-                    model='gemini-3.5-flash',
+                    model='gemini-2.5-flash',
                     contents=[imagem, prompt_final]
                 )
                 
@@ -110,9 +105,9 @@ if botao_analise:
                             elif "🟢/🔴 AÇÃO OPERACIONAL E DIREÇÃO:" in linha:
                                 st.info(linha.replace("**", ""))
                             elif "🎯 TAXA GATILHO DA OPERAÇÃO:" in linha:
-                                st.error(linha.replace("**", ""))
+                                st.success(linha.replace("**", ""))
                             else:
-                                st.markdown(linha)
+                                st.write(linha)
                                 
             except Exception as e:
                 st.error(f"Erro ao processar a análise: {e}")
