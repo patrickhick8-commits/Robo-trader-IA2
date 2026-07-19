@@ -6,94 +6,113 @@ from PIL import Image
 st.set_page_config(page_title="Agente IA Advanced - Matriz Suprema", page_icon="🤖", layout="centered")
 
 st.title("🤖 Agente IA Trader Pro: Matriz Suprema")
-st.write("Fusão Total: Estrutura Dinâmica do Preço, Contexto de Mercado e Volatilidade Automática.")
+st.write("Fusão Total: Projeção Temporal Avançada (3 a 10 Minutos), Reversão Dinâmica em Região, Fluxo de Cores e Retração.")
 
-# 2. Barra Lateral - Gerenciamento de Chaves
-st.sidebar.markdown("### 🔑 Configuração da API")
-api_key = st.sidebar.text_input("Insira sua Gemini API Key:", type="password")
+# 2. Barra Lateral
+st.sidebar.markdown("### 🔑 Gerenciador de Chaves de Contingência")
+chaves_input = st.sidebar.text_input("Cole suas Gemini API Keys aqui (separadas por ponto e vírgula):", type="password")
+lista_de_chaves = [chave.strip() for chave in chaves_input.split(";") if chave.strip()]
 
-# 3. Interface Principal de Inputs (Dados manuais removidos!)
-uploaded_file = st.file_uploader("📷 Faça o upload do Print do seu Gráfico (M1):", type=["png", "jpg", "jpeg"])
-
-st.markdown("##### 🌐 Calibração do Ambiente de Negociação")
-tipo_mercado = st.radio(
-    "Selecione o tipo de mercado atual:",
-    ["Mercado Aberto (Real/Macro)", "Mercado OTC (Algoritmo da Corretora)"],
-    help="O mercado OTC opera sob algoritmos proprietários, enquanto o aberto segue fluxo interbancário e notícias."
+# 3. Definição Limpa do Prompt Mestre
+PROMPT_TRADER = (
+    "[SYSTEM_ROLE] Você é um algoritmo de trading quantitativo focado em Opções Binárias. "
+    "Sua postura é de FRIEZA MÁXIMA, RIGOR ABSOLUTO E PRECISÃO CIRÚRGICA.\n\n"
+    "[DIRETRIZ DE SEGURANÇA MÁXIMA: GATILHO DE REVERSÃO EM REGIÃO VS FLUXO MOMENTÂNEO]\n"
+    "ATENÇÃO: Mude seu comportamento dinamicamente com base na proximidade do preço em relação às zonas demarcadas. "
+    "Mapeie as regiões de suporte e resistência fortes. Se você detectar que o preço JÁ ESTIVER NA REGIÃO de reversão, "
+    "ative o [OPERACIONAL DE REVERSÃO EM REGIÃO], projetando o enfraquecimento e a exaustão das velas dentro da zona para "
+    "uma entrada contra a tendência.\n"
+    "CASO CONTRÁRIO (se o preço estiver distante da região de reversão), você está PROIBIDO de forçar uma reversão antecipada. "
+    "Nesse cenário, você deve ignorar a reversão e entrar imediatamente a favor do [FLUXO MOMENTÂNEO DO GRÁFICO], surfando a "
+    "continuidade do movimento atual do preço até que ele se aproxime do alvo principal.\n\n"
+    "[PASSO 1: IDENTIFICAÇÃO DO AMBIENTE]\n"
+    "Identifique o ativo e se é [MERCADO ABERTO REAL] ou [ALGORITMO OTC].\n\n"
+    "[PASSO 2: FILTROS DE TENDÊNCIA E FLUXO DE CORES (MÍNIMO 4 VELAS)]\n"
+    "Identifique se há uma sequência de 4 velas ou mais consecutiveis da mesma cor com corpos expressivos e poucos pavios para fluxo de continuidade.\n\n"
+    "[PASSO 3: FILTROS DE FLUXO PARA RETRAÇÃO]\n"
+    "Identifique se o preço se movimenta com candles médios que deixam bastante pavio buscando regiões de S/R ou LTA/LTB.\n\n"
+    "[PASSO 4: LOGICA DE OPERAÇÃO DINÂMICA (REVERSÃO OU FLUXO MOMENTÂNEO)]\n"
+    "Avalie a distância até a zona de respeito. Se estiver nela, projete o clique de reversão de 3 a 10 minutos (ideal 5 a 6 min). "
+    "Se estiver longe, configure a entrada para seguir o fluxo momentâneo da tendência atual.\n\n"
+    "[PASSO 5: REGRA DO RSI]\n"
+    "Proibido reverter se o RSI estiver cruzando de forma reta e agressiva os extremos. Aguarde a perda de angulação ou siga o fluxo.\n\n"
+    "[PASSO 6: MATRIZ DE ESTRATÉGIA COMBINADA ATIVADA]\n"
+    "Avalie com base em: 1. OPERACIONAL DE REVERSÃO EM REGIÃO (SE JÁ NA REGIÃO), 2. FLUXO MOMENTÂNEO DO GRÁFICO (SE LONGE DA REGIÃO), 3. FLUXO DE CONTINUIDADE (4+ VELAS), 4. FLUXO PARA RETRAÇÃO.\n\n"
+    "[PASSO 7: PROTOCOLO DE BLOQUEIO]\n"
+    "Bloqueie reversões precoces fora da região demarcada. Aborte se o fluxo momentâneo estiver sem volume ou sem alvo claro.\n\n"
+    "[PASSO 8: CRONOMETRAGEM E GESTÃO]\n"
+    "Projete o clique entre 3 a 10 minutos à frente. Taxa de acerto de 80% a 95% ou Abortada (0%).\n\n"
+    "Retorne o diagnóstico estruturado exatamente neste formato markdown:\n\n"
+    "🎯 PORCENTAGEM DE ACERTO DA ENTRADA: [Resultado]\n"
+    "⏰ HORÁRIO DO CLIQUE (ENTRADA): [HH:MM:00]\n"
+    "⏳ TEMPO DE EXPIRAÇÃO: [Tempo]\n"
+    "🏁 HORÁRIO DE FECHAMENTO DA ORDEM: [HH:MM:00]\n"
+    "🟥🟩 DIREÇÃO EXATA DA ORDEM: [COMPRA/VENDA/ABORTADA]\n"
+    "💰 GERENCIAMENTO DE LOTE RECOMENDADO: [Gerenciamento]\n"
+    "🧠 ESTRATÉGIA E OPERACIONAL COMBINADO ATIVADO:\n"
+    "- Tipo de operacional isolado ativado (Exemplos: 'OPERACIONAL DE REVERSÃO EM REGIÃO', 'FLUXO MOMENTÂNEO DO GRÁFICO', 'OPERACIONAL DE FLUXO DE VELA EM TENDÊNCIA', ou 'OPERACIONAL DE FLUXO DE CONTINUIDADE').\n"
+    "- Detalhes dos gatilhos e a proximidade da região alvo.\n"
+    "- Descrição minuciosa da combinação (Reversão em região, Fluxo momentâneo por distância, Rompimento+Fluxo, etc).\n"
+    "🌐 MODO DE MERCADO DETECTADO: [Mercado]\n"
+    "📊 CONTEXTO DO MERCADO MACRO E MICRO (ALINHAMENTO): [Tendência]\n"
+    "📈 LEITURA DO RSI PADRÃO E GATILHO CONTRA/A FAVOR DO MOMENTUM: [RSI]\n"
+    "📊 JUSTIFICATIVA DA REGIÃO E PROJEÇÃO TEMPORAL: [Justificativa]\n\n"
+    "🔍 DETALHAMENTO ANATÔMICO, ESTRUTURAL E TÉCNICO:\n"
+    "- Ambiente Identificado\n"
+    "- Trajetória pós-Print\n"
+    "- Análise de Reversão em Região vs Fluxo Momentâneo (Filtro de Posição)\n"
+    "- Padrão Sequencial de Cores\n"
+    "- Densidade dos Pavios\n"
+    "- Comportamento do RSI\n"
+    "- Verificação de Bloqueios\n"
+    "- Regiões de Respeito e Alvos Disponíveis\n"
+    "- Gestão de Lote\n"
 )
+
+def executar_chamada_gemini(chave_api, imagem_objeto, prompt_comando):
+    try:
+        # Inicialização correta usando o novo SDK padrão da Google
+        client = genai.Client(api_key=chave_api)
+        response = client.models.generate_content(
+            model='gemini-2.5-flash',
+            contents=[imagem_objeto, prompt_comando]
+        )
+        return response.text
+    except Exception as e:
+        return f"❌ Erro ao processar com a chave atual: {str(e)}"
+
+# 4. Interface Principal
+uploaded_file = st.file_uploader("📷 Faça o upload do Print do seu Gráfico (M1):", type=["png", "jpg", "jpeg"])
 
 botao_analise = st.button("🧠 Iniciar Análise Avançada por IA")
 
-# 4. Prompt Mestre com Extração Automática de Dados Visuais
-def gerar_prompt_mestre(contexto_mercado):
-    return f"""
-[SYSTEM_ROLE] Você é um algoritmo analítico quantitativo sênior de visão computacional voltado para Opções Binárias e Price Action Estrutural Puro. Sua postura é de ceticismo extremo, frieza matemática e foco absolutista em proteção de capital.
-
-[DETECÇÃO VISUAL OBRIGATÓRIA - AUTO EXTRAÇÃO]
-Antes de processar qualquer estratégia, você deve analisar minuciosamente os eixos e elementos visuais da imagem para extrair:
-1. HORÁRIO DO PRINT: Localize o relógio da plataforma (geralmente nos cantos ou no eixo horizontal inferior) e determine o horário aproximado do último candle.
-2. PREÇO ATUAL DA TELA: Localize a linha de cotação atual ou o eixo vertical direito para identificar o preço aproximado em andamento.
-Se os números estiverem muito pequenos ou pixelados, faça uma estimativa lógica e madura baseada na posição do preço atual em relação às taxas visíveis. Jamais deixe esses campos em branco.
-
-[PROTOCOLO OBRIGATÓRIO: AUDITORIA VISUAL DE VOLATILIDADE E CONTEXTO]
-Faça uma varredura visual profunda na imagem enviada para mapear a ESTRUTURA, o CONTEXTO e a VOLATILIDADE de forma automatizada:
-1. Identifique a macro-tendência visual da tela (Alta, Baixa ou Lateralização).
-2. Identifique a estrutura de pressão (compradores ou vendedores dominando o deslocamento atual).
-3. Avalie o estado da volatilidade: 'Notícia/Anormalidade' (velas gigantescas e sem pavio), 'Mercado Parado/Lateral' (velas minúsculas sem deslocamento) ou 'Volatilidade Saudável' (velas proporcionais com pavios de retração claros).
-4. O usuário parametrizou o ambiente de trading atual como: {contexto_mercado}.
-
-[OBJETIVO OPERACIONAL: PROJEÇÃO PARA 2 A 7 CANDLES FUTUROS EM M1]
-O usuário opera em gráficos de 1 minuto (M1). Avalie o comportamento do preço próximo às regiões visuais do gráfico. 
-Sua missão é identificar se há um GATILHO OPERACIONAL válido baseado em uma das três estratégias abaixo:
-1. RETRAÇÃO EM TAXA FUTURA DE M1: Ative se houver volatilidade saudável com pavios longos recentes.
-2. REVERSÃO EM REGIÃO FORTE: Ative se o preço estiver perdendo força (velas diminuindo de tamanho) ao se aproximar de Suporte/Resistência ou Zonas de Oferta/Demanda evidentes.
-3. FLUXO DE VELA / MOMENTUM (MOVIMENTO TRATOR): Ative se notar velas sequenciais de força (corpos grandes, sem pavio contra) indo em direção a uma zona, indicando alta probabilidade de rompimento. Pegue a continuidade.
-
-[REGRA DE OURO IMPRESCINDÍVEL: PROIBIDO PADRÕES DE VELAS]
-Ignore completamente nomenclaturas de velas isoladas (Martelo, Engolfo, Doji, etc.). Concentre sua visão puramente na ESTRUTURA DINÂMICA DO PREÇO: deslocamento vetorial, velocidade visual de aproximação, topos/fundos majoritários, canais (LTA/LTB) e o espaço vazio que o preço tem para correr.
-
-[DIRETRIZ DE SEGURANÇA E FILTROS DE RISCO]
-- Em Mercado OTC: Ignore lógica macroeconômica. Redobre o ceticismo em suporte/resistência saturados (mais de 3 toques). Prefira micro-tendências e fluxos curtos.
-- Em Mercado Aberto: Velas desproporcionais e picos isolados podem indicar notícias. Ordene o ABORTO por segurança se o gráfico estiver caótico.
-- Se o preço estiver esticado e colado em cima de uma região forte sem espaço para se mover, ordene o ABORTO por risco de exaustão imediata.
-
-Retorne o diagnóstico estruturado exatamente neste formato markdown (não mude uma linha sequer do layout):
-
-📊 CONTEXTO E VOLATILIDADE DETECTADA PELA IA: [Descreva em poucas palavras o cenário visual de tendência e volatilidade]
-⏰ HORÁRIO DO PRINT DETECTADO AUTOMATICAMENTE: [Indique o horário aproximado extraído visualmente da imagem, ex: 14:32:05]
-📈 PREÇO ATUAL DA TELA DETECTADO AUTOMATICAMENTE: [Indique o preço aproximado extraído visualmente do eixo, ex: 1.09432]
-🚨 VEREDITO REAL DE CONFIANÇA: [ENTRAR COM CONFIANÇA / ENTRAR COM LOTE MÍNIMO POR RISCO OCULTO / ABORTAR OPERAÇÃO]
-⚠️ DETECTADO RISCO OCULTO NA ESTRUTURA? [Sim (especifique em uma frase curta qual é o risco) / Não, estrutura totalmente limpa]
-🧠 OPERACIONAL ATIVADO: ['RETRAÇÃO EM TAXA FUTURA', 'REVERSÃO EM REGIÃO FORTE', 'FLUXO DE VELA / MOMENTUM' ou 'NENHUM - OPERAÇÃO ABORTADA']
-🎯 TAXA GATILHO DA OPERAÇÃO: [Com base no preço que você detectou na tela, determine matematicamente qual o valor exato da taxa limite/gatilho para o clique ou alerta]
-"""
-
-# 5. Execução da Análise
+# 5. Execução Lógica Controlada pós-Clique
 if botao_analise:
-    if not api_key:
-        st.error("Por favor, insira sua Gemini API Key na barra lateral.")
-    elif not uploaded_file:
-        st.error("Por favor, faça o upload do print do gráfico.")
+    if not uploaded_file:
+        st.error("⚠️ Por favor, faça o upload de uma imagem do gráfico antes de iniciar a análise.")
+    elif not lista_de_chaves:
+        st.error("⚠️ Insira pelo menos uma Gemini API Key válida na barra lateral antes de analisar.")
     else:
-        with st.spinner("🧠 Analisando imagem e extraindo métricas automaticamente..."):
-            try:
-                # Inicializa o cliente oficial da SDK do Gemini
-                client = genai.Client(api_key=api_key)
+        imagem = Image.open(uploaded_file)
+        st.image(imagem, caption="Gráfico Carregado com Sucesso", use_container_width=True)
+        
+        sucesso = False
+        with st.spinner("Analisando distância da região, fluxo momentâneo e tempo futuro..."):
+            for i, chave in enumerate(lista_de_chaves):
+                st.write(f"Tentando analisar com a chave de contingência {i+1}...")
+                resultado = executar_chamada_gemini(chave, imagem, PROMPT_TRADER)
                 
-                # Abre a imagem salva
-                imagem = Image.open(uploaded_file)
-                
-                # Gera o prompt dinâmico
-                prompt_final = gerar_prompt_mestre(tipo_mercado)
-                
-                # CORREÇÃO CRÍTICA: Substituído pelo modelo oficial atualizado
-                response = client.models.generate_content(
-                    model='gemini-3.5-flash',
-                    contents=[imagem, prompt_final]
-                )
-                
-                st.markdown("### 📊 Resultado da Análise Suprema")
-                st.markdown(response.text)
-                
-            except Exception as e:
-                st.error(f"Erro ao processar a análise: {e}")
+                if "❌ Erro" not in resultado:
+                    st.success("Análise concluída com sucesso!")
+                    st.markdown(resultado)
+                    sucesso = True
+                    break
+                else:
+                    st.warning(f"Chave {i+1} falhou ou está instável. Tentando próxima da lista...")
+            
+            # Correção aplicada com sucesso aqui
+            if not sucesso:
+                st.error("Todas as chaves de contingência fornecidas falharam. Verifique as chaves na Google AI Studio.")
+
+if not lista_de_chaves:
+    st.info("💡 Lembrete: Insira as chaves de API na barra lateral esquerda para liberar o processamento.")
