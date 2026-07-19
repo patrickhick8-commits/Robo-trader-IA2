@@ -105,3 +105,41 @@ Retorne o diagnóstico estruturado exatamente neste formato markdown (não mude 
 🟥🟩 DIREÇÃO EXATA DA ORDEM: [COMPRA/VENDA/ABORTADA]
 💰 GERENCIAMENTO DE LOTE RECOMENDADO: [Conservador / Moderado / Abortar]
 💡 JUSTIFICATIVA GEOMÉTRICA E ESTRUTURAL:
+Explique detalhadamente o porquê o preço vai respeitar a taxa ou o fluxo com base no operacional escolhido, detalhando o comportamento do Movimento Trator, a ausência de exaustão, ou o vácuo de preço na tela se essa for a escolha.
+🔍 DETALHAMENTO ANATÔMICO, ESTRUTURAL E TÉCNICO:
+Resumo analítico do comportamento visual das massas do mercado na imagem."""return prompt_completo
+5. Execução de Chamada ao Modelo Gemini (SDK Oficial google-genai)
+def executar_chamada_gemini(chave_api, imagem_objeto, prompt_comando):
+"""Executa a chamada utilizando a nova e recomendada estrutura da biblioteca oficial."""
+try:
+client = genai.Client(api_key=chave_api)
+resposta = client.models.generate_content(
+model='gemini-2.5-flash',
+contents=[imagem_objeto, prompt_comando]
+)
+return resposta.text
+except Exception as e:
+return f"❌ Erro crítico na execução da API Gemini: {str(e)}"
+6. Bloco de Processamento Principal (Gatilho do Botão)
+if botao_analise:
+# Validações explícitas com retorno na tela para o usuário antes do disparo
+if not lista_de_chaves:
+st.error("⚠️ ERRO: Cole a sua Gemini API Key na barra lateral esquerda antes de iniciar a análise.")
+elif not uploaded_file:
+st.error("⚠️ ERRO: Faça o upload de uma imagem válida (print do gráfico) antes de clicar no botão.")
+else:
+with st.spinner("🧠 Analisando imagem, extraindo preço/tempo e aplicando Filtro de Confiança Cruzada..."):
+try:
+# Abre e converte o arquivo carregado
+imagem = Image.open(uploaded_file)
+# Gera o prompt dinâmico baseado no tipo de mercado selecionado
+prompt_mestre = gerar_prompt_mestre(tipo_mercado_selecionado)
+# EXTRAÇÃO SEGURA DA CHAVE ATIVA (Pega o primeiro texto limpo da lista)
+chave_ativa = lista_de_chaves[0]
+# Executa a chamada multimodal passando os parâmetros nomeados
+resultado = executar_chamada_gemini(chave_api=chave_ativa, imagem_objeto=imagem, prompt_comando=prompt_mestre)
+# Renderiza o diagnóstico final estruturado na tela sem cortes
+st.markdown("### 📊 Resultado do Diagnóstico da Matriz Suprema")
+st.markdown(resultado)
+except Exception as ex:
+st.error(f"❌ Erro inesperado no fluxo principal: {str(ex)}")
