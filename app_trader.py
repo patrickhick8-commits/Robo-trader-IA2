@@ -24,7 +24,7 @@ tipo_mercado = st.radio(
 
 botao_analise = st.button("🧠 Iniciar Análise Avançada por IA")
 
-# 4. Prompt Mestre Otimizado
+# 4. Prompt Mestre Otimizado com as Novas Métricas Obrigatórias
 def gerar_prompt_mestre(contexto_mercado):
     return f"""
 [SYSTEM_ROLE] Você é um algoritmo analítico quantitativo sênior de visão computacional voltado para Opções Binárias e Price Action Estrutural Puro. Sua postura é de ceticismo extremo, frieza matemática e foco absolutista em proteção de capital.
@@ -63,11 +63,11 @@ Retorne o diagnóstico estruturado exatamente neste formato markdown (não mude 
 ⏰ HORÁRIO DO PRINT DETECTADO AUTOMATICAMENTE: [Indique o horário aproximado extraído visualmente da imagem, ex: 14:32:05]
 📈 PREÇO ATUAL DA TELA DETECTADO AUTOMATICAMENTE: [Indique o preço aproximado extraído visualmente do eixo, ex: 1.09432]
 🚨 VEREDITO REAL DE CONFIANÇA: [ENTRAR COM CONFIANÇA / ENTRAR COM LOTE MÍNIMO POR RISCO OCULTO / ABORTAR OPERAÇÃO]
-📊 TAXA DE ACERTO ESTIMADA: [Se o veredito for de entrada, forneça uma estimativa estatística de assertividade de 0% a 100% com base nos filtros de risco mitigados. Se for abortada, coloque 0%]
-⏱️ HORÁRIO ESTIMADO DA ENTRADA (GATILHO): [Calcule o minuto futuro aproximado do toque/clique baseado no horário detectado no print e na distância visual até a região, ex: 14:35:00]
+📊 TAXA DE ACERTO ESTIMADA: [Forneça uma estimativa estatística de assertividade de 0% a 100% com base na força da região identificada. Se a operação for abortada, preencha obrigatoriamente com 0%]
+⏱️ HORÁRIO ESTIMADO DA ENTRADA: [Calcule o minuto futuro aproximado do toque/clique com base no horário do print e no tempo de deslocamento visual que o preço levará até a região, ex: 14:35:00]
 🧠 TIPO DE OPERACIONAL ATIVADO: ['RETRAÇÃO EM TAXA FUTURA', 'REVERSÃO EM REGIÃO FORTE', 'FLUXO DE VELA / MOMENTUM' ou 'NENHUM - OPERAÇÃO ABORTADA']
 🎯 TAXA GATILHO DA OPERAÇÃO: [Com base no preço que você detectou na tela, determine matematicamente qual o valor exato da taxa limite/gatilho para o clique ou alerta]
-📝 JUSTIFICATIVA TÉCNICA E ESTRUTURAL: [Apresente uma defesa detalhada, fria e puramente baseada no Price Action do porquê tomou essa decisão, mapeando o comportamento dos players e zonas de rejeição da imagem]
+📝 JUSTIFICATIVA TÉCNICA E ESTRUTURAL: [Apresente uma defesa detalhada e puramente baseada no Price Action do porquê tomou essa decisão, listando a confluência de fatores visuais na imagem]
 """
 
 # 5. Execução da Análise
@@ -77,7 +77,7 @@ if botao_analise:
     elif not uploaded_file:
         st.error("Por favor, faça o upload do print do gráfico.")
     else:
-        with st.spinner("🧠 Analisando imagem e extraindo métricas automaticamente..."):
+        with st.spinner("🧠 Analisando imagem e extraindo métricas automaticamente com Gemini 3.5..."):
             try:
                 # Inicializa o cliente oficial da SDK do Gemini
                 client = genai.Client(api_key=api_key)
@@ -88,9 +88,9 @@ if botao_analise:
                 # Gera o prompt dinâmico
                 prompt_final = gerar_prompt_mestre(tipo_mercado)
                 
-                # CORREÇÃO: Utilizando o endpoint correto e estável da API oficial do Google
+                # Atualizado para o modelo de produção estável atual
                 response = client.models.generate_content(
-                    model='gemini-2.5-flash',
+                    model='gemini-3.5-flash',
                     contents=[imagem, prompt_final]
                 )
                 
