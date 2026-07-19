@@ -1,7 +1,6 @@
 import streamlit as st
 from google import genai
 from PIL import Image
-from datetime import datetime
 
 # 1. Configuração da Página
 st.set_page_config(page_title="Agente IA Advanced - Matriz Suprema", page_icon="🤖", layout="centered")
@@ -14,11 +13,9 @@ st.sidebar.markdown("### 🔑 Gerenciador de Chaves de Contingência")
 chaves_input = st.sidebar.text_input("Cole suas Gemini API Keys aqui (separadas por ponto e vírgula):", type="password")
 lista_de_chaves = [chave.strip() for chave in chaves_input.split(";") if chave.strip()]
 
-# 3. Interface Principal de Inputs
+# 3. Interface Principal de Inputs (Campos manuais de hora e preço removidos)
 uploaded_file = st.file_uploader("📷 Faça o upload do Print do seu Gráfico (M1):", type=["png", "jpg", "jpeg"])
-horario_atual_print = st.time_input("⏰ Que horas o print foi tirado no gráfico?", datetime.now().time())
 
-# NOVO: Seleção do Tipo de Mercado para Calibração Algorítmica da IA
 st.markdown("##### 🌐 Calibração do Ambiente de Negociação")
 tipo_mercado = st.radio(
     "Selecione o tipo de mercado atual:",
@@ -26,24 +23,19 @@ tipo_mercado = st.radio(
     help="O mercado OTC opera sob algoritmos proprietários baseados em captação de liquidez interna, enquanto o aberto segue fluxo interbancário e notícias."
 )
 
-st.markdown("##### 📐 Calibrador de Precisão Geométrica")
-preco_atual_tela = st.number_input("Preço atual do mercado na tela (Ex: 1.08532):", format="%.5f", value=0.00000)
-
 botao_analise = st.button("🧠 Iniciar Análise Avançada por IA")
 
-# 4. Definição do Prompt Mestre Otimizado (Filtro de Confiança Cruzada)
-def gerar_prompt_mestre(horario_referencia, preco_referencia, contexto_mercado):
-    preco_texto = f"{preco_referencia:.5f}" if preco_referencia > 0 else "Não informado pelo usuário (leia estritamente do eixo vertical direito do print)"
-    
+# 4. Definição do Prompt Mestre Otimizado (Leitura Automatizada por Visão Computacional)
+def gerar_prompt_mestre(contexto_mercado):
     return (
         "[SYSTEM_ROLE] Você é um algoritmo analítico quantitativo sênior de visão computacional voltado para Opções Binárias e Price Action Estrutural Puro. "
-        "Sua postura é de ceticismo extremo, frieza matemática e foco absoluto em proteção de capital.\n\n"
+        "Sua postura é de ceticismo extremo, frieza matemática e foco absolutista em proteção de capital.\n\n"
         
-        f"[ANCORAGEM TEMPORAL E ESPACIAL OBRIGATÓRIA]\n"
-        f"- O horário exato em que este print foi capturado é: {horario_referencia.strftime('%H:%M:%S')}.\n"
-        f"- O preço de referência do último candle atual na tela é: {preco_texto}.\n"
-        f"- O ambiente de negociação atual é: {contexto_mercado}.\n"
-        "Qualquer cálculo de projeção de tempo futuro DEVE usar este horário exato como ponto de partida inicial zero (Candle 0).\n\n"
+        "[DETECÇÃO E ANCORAGEM VISUAL AUTOMÁTICA EM COMPUTAÇÃO GRÁFICA]\n"
+        "Você deve ler a imagem enviada de ponta a ponta para extrair as seguintes métricas ocultas antes de calcular qualquer projeção:\n"
+        "1. HORÁRIO DO PRINT: Localize o relógio da plataforma de trade ou os eixos do gráfico para determinar com precisão cirúrgica o horário exato da última vela gerada. Use esse tempo detectado como ponto zero inicial para projeções futuras.\n"
+        "2. PREÇO ATUAL DA TELA: Localize o eixo vertical direito (escala de preço) e identifique a taxa exata da cotação do último candle fechado ou atual em andamento.\n"
+        f"3. AMBIENTE DE TRADING: O usuário parametrizou o ambiente atual como: {contexto_mercado}.\n\n"
         
         "[PROTOCOLO OBRIGATÓRIO: AUDITORIA VISUAL DE VOLATILIDADE E CONTEXTO AUTOMÁTICO]\n"
         "Antes de qualquer cálculo de taxa, você deve fazer uma varredura visual profunda na imagem para mapear a ESTRUTURA, o CONTEXTO e a VOLATILIDADE de forma automatizada:\n"
@@ -54,7 +46,7 @@ def gerar_prompt_mestre(horario_referencia, preco_referencia, contexto_mercado):
         
         "[OBJETIVO OPERACIONAL: PROJEÇÃO PARA 2 A 7 CANDLES FUTUROS EM M1]\n"
         "O usuário opera em gráficos de 1 minuto (M1). O objetivo NÃO É operar na próxima vela.\n"
-        "Você deve olhar para o lado direito da tela (o espaço vazio para onde o preço vai se mover) e calcular a trajetória do preço para os próximos 2 a 7 minutes (2 a 7 candles à frente).\n"
+        "Você deve olhar para o lado direito da tela (o espaço vazio para onde o preço vai se mover) e calcular a trajetória do preço para os próximos 2 a 7 minutos (2 a 7 candles à frente).\n"
         "Sua missão é identificar um GATILHO OPERACIONAL exato baseado em uma das três estratégias abaixo. "
         "A expiração da ordem deve ser para a MESMA VELA DO TOQUE OU FECHAMENTO (Operação em M1 dentro do próprio minuto futuro projetado).\n\n"
         
@@ -75,16 +67,18 @@ def gerar_prompt_mestre(horario_referencia, preco_referencia, contexto_mercado):
         "- Se escolher Reversão/Retração, mas o preço estiver em Movimento Trator sem deixar pavios anteriores, vire o sinal para FLUXO IMEDIATO a favor do trator, a menos que o preço já tenha colidido de forma exausta no meio da região.\n"
         "- Se escolher Fluxo, mas o preço estiver muito esticado e esmagado exatamente em cima do núcleo de uma região forte de Oferta/Demanda institucional sem espaço para andar, ordene o ABORTO por risco de exaustão imediata.\n"
         "- Se a zona alvo calculada estiver muito perto (menos de 2 candles de distância) ou muito longe (mais de 7 candles de distância), recalibre o alvo geométrico.\n"
-        "- Se la volatilidade visual for caótica por notícias de impacto extremo (gaps, velas sem corpo lógico), aborte por segurança.\n\n"
+        "- Se a volatilidade visual for caótica por notícias de impacto extremo (gaps, velas sem corpo lógico), aborte por segurança.\n\n"
         
         "Retorne o diagnóstico estruturado exatamente neste formato markdown (não mude uma linha sequer do layout):\n\n"
         "📊 CONTEXTO E VOLATILIDADE DETECTADA PELA IA: [Tendência / Força / Estado da Volatilidade - Descreva em poucas palavras o cenário visual]\n"
+        "⏰ HORÁRIO DO PRINT IDENTIFICADO AUTOMATICAMENTE: [Ex: Você detectou visualmente HH:MM:SS na imagem]\n"
+        "📈 PREÇO ATUAL DA TELA IDENTIFICADO AUTOMATICAMENTE: [Ex: Você detectou visualmente a taxa X.XXXXX no eixo]\n"
         "🎯 PORCENTAGEM DE ACERTO DA ENTRADA: [Resultado de 75% a 98% ou Abortada 0%]\n"
         "🚨 VEREDITO REAL DE CONFIANÇA: [ENTRAR COM CONFIANÇA / ENTRAR COM LOTE MÍNIMO POR RISCO OCULTO / ABORTAR OPERAÇÃO]\n"
         "⚠️ DETECTADO RISCO OCULTO NA ESTRUTURA? [Sim (especifique em uma frase curta qual é o risco) / Não, estrutura totalmente limpa]\n"
         "🧠 OPERACIONAL ATIVADO: ['RETRAÇÃO EM TAXA FUTURA', 'REVERSÃO EM REGIÃO FORTE' ou 'FLUXO DE VELA / MOMENTUM (MOVIMENTO TRATOR)']\n"
         "🎯 TAXA GATILHO DA OPERAÇÃO: [Insira a taxa/preço exato calculado do eixo vertical para por o alerta ou fazer o clique na corretora]\n"
-        "⏰ JANELA DE MINUTOS PREVISTA: [Ex: Entre 2 e 7 minutos após o horário do print - Estimativa de clique entre HH:MM e HH:MM]\n"
+        "⏰ JANELA DE MINUTOS PREVISTA: [Ex: Entre 2 e 7 minutos após o horário detectado do print - Estimativa de clique entre HH:MM e HH:MM]\n"
         "⏳ TEMPO DE EXPIRAÇÃO: [1 Minuto - Expiração na mesma vela M1 futura do gatilho]\n"
         "🟥🟩 DIREÇÃO EXATA DA ORDEM: [COMPRA/VENDA/ABORTADA]\n"
         "💰 GERENCIAMENTO DE LOTE RECOMENDADO: [Conservador / Moderado / Abortar]\n"
@@ -112,29 +106,3 @@ def ejecutar_chamada_gemini(chave_api, imagem_objeto, prompt_comando):
 # 6. Bloco de Processamento Principal ao Clicar no Botão
 if botao_analise:
     if not lista_de_chaves:
-        st.error("❌ Por favor, adicione pelo menos uma Gemini API Key válida na barra lateral.")
-    elif not uploaded_file:
-        st.error("❌ Por favor, faça o upload de uma imagem do seu gráfico antes de iniciar.")
-    else:
-        with st.spinner("🧠 Analisando padrões geométricos, liquidez e volatilidade..."):
-            try:
-                imagem_objeto = Image.open(uploaded_file)
-                
-                # Envia a variável 'tipo_mercado' selecionada pelo usuário
-                prompt_comando = gerar_prompt_mestre(horario_atual_print, preco_atual_tela, tipo_mercado)
-                
-                resultado_analise = None
-                for chave in lista_de_chaves:
-                    resultado_analise = ejecutar_chamada_gemini(chave, imagem_objeto, prompt_comando)
-                    if resultado_analise:
-                        break
-                
-                if resultado_analise:
-                    st.success("✅ Análise Estrutural Concluída!")
-                    st.markdown("---")
-                    st.markdown(resultado_analise)
-                else:
-                    st.error("❌ Todas as chaves fornecidas falharam em ambos os modelos. Verifique suas cotas e as credenciais.")
-            except Exception as e:
-                st.error(f"❌ Ocorreu um erro crítico no processamento: {e}")
-
