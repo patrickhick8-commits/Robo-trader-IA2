@@ -60,7 +60,7 @@ Retorne o diagnóstico estruturado exatamente neste formato markdown (não mude 
 ⏰ TEMPO DE EXPIRAÇÃO DA ORDEM: [Defina de forma ultra detalhada a expiração exata do clique na corretora de acordo com o operacional escolhido. Ex: 'Expiração para a mesma vela do toque (Retração - M1)' ou 'Expiração para 3 minutos à frente (Reversão/Fluxo)']
 🧠 TIPO DE OPERACIONAL ATIVADO: ['RETRAÇÃO EM TAXA FUTURA', 'REVERSÃO EM REGIÃO FORTE', 'FLUXO DE VELA', 'MOMENTUM', 'FLUXO TRATOR' ou 'NENHUM - OPERAÇÃO ABORTADA']
 🎯 TAXA GATILHO DA OPERAÇÃO: [Defina com precisão decimal máxima o ponto exato do clique na plataforma baseado na zona calculada]
-📝 JUSTIFICATIVA TÉCNICA E ESTRUTURAL DETALHADA: [Exponha uma defesa puramente matemática, fria e mecânica do Price Action. Justifique detalhadamente a escolha do tipo de operacional, a direção de COMPRA ou VENDA, e prove matematicamente por que escolheu esse tempo específico de expiração baseado no vácuo gráfico]
+📝 JUSTIFICATIVA TÉCNICA E ESTRUTURAL DETALHADA: [Exponha uma defesa puramente matemática, frieza analítica e mecânica do Price Action]
 """
 
 # 5. Execução da Análise
@@ -70,25 +70,41 @@ if botao_analise:
     elif not uploaded_file:
         st.error("Por favor, faça o upload do print do gráfico.")
     else:
-        with st.spinner("🧠 Projetando cliques na janela futura e calculando tempos de expiração com Gemini 3.5..."):
+        with st.spinner("🧠 Rastreando simetrias e projetando operações futuras passo a passo..."):
             try:
-                # Inicializa o cliente oficial da SDK do Gemini
+                # Inicializa o cliente oficial da SDK atualizada do Gemini
                 client = genai.Client(api_key=api_key)
                 
-                # Abre a imagem salva
+                # Abre a imagem do gráfico
                 imagem = Image.open(uploaded_file)
                 
                 # Gera o prompt dinâmico
                 prompt_final = gerar_prompt_mestre(tipo_mercado)
                 
-                # Executa a geração usando o modelo estável mais recente (Gemini 3.5 Flash)
+                # Executa a geração usando o motor oficial estável de visão computacional (Gemini 2.5 Flash)
                 response = client.models.generate_content(
-                    model='gemini-3.5-flash',
+                    model='gemini-2.5-flash',
                     contents=[imagem, prompt_final]
                 )
                 
-                st.markdown("### 📊 Resultado da Análise Suprema")
-                st.markdown(response.text)
+                st.success("✅ Análise Computacional Concluída com Sucesso!")
+                st.markdown("### 📊 Resultado da Análise Suprema (Organizado)")
                 
+                # Mapeia e distribui a resposta em blocos verticais organizados um embaixo do outro
+                linhas = response.text.split('\n')
+                
+                for linha in linhas:
+                    if linha.strip():
+                        # Cria blocos visuais separados com bordas para cada métrica
+                        with st.container(border=True):
+                            if "🚨 VEREDITO REAL DE CONFIANÇA:" in linha:
+                                st.warning(linha.replace("**", ""))
+                            elif "🟢/🔴 AÇÃO OPERACIONAL E DIREÇÃO:" in linha:
+                                st.info(linha.replace("**", ""))
+                            elif "🎯 TAXA GATILHO DA OPERAÇÃO:" in linha:
+                                st.error(linha.replace("**", ""))
+                            else:
+                                st.markdown(linha)
+                                
             except Exception as e:
                 st.error(f"Erro ao processar a análise: {e}")
