@@ -13,7 +13,7 @@ st.sidebar.markdown("### 🔑 Gerenciador de Chaves de Contingência")
 chaves_input = st.sidebar.text_input("Cole suas Gemini API Keys aqui (separadas por ponto e vírgula):", type="password")
 lista_de_chaves = [chave.strip() for chave in chaves_input.split(";") if chave.strip()]
 
-# 3. Interface Principal de Inputs (Campos manuais de hora e preço removidos)
+# 3. Interface Principal de Inputs
 uploaded_file = st.file_uploader("📷 Faça o upload do Print do seu Gráfico (M1):", type=["png", "jpg", "jpeg"])
 
 st.markdown("##### 🌐 Calibração do Ambiente de Negociação")
@@ -61,7 +61,6 @@ def gerar_prompt_mestre(contexto_mercado):
         "topos/fundos majoritários, canais (LTA/LTB), zonas de simetria e o espaço vazio que o preço tem para correr.\n\n"
         
         "[DIRETRIZ DE SEGURANÇA, INTELIGÊNCIA DE MERCADO E FILTRO DE CONFIANÇA CRUZADA]\n"
-        "Antes de definir a direção, você deve confrontar rigidamente a sua própria análise. Procure ativamente por motivos para NÃO entrar na operação:\n"
         f"- Se o ambiente for 'Mercado OTC (Algoritmo da Corretora)', ignore completamente qualquer lógica macroeconômica. Redobre o ceticismo em zonas de suporte/resistência saturadas (mais de 3 toques), pois algoritmos de OTC tendem a romper regiões óbvias para capturar a liquidez dos varejistas. Dê preferência estrita para micro-tendências e fluxos curtos de continuidade.\n"
         f"- Se o ambiente for 'Mercado Aberto (Real/Macro)', atente-se a distorções geométricas severas e picos repentinos de volume que possam sinalizar a proximidade de notícias econômicas de alto impacto. Caso ocorra, ordene o aborto imediato por segurança estrutural.\n"
         "- Se escolher Reversão/Retração, mas o preço estiver em Movimento Trator sem deixar pavios anteriores, vire o sinal para FLUXO IMEDIATO a favor do trator, a menos que o preço já tenha colidido de forma exausta no meio da região.\n"
@@ -106,3 +105,7 @@ def ejecutar_chamada_gemini(chave_api, imagem_objeto, prompt_comando):
 # 6. Bloco de Processamento Principal ao Clicar no Botão
 if botao_analise:
     if not lista_de_chaves:
+        st.error("❌ Por favor, adicione pelo menos uma Gemini API Key válida na barra lateral.")
+    elif not uploaded_file:
+        st.error("❌ Por favor, faça o upload de uma imagem do seu gráfico antes de iniciar.")
+    else:
