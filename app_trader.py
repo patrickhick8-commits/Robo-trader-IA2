@@ -112,3 +112,29 @@ def ejecutar_chamada_gemini(chave_api, imagem_objeto, prompt_comando):
 # 6. Bloco de Processamento Principal ao Clicar no Botão
 if botao_analise:
     if not lista_de_chaves:
+        st.error("❌ Por favor, adicione pelo menos uma Gemini API Key válida na barra lateral.")
+    elif not uploaded_file:
+        st.error("❌ Por favor, faça o upload de uma imagem do seu gráfico antes de iniciar.")
+    else:
+        with st.spinner("🧠 Analisando padrões geométricos, liquidez e volatilidade..."):
+            try:
+                imagem_objeto = Image.open(uploaded_file)
+                
+                # Envia a variável 'tipo_mercado' selecionada pelo usuário
+                prompt_comando = gerar_prompt_mestre(horario_atual_print, preco_atual_tela, tipo_mercado)
+                
+                resultado_analise = None
+                for chave in lista_de_chaves:
+                    resultado_analise = ejecutar_chamada_gemini(chave, imagem_objeto, prompt_comando)
+                    if resultado_analise:
+                        break
+                
+                if resultado_analise:
+                    st.success("✅ Análise Estrutural Concluída!")
+                    st.markdown("---")
+                    st.markdown(resultado_analise)
+                else:
+                    st.error("❌ Todas as chaves fornecidas falharam em ambos os modelos. Verifique suas cotas e as credenciais.")
+            except Exception as e:
+                st.error(f"❌ Ocorreu um erro crítico no processamento: {e}")
+
