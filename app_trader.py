@@ -6,7 +6,7 @@ from PIL import Image
 st.set_page_config(page_title="Agente IA Advanced - Matriz Suprema", page_icon="🤖", layout="centered")
 
 st.title("🤖 Agente IA Trader Pro: Matriz Suprema")
-st.write("Fusão Total: Estrutura Dinâmica do Preço, Contexto de Mercado, Volatilidade e Janela de Projeção.")
+st.write("Fusão Total: Estrutura Dinâmica do Preço, Contexto de Mercado, Volatilidade e Projeção Temporal.")
 
 # 2. Barra Lateral - Gerenciamento de Chaves
 st.sidebar.markdown("### 🔑 Configuração da API")
@@ -24,13 +24,13 @@ tipo_mercado = st.radio(
 
 botao_analise = st.button("🧠 Iniciar Análise Avançada por IA")
 
-# 4. Prompt Mestre Corrigido com Janela de 2 a 7 Velas e Regras de Expiração Estritas
+# 4. Prompt Mestre Otimizado
 def gerar_prompt_mestre(contexto_mercado):
     return f"""
-[SYSTEM_ROLE] Você é o núcleo de processamento lógico de um algoritmo quantitativo sênior de visão computacional. Sua operação é puramente matemática, destituída de viés emocional. Sua postura combina frieza analítica absoluta com precisão geométrica cirúrgica para a tomada de decisões em Opções Binárias (M1).
+[SYSTEM_ROLE] Você é o núcleo de processamento lógico de um algoritmo quantitativo sênior de visão computacional. Sua operação é puramente matemática, destituída de viés emocional ou hesitação. Sua postura combina frieza analítica absoluta com precisão geométrica cirúrgica para a tomada de decisões em Opções Binárias (M1).
 
 [DETECÇÃO VISUAL OBRIGATÓRIA - AUTO EXTRAÇÃO]
-Antes de processar qualquer estratégia, analise minuciosamente os eixos e elementos visuais da imagem para extrair o HORÁRIO DO PRINT e o PREÇO ATUAL DA TELA com precisão decimal. 
+Antes de processar qualquer estratégia, analise minuciosamente os eixos e elementos visuais da imagem para extrair o HORÁRIO DO PRINT e o PREÇO ATUAL DA TELA com precisão decimal. Jamais deixe esses campos em branco.
 
 [JANELA DE PROJEÇÃO FUTURA (2 A 7 VELAS) E PROTOCOLO DE EXPIRAÇÃO]
 O usuário opera estritamente em gráficos de 1 minuto (M1). Suas projeções NÃO são para a próxima vela imediata. Você deve estimar friamente o tempo de deslocamento do preço:
@@ -40,11 +40,19 @@ O usuário opera estritamente em gráficos de 1 minuto (M1). Suas projeções N�
    - Se o operacional ativado for 'REVERSÃO EM REGIÃO FORTE': A expiração deve ser calculada para o término do movimento de correção (geralmente de 2 a 5 minutos à frente, dependendo da força da região).
    - Se o operacional for 'FLUXO DE VELA', 'MOMENTUM' ou 'FLUXO TRATOR': A expiração deve ser para o fechamento da PRÓXIMA VELA (M1) ou acompanhar a projeção do vácuo até o alvo majoritário (2 a 3 minutos).
 
-[MÉTODO DE ASSERTIVIDADE VIA ZONAS DE SIMETRIA]
-Execute o rastreamento estrito de linhas de simetria de corpo, confluência de múltiplos pavios e cálculo de vácuo (espaço vazio restante até o alvo). O ambiente foi parametrizado como: {contexto_mercado}.
+[MÉTODO DE ALTA ASSERTIVIDADE VIA ZONAS DE SIMETRIA E MICRO-REGIÕES]
+Execute o rastreamento estrito de linhas de simetria de corpo, confluência de múltiplos pavios e cálculo de vácuo (espaço vazio restante até o alvo).
+
+[OBJETIVO OPERACIONAL: MAPEAMENTO E SUBCLASSIFICAÇÃO DE FLUXOS]
+Avalie com extrema frieza e precisão a força do deslocamento dos candles para ativar um dos operacionais abaixo:
+1. RETRAÇÃO EM TAXA FUTURA DE M1: Ative se houver pavios recentes na região de simetria para o preço bater e rejeitar.
+2. REVERSÃO EM REGIÃO FORTE: Ative se o preço demonstrar exaustão visual ao colidir com uma barreira majoritária.
+3. FLUXO DE VELA: Ative quando houver candles de continuidade simples a favor da micro-tendência, respeitando um padrão saudável de zigue-zague.
+4. MOMENTUM: Ative se notar uma aceleração rápida e sequencial do preço (velas crescendo de tamanho sequencialmente).
+5. FLUXO TRATOR: Ative se notar um movimento de força brute imparável (velas gigantescas e cheias, sem pavio contra).
 
 [EXECUÇÃO FRIA: REGRAS DE ABORTO EXCLUSIVAS]
-Você só emitirá o veredito de 'ABORTAR OPERAÇÃO' se o gráfico estiver 100% plano/morto por mais de 10 candles ou em anomalia irracional de notícias brutas (gaps colossais sequenciais). Caso contrário, determine a taxa e projete o clique futuro.
+Você só emitirá o veredito de 'ABORTAR OPERAÇÃO' se o gráfico estiver 100% plano e morto por mais de 10 candles ou em anomalia irracional de notícias brutas (gaps colossais repetidos). Caso contrário, execute a análise técnica fria.
 
 Retorne o diagnóstico estruturado exatamente neste formato markdown (não mude uma linha sequer do layout):
 
@@ -55,12 +63,12 @@ Retorne o diagnóstico estruturado exatamente neste formato markdown (não mude 
 🟢/🔴 AÇÃO OPERACIONAL E DIREÇÃO: [COMPRA (CALL) / VENDA (PUT) / NENHUMA - OPERAÇÃO ABORTADA]
 📊 TAXA DE ACERTO ESTIMADA: [Forneça um percentual estatístico frio de probabilidade de vitória de 0% a 100% com base nas confluências. Operações abortadas = 0%]
 ⚡ DETECTOU ZONA DE SIMETRIA OU MÚLTIPLOS PAVIOS? [Mapeie de forma cirúrgica o nível geométrico exato e classifique se é de corpo ou de pavio]
-⏳ PROJEÇÃO DE TEMPO DA JANELA: [Indique explicitamente quantos candles/minutos futuros faltam para o preço tocar no gatilho, obrigatoriamente dentro da janela de 2 a 7 minutos. Ex: 'Toque estimado em 4 candles à frente']
-⏱️ HORÁRIO ESTIMADO DA ENTRADA: [Calcule o minuto futuro provável do clique somando a projeção de tempo ao horário detectado no print, ex: 10:19:00]
-⏰ TEMPO DE EXPIRAÇÃO DA ORDEM: [Defina de forma ultra detalhada a expiração exata do clique na corretora de acordo com o operacional escolhido. Ex: 'Expiração para a mesma vela do toque (Retração - M1)' ou 'Expiração para 3 minutos à frente (Reversão/Fluxo)']
+⏳ PROJEÇÃO DE TEMPO DA JANELA: [Indique explicitamente quantos candles/minutos futuros faltam para o preço tocar no gatilho, obrigatoriamente dentro da janela de 2 a 7 minutos. Ex: Toque estimado em 4 candles à frente]
+⏱️ HORÁRIO ESTIMADO DA ENTRADA: [Calcule o minuto provável do toque com base na velocidade média de deslocamento visual, ex: 10:18:00]
+⏰ TEMPO DE EXPIRAÇÃO DA ORDEM: [Defina de forma ultra detalhada a expiração exata do clique na corretora de acordo com o operacional escolhido. Ex: Expiração para a mesma vela do toque (Retração - M1)]
 🧠 TIPO DE OPERACIONAL ATIVADO: ['RETRAÇÃO EM TAXA FUTURA', 'REVERSÃO EM REGIÃO FORTE', 'FLUXO DE VELA', 'MOMENTUM', 'FLUXO TRATOR' ou 'NENHUM - OPERAÇÃO ABORTADA']
 🎯 TAXA GATILHO DA OPERAÇÃO: [Defina com precisão decimal máxima o ponto exato do clique na plataforma baseado na zona calculada]
-📝 JUSTIFICATIVA TÉCNICA E ESTRUTURAL DETALHADA: [Exponha uma defesa puramente matemática, frieza analítica e mecânica do Price Action]
+📝 JUSTIFICATIVA TÉCNICA E ESTRUTURAL DETALHADA: [Exponha uma defesa puramente matemática, fria e mecânica do Price Action. Justifique detalhadamente a escolha do tipo de operacional e a direção de COMPRA ou VENDA analisando a vetorização do preço, simetrias e a força física dos candles]
 """
 
 # 5. Execução da Análise
@@ -70,32 +78,32 @@ if botao_analise:
     elif not uploaded_file:
         st.error("Por favor, faça o upload do print do gráfico.")
     else:
-        with st.spinner("🧠 Rastreando simetrias e projetando operações futuras passo a passo..."):
+        with st.spinner("🧠 Varrendo eixos gráficos, simetrias e submetendo a análise ao crivo matemático..."):
             try:
-                # Inicializa o cliente oficial da SDK atualizada do Gemini
+                # Inicializa o cliente oficial da SDK estável do Gemini
                 client = genai.Client(api_key=api_key)
                 
-                # Abre a imagem do gráfico
+                # Abre a imagem salva
                 imagem = Image.open(uploaded_file)
                 
                 # Gera o prompt dinâmico
                 prompt_final = gerar_prompt_mestre(tipo_mercado)
                 
-                # Executa a geração usando o motor oficial estável de visão computacional (Gemini 2.5 Flash)
+                # Mudança definitiva: endpoint atualizado para gemini-3.5-flash
                 response = client.models.generate_content(
-                    model='gemini-2.5-flash',
+                    model='gemini-3.5-flash',
                     contents=[imagem, prompt_final]
                 )
                 
                 st.success("✅ Análise Computacional Concluída com Sucesso!")
-                st.markdown("### 📊 Resultado da Análise Suprema (Organizado)")
+                st.markdown("### 📊 Painel de Execução Analítica")
                 
-                # Mapeia e distribui a resposta em blocos verticais organizados um embaixo do outro
+                # Separa as linhas da resposta para organizar verticalmente uma embaixo da outra
                 linhas = response.text.split('\n')
                 
                 for linha in linhas:
                     if linha.strip():
-                        # Cria blocos visuais separados com bordas para cada métrica
+                        # Renderiza cada bloco de forma limpa, empilhada e sequencial
                         with st.container(border=True):
                             if "🚨 VEREDITO REAL DE CONFIANÇA:" in linha:
                                 st.warning(linha.replace("**", ""))
