@@ -109,3 +109,22 @@ if botao_analise:
     elif not uploaded_file:
         st.error("❌ Por favor, faça o upload de uma imagem do seu gráfico antes de iniciar.")
     else:
+        with st.spinner("🧠 Ativando Computação Visual: Identificando hora, preço e escaneando o gráfico..."):
+            try:
+                imagem_objeto = Image.open(uploaded_file)
+                prompt_comando = gerar_prompt_mestre(tipo_mercado)
+                resultado_analise = None
+                
+                for chave in lista_de_chaves:
+                    resultado_analise = ejecutar_chamada_gemini(chave, imagem_objeto, prompt_comando)
+                    if resultado_analise:
+                        break
+                
+                if resultado_analise:
+                    st.success("✅ Análise Estrutural e Reconhecimento Concluídos!")
+                    st.markdown("---")
+                    st.markdown(resultado_analise)
+                else:
+                    st.error("❌ Todas as chaves fornecidas falharam em ambos os modelos. Verifique suas cotas e as credenciais.")
+            except Exception as e:
+                st.error(f"❌ Ocorreu um erro crítico no processamento: {e}")
