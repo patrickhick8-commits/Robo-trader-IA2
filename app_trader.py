@@ -56,7 +56,7 @@ Retorne o diagnóstico estruturado exatamente neste formato markdown (não mude 
 📈 PREÇO ATUAL DA TELA DETECTADO AUTOMATICAMENTE: [Indique a taxa decimal extraída do eixo, ex: 1.34521]
 🚨 VEREDITO REAL DE CONFIANÇA: [ENTRAR COM CONFIANÇA / ENTRAR COM LOTE MÍNIMO POR RISCO GEOMÉTRICO / ABORTAR OPERAÇÃO]
 🟢/🔴 AÇÃO OPERACIONAL E DIREÇÃO: [COMPRA (CALL) / VENDA (PUT) / NENHUMA - OPERAÇÃO ABORTADA]
-📊 TAXA DE ACERTO ESTIMADA: [Forneça um percentual estatístico frio de probabilidade de vitória de 0% a 100% com base nas confluências. Operações abortadas = 0%]
+📊 TAXA DE ACERTO ESTIMADA: [Forneça um percentual esportivo frio de probabilidade de vitória de 0% a 100% com base nas confluências. Operações abortadas = 0%]
 ⚡ DETECTOU ZONA DE SIMETRIA OU MÚLTIPLOS PAVIOS? [Mapeie de forma cirúrgica o nível geométrico exato e classifique se é de corpo ou de pavio]
 ⏳ PROJEÇÃO DE TEMPO DA JANELA: [Indique explicitamente quantos candles/minutos futuros faltam para o preço tocar no gatilho, obrigatoriamente dentro da janela de 2 a 7 minutos. Ex: Toque estimado em 4 candles à frente]
 ⏱️ HORÁRIO ESTIMADO DA ENTRADA: [Calcule o minuto provável do toque com base na velocidade média de deslocamento visual, ex: 10:18:00]
@@ -84,9 +84,9 @@ if botao_analise:
                 # Gera o prompt dinâmico blindado
                 prompt_final = gerar_prompt_mestre(tipo_mercado)
                 
-                # Executa o modelo de visão de produção
+                # Executa o modelo de visão atualizado e vigente (gemini-3.5-flash)
                 response = client.models.generate_content(
-                    model='gemini-2.5-flash',
+                    model='gemini-3.5-flash',
                     contents=[imagem, prompt_final]
                 )
                 
