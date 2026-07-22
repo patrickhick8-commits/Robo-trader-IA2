@@ -3,17 +3,24 @@ from google import genai
 from PIL import Image
 
 # 1. Configuração da Página
-st.set_page_config(page_title="Agente IA Advanced - Matriz Suprema", page_icon="🤖", layout="centered")
+st.set_page_config(
+    page_title="Agente IA Advanced - Matriz Suprema", 
+    page_icon="🤖", 
+    layout="centered"
+)
 
 st.title("🤖 Agente IA Trader Pro: Matriz Suprema")
 st.write("Fusão Total: Projeção Temporal Avançada (3 a 10 Minutos), Reversão Futura por Contagem de Candles, Fluxo de Cores e Retração.")
 
 # 2. Barra Lateral
 st.sidebar.markdown("### 🔑 Gerenciador de Chaves de Contingência")
-chaves_input = st.sidebar.text_input("Cole suas Gemini API Keys aqui (separadas por ponto e vírgula):", type="password")
+chaves_input = st.sidebar.text_input(
+    "Cole suas Gemini API Keys aqui (separadas por ponto e vírgula):", 
+    type="password"
+)
 lista_de_chaves = [chave.strip() for chave in chaves_input.split(";") if chave.strip()]
 
-# 3. Definição Limpa do Prompt Mestre (Otimizado para Visão Computacional do Gemini 2.5)
+# 3. Definição Limpa do Prompt Mestre (Otimizado para Visão Computacional do Gemini 3.6 Flash)
 PROMPT_TRADER = (
     "[SYSTEM_ROLE] Você é um algoritmo de trading quantitativo focado em Opções Binárias e análise gráfica puramente visual. "
     "Sua postura é de FRIEZA MÁXIMA, RIGOR ABSOLUTO E PRECISÃO CIRÚRGICA.\n\n"
@@ -33,7 +40,7 @@ PROMPT_TRADER = (
     "[PASSO 3: FILTROS DE FLUXO PARA RETRAÇÃO]\n"
     "Identifique se o preço se movimenta com candles médios que deixam bastante pavio buscando regiões de S/R ou LTA/LTB.\n\n"
     "[PASSO 4: LOGICA DE REVERSÃO INTELIGENTE POR EXAUSTÃO NO TEMPO (3 A 10 MINUTOS)]\n"
-    "Projete o momento exato em que o movimento esticado chegará ao teto máximo da região de respeito e ative a reversão para o minuto da exaustão.\n\n"
+    "Projete o movimento tempo futuro com base estrita no último candle visível do print enviado. Calcule o momento exato em que o movimento esticado chegará ao teto máximo da região de respeito e ative a reversão para o minuto da exaustão.\n\n"
     "[PASSO 5: REGRA DO RSI]\n"
     "Proibido reverter se o RSI estiver cruzando de forma reta e agressiva os extremos. Aguarde a projeção de tempo futuro onde ele perderá angulação.\n\n"
     "[PASSO 6: MATRIZ DE ESTRATÉGIA COMBINADA ATIVADA]\n"
@@ -71,18 +78,22 @@ PROMPT_TRADER = (
 
 def executar_chamada_gemini(chave_api, imagem_objeto, prompt_comando):
     try:
-        # Inicialização com a nova SDK unificada (genai.Client)
+        # Nova SDK oficial do Google unificada
         client = genai.Client(api_key=chave_api)
         response = client.models.generate_content(
-            model='gemini-2.5-flash',
+            model='gemini-2.5-flash', # Atualizado para o motor moderno e estável de análise visual
             contents=[imagem_objeto, prompt_comando]
         )
         return response.text
     except Exception as e:
-        return f"❌ Erro ao processar com a chave atual: {str(e)}"
+        # Retorna o erro exato da API do Google para diagnosticar bloqueios ou chaves inválidas
+        return f"❌ Erro da API: {str(e)}"
 
-# 4. Interface Principal
-uploaded_file = st.file_uploader("📷 Faça o upload do Print do seu Gráfico (M1):", type=["png", "jpg", "jpeg"])
+# 4. Interface Principal 
+uploaded_file = st.file_uploader(
+    "📷 Faça o upload do Print do seu Gráfico (M1):", 
+    type=["png", "jpg", "jpeg"]
+)
 
 botao_analise = st.button("🧠 Iniciar Análise Avançada por IA")
 
@@ -102,16 +113,19 @@ if botao_analise:
                 st.write(f"Tentando analisar com a chave de contingência {i+1}...")
                 resultado = executar_chamada_gemini(chave, imagem, PROMPT_TRADER)
                 
-                if "❌ Erro" not in resultado:
+                # Modificado para checar se o retorno traz o log bruto de falha estrutural
+                if "❌ Erro da API:" not in resultado:
                     st.success("Análise concluída com sucesso!")
                     st.markdown(resultado)
                     sucesso = True
                     break
                 else:
-                    st.warning(f"Chave {i+1} falhou ou está instável. Tentando próxima da lista...")
+                    st.error(f"Falha crítica na Chave {i+1}:")
+                    st.code(resultado) # Exibe o bloco técnico da falha para o usuário identificar
+                    st.warning("Tentando próxima chave de contingência da lista...")
             
-            if not sucesso:
-                st.error("Todas as chaves de contingência fornecidas falharam. Verifique as chaves no Google AI Studio.")
+            if not sukses:
+                st.error("Todas as chaves fornecidas falharam. Verifique os códigos de erro acima e configure suas credenciais no Google AI Studio.")
 
 if not lista_de_chaves:
     st.info("💡 Lembrete: Insira as chaves de API na barra lateral esquerda para liberar o processamento.")
