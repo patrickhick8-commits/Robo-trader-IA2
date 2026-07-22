@@ -18,7 +18,7 @@ chaves_input = st.sidebar.text_input("Cole suas Gemini API Keys aqui:", type="pa
 # Transforma o texto em uma lista de chaves limpas
 lista_de_chaves = [chave.strip() for chave in chaves_input.split(";") if chave.strip()]
 
-# PROMPT MESTRE (Com autonomia total de escolha de expiração para gráficos M1)
+# PROMPT MESTRE
 PROMPT_TRADER = """
 [SYSTEM_ROLE] Você é um algoritmo de trading quantitativo focado em encontrar oportunidades frequentes e de boa precisão para Opções Binárias operando estritamente em gráficos de M1. Sua postura é moderadamente agressiva: seu objetivo é extrair o máximo de sinais válidos do gráfico, operando por confluência de fatores sem descartar operações por detalhes mínimos de ruído.
 
@@ -32,10 +32,10 @@ Escaneie textualmente a imagem em busca do nome do ativo (ex: EUR/USD, BTC/USD, 
 - Se a estrutura geral for de Topos e Fundos Descendentes, determine TENDÊNCIA PRINCIPAL: BAIXA.
 - Se o preço estiver oscilando estritamente dentro de uma faixa lateral sem direção definida, determine TENDÊNCIA PRINCIPAL: LATERAL / CONSOLIDAÇÃO.
 
-[PASSO 3: FILTROS DE TENDÊNCIA E CONFLUÊNCIA COM EMA 9]
+[PASSO 3: FILTROS DE TENDÊNCIA E CONFLUÊNCIA WITH EMA 9]
 O sinal deve obrigatoriamente confluir com a TENDÊNCIA PRINCIPAL identificada no Passo 2:
-- COMPRA (CALL): Permitido apenas se a TENDÊNCIA PRINCIPAL for de ALTA (or lateral) E o preço estiver preferencialmente ACIMA da EMA 9 com inclinação ascendente. Bloqueie compras se a tendência macro for de baixa.
-- VENDA (PUT): Permitido apenas se a TENDÊNCIA PRINCIPAL for de BAIXA (or lateral) E o preço estiver preferencialmente ABAIXO da EMA 9 com inclinação descendente. Bloqueie vendas se a tendência macro for de alta.
+- COMPRA (CALL): Permitido apenas se a TENDÊNCIA PRINCIPAL for de ALTA (ou lateral) E o preço estiver preferencialmente ACIMA da EMA 9 com inclinação ascendente. Bloqueie compras se a tendência macro for de baixa.
+- VENDA (PUT): Permitido apenas se a TENDÊNCIA PRINCIPAL for de BAIXA (ou lateral) E o preço estiver preferencialmente ABAIXO da EMA 9 com inclinação descendente. Bloqueie vendas se a tendência macro for de alta.
 - Permita operações se o preço estiver ligeiramente próximo à média para correções rápidas, desde que a favor da tendência principal.
 
 [PASSO 4: MATRIZ DE ESTRATÉGIA ADAPTATIVA MULTI-CONFLUENTE]
@@ -116,3 +116,4 @@ if upload_arquivo is not None:
     st.image(imagem, caption="Gráfico Carregado - Análise Autônoma de M1 Ativada", use_container_width=True)
 
     if not lista_de_chaves:
+        st.warning("⚠️ Insira pelo menos uma Gemini API Key na barra lateral para prosseguir.")
