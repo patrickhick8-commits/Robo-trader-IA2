@@ -62,30 +62,24 @@ Seja frio, direto e puramente matemático.
 # ==============================================================================
 def executar_analise_ia(client, image, prompt):
     erro = ""
-    # Tenta o modelo principal primeiro
     try:
         response = client.models.generate_content(model='gemini-2.5-flash', contents=[image, prompt])
         if response and response.text:
             return response, ""
     except Exception as e1:
         erro += f"[Flash 2.5: {str(e1)}] "
-    
-    # Tenta o modelo Pro caso o primeiro falhe
     try:
         response = client.models.generate_content(model='gemini-2.5-pro', contents=[image, prompt])
         if response and response.text:
             return response, ""
     except Exception as e2:
         erro += f"[Pro 2.5: {str(e2)}] "
-        
-    # Tenta o modelo Flash 1.5 como última alternativa de segurança
     try:
         response = client.models.generate_content(model='gemini-1.5-flash', contents=[image, prompt])
         if response and response.text:
             return response, ""
     except Exception as e3:
         erro += f"[Flash 1.5: {str(e3)}]"
-        
     return None, erro
 
 # ==============================================================================
@@ -100,11 +94,7 @@ API_KEY = st.sidebar.text_input("Cole sua Gemini API Key aqui:", type="password"
 
 if API_KEY:
     client = genai.Client(api_key=API_KEY)
-
-    uploaded_file = st.file_uploader(
-        "Arraste o print completo do gráfico M1 (inclua Velas, RSI e Relógio):", 
-        type=["png", "jpg", "jpeg"]
-    )
+    uploaded_file = st.file_uploader("Arraste o print completo do gráfico M1 (inclua Velas, RSI e Relógio):", type=["png", "jpg", "jpeg"])
 
     if uploaded_file is not None:
         image = Image.open(uploaded_file)
@@ -112,8 +102,6 @@ if API_KEY:
         
         if st.button("🚀 EXECUTAR ANÁLISE AVANÇADA DE SINAL"):
             with st.spinner("IA escaneando padrões de velas, volume implícito e mercado..."):
-                
-                # OTIMIZAÇÃO VISUAL: Reduz tamanho da imagem para evitar recusas de servidor
                 try:
                     if image.mode in ("RGBA", "P"):
                         image = image.convert("RGB")
@@ -121,13 +109,14 @@ if API_KEY:
                 except Exception as img_err:
                     st.sidebar.warning(f"Aviso na otimização de imagem: {img_err}")
 
-                # Dispara a execução chamando a função linear isolada
                 response, erro_final = executar_analise_ia(client, image, PROMPT_TRADER)
 
-                # EXIBIÇÃO DO RESULTADO NA INTERFACE
                 if response and response.text:
                     st.success("Análise Avançada Concluída com Sucesso!")
                     st.markdown(response.text)
-                    
-                    st.components.v1.html(
-                        """
+                    st.components.v1.html('<audio autoplay><source src="https://google.com" type="audio/ogg"></audio>', height=0)
+                else:
+                    st.error("A IA não conseguiu processar esta imagem.")
+                    st.warning(f"Detalhes técnicos dos servidores: {erro_final}")
+                    st.info("Dica operacional: Use o atalho Windows + Shift + S para enviar o print recortado apenas com o gráfico.")
+else:
