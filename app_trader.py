@@ -108,11 +108,12 @@ Retorne o diagnóstico estruturado exatamente neste formato markdown limpo e des
 Seja frio, preciso e direto. Velocidade e precisão salvam bancas.
 """
 
-# Inicializa o cache de estado do gráfico na memória estável do navegador
-if "grafico_salvo" not in st.session_state:
-    st.session_state.grafico_salvo = None
+# Bloco estático sem condicionais de desenho: o botão FICA SEMPRE VISÍVEL no topo da interface
+botao_analise = st.button("🚀 CLIQUE AQUI PARA ANALISAR GRÁFICO")
 
-# CRIAÇÃO DO FORMULÁRIO BLINDADO: Impede que o Streamlit suma com o botão ao atualizar a tela
-with st.form("formulario_trader", clear_on_submit=False):
-    upload_arquivo = st.file_uploader("Upload do Print do Gráfico (M1)", type=["png", "jpg", "jpeg"])
-    
+# Campo de Upload de arquivo padrão
+upload_arquivo = st.file_uploader("Upload do Print do Gráfico (M1)", type=["png", "jpg", "jpeg"])
+
+if upload_arquivo is not None:
+    imagem = Image.open(upload_arquivo)
+
