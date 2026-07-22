@@ -92,9 +92,9 @@ if botao_analise:
                 # Gera o prompt dinâmico ajustado
                 prompt_final = gerar_prompt_mestre(tipo_mercado)
                 
-                # Chamada corrigida para o modelo estável vigente (gemini-2.5-flash)
+                # CHAMADA ATUALIZADA: Substituído pelo modelo de produção estável vigente
                 response = client.models.generate_content(
-                    model='gemini-2.5-flash',
+                    model='gemini-3.6-flash',
                     contents=[imagem, prompt_final]
                 )
                 
