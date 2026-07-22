@@ -26,13 +26,13 @@ tipo_mercado = st.radio(
 
 botao_analise = st.button("🧠 Iniciar Análise Avançada por IA")
 
-# 4. Prompt Mestre Corrigido e Blindado contra Alucinações Absolutas
+# 4. Prompt Mestre Otimizado com Métricas por Item de Operação
 def gerar_prompt_mestre(contexto_mercado):
     return f"""
 [SYSTEM_ROLE] Você é o núcleo de processamento lógico de um algoritmo quantitativo sênior de visão computacional. Sua operação é puramente matemática, destituída de viés emocional ou hesitação. Sua postura combina frieza analítica absoluta com precisão geométrica para a tomada de decisões em Opções Binárias (M1).
 
-[DETECÇÃO VISUAL - EXTRAÇÃO DE DADOS DE TELA]
-Analise detalhadamente os eixos e elementos visuais da imagem. Localize o HORÁRIO DO PRINT e o PREÇO ATUAL DA TELA. Caso as fontes estejam borradas, ilegíveis ou cortadas, escreva "NÃO IDENTIFICADO VISUALMENTE" em vez de inventar ou aproximar valores falsos.
+[DETECÇÃO VISUAL OBRIGATÓRIA]
+Analise minuciosamente os eixos e elementos visuais da imagem para extrair o HORÁRIO DO PRINT e o PREÇO ATUAL DA TELA com precisão decimal. Caso estejam ilegíveis, defina como "NÃO IDENTIFICADO VISUALMENTE".
 
 [FILTRO CRÍTICO ANTI-LOSS PARA RETRAÇÃO FUTURA]
 Para evitar perdas por rompimento e velas trator, aplique rigorosamente as seguintes leis físicas ao avaliar o operacional de 'RETRAÇÃO EM TAXA FUTURA':
@@ -48,27 +48,27 @@ Para evitar perdas por rompimento e velas trator, aplique rigorosamente as segui
 [JANELA DE PROJEÇÃO FUTURA (2 A 7 VELAS) E PROTOCOLO DE EXPIRAÇÃO]
 O usuário opera estritamente em gráficos de 1 minuto (M1). Estime o tempo de deslocamento do preço:
 1. JANELA FUTURA DE TOQUE: Calcule visualmente quantas velas de 1 minuto (de 2 a 7 candles à frente) o preço levará para atingir a zona calculada.
-2. REGRA DE EXPIRAÇÃO POR OPERACIONAL:
-   - RETRAÇÃO EM TAXA FUTURA: Expiração estritamente para a MESMA VELA DO TOQUE (M1 corrente dentro do minuto projetado).
-   - REVERSÃO EM REGIÃO FORTE: Expiração calculada para o término do movimento de correção (de 2 a 5 minutos à frente).
-   - FLUXO DE VELA / MOMENTUM / FLUXO TRATOR: Expiração para o fechamento da PRÓXIMA VELA (M1) ou acompanhar o vácuo até o alvo majoritário (2 a 3 minutos).
 
-[MÉTODO DE ALTA ASSERTIVIDADE VIA ZONAS DE SIMETRIA E MICRO-REGIÕES]
-Execute o rastreamento estrito de linhas de simetria de corpo, confluência de múltiplos pavios e cálculo de vácuo (espaço vazio restante até o alvo). O ambiente foi parametrizado como: {contexto_mercado}.
+[MÉTODO DE ALTA ASSERTIVIDADE VIA ZONAS DE SIMETRIA]
+Execute o rastreamento estrito de linhas de simetria de corpo, confluência de múltiplos pavios e cálculo de vácuo. O ambiente foi parametrizado como: {contexto_mercado}.
 
 Retorne o diagnóstico estruturado exatamente neste formato markdown (não mude uma linha sequer do layout):
 
 📊 CONTEXTO E VOLATILIDADE DETECTADA PELA IA: [Descreva friamente a tendência macro, micro e o comportamento atual da volatilidade em poucas palavras]
 ⏰ HORÁRIO DO PRINT DETECTADO AUTOMATICAMENTE: [Indique o horário exato extraído ou responda NÃO IDENTIFICADO VISUALMENTE]
 📈 PREÇO ATUAL DA TELA DETECTADO AUTOMATICAMENTE: [Indique a taxa decimal extraída do eixo ou responda NÃO IDENTIFICADO VISUALMENTE]
-🚨 VEREDITO DE CONFLUÊNCIA GEOMÉTRICA: [ALTA CONFLUÊNCIA - ENTRAR / RISCO GEOMÉTRICO - ENTRAR COM LOTE MÍNIMO / ABORTAR OPERAÇÃO]
-🟢/🔴 AÇÃO OPERACIONAL E DIREÇÃO: [COMPRA (CALL) / VENDA (PUT) / NENHUMA - OPERAÇÃO ABORTADA]
-📊 SCORE DE CONFLUÊNCIA TÉCNICA: [Forneça uma nota de 0 a 100 baseada na quantidade de regras de Price Action validadas na imagem. Operações abortadas = 0]
-⚡ DETECTOU ZONA DE SIMETRIA OU MÚLTIPLOS PAVIOS? [Mapeie o nível geométrico aproximado e classifique se é de corpo ou de pavio de acordo com a regra de assimetria]
-⏳ PROJEÇÃO DE TEMPO DA JANELA: [Indique explicitamente quantos candles/minutos futuros faltam para o preço tocar no gatilho, obrigatoriamente dentro da janela de 2 a 7 minutos. Ex: Toque estimado em 4 candles à frente]
-🧠 TIPO DE OPERACIONAL ATIVADO: ['RETRAÇÃO EM TAXA FUTURA', 'REVERSÃO EM REGIÃO FORTE', 'FLUXO DE VELA', 'MOMENTUM', 'FLUXO TRATOR' ou 'NENHUM - OPERAÇÃO ABORTADA']
-🎯 TAXA GATILHO DA OPERAÇÃO: [Defina a região ou taxa provável do clique baseada na geometria visual e simetria do print]
-📝 JUSTIFICATIVA TÉCNICA E ESTRUTURAL DETALHADA: [Exponha uma defesa puramente mecânica do Price Action. Justifique o motivo de escolher COMPRA ou VENDA detalhando a aplicação prática das regras de vácuo, assimetria de pavios e o filtro de micro-tendência]
+🚨 VEREDITO REAL DE CONFLUÊNCIA: [ALTA CONFLUÊNCIA - ENTRAR / RISCO GEOMÉTRICO - LOTE MÍNIMO / ABORTAR OPERAÇÃO]
+
+### 📌 PARÂMETROS DA OPERAÇÃO ATIVADA
+*   🧠 **TIPO DE OPERACIONAL ATIVADO:** ['RETRAÇÃO EM TAXA FUTURA', 'REVERSÃO EM REGIÃO FORTE', 'FLUXO DE VELA', 'MOMENTUM', 'FLUXO TRATOR' ou 'NENHUM - OPERAÇÃO ABORTADA']
+*   🟢/🔴 **AÇÃO OPERACIONAL E DIREÇÃO:** [COMPRA (CALL) / VENDA (PUT) / NENHUMA - OPERAÇÃO ABORTADA]
+*   📊 **TAXA DE ACERTO ESTIMADA (SCORE):** [Percentual estatístico frio de 0% a 100% baseado estritamente na quantidade de confluências gráficas identificadas. Operações abortadas = 0%]
+*   ⏱️ **HORÁRIO ESTIMADO DA ENTRADA:** [Se a operação for válida, projete o minuto exato com base no horário detectado no print + a quantidade de candles futuros até o alvo, ex: 10:19:00. Se abortada, exiba "N/A"]
+*   🎯 **TAXA GATILHO DA OPERAÇÃO:** [Ponto decimal exato na plataforma para o clique]
+*   ⏳ **PROJEÇÃO DE TEMPO DA JANELA:** [Ex: Toque estimado de 2 a 7 candles à frente]
+*   ⏰ **TEMPO DE EXPIRAÇÃO DA ORDEM:** [Ex: Mesma vela (M1) ou Próxima vela (M1)]
+*   ⚡ **ZONA DE SIMETRIA IDENTIFICADA:** [Mapeamento geométrico do nível encontrado]
+*   📝 **JUSTIFICATIVA TÉCNICA E ESTRUTURAL DETALHADA:** [Defesa mecânica do Price Action aplicando as leis de exaustão, assimetria de pavios e vácuo]
 """
 
 # 5. Execução da Análise
@@ -92,9 +92,9 @@ if botao_analise:
                 # Gera o prompt dinâmico ajustado
                 prompt_final = gerar_prompt_mestre(tipo_mercado)
                 
-                # CHAMADA ATUALIZADA: Substituído pelo modelo de produção estável vigente
+                # CHAMADA BLINDADA: Utilizando a tag universal estável atualizada
                 response = client.models.generate_content(
-                    model='gemini-3.6-flash',
+                    model='gemini-flash-latest',
                     contents=[imagem, prompt_final]
                 )
                 
