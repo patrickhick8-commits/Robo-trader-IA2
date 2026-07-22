@@ -107,28 +107,28 @@ if upload_arquivo is not None:
         if st.button("🚀 Analisar Matriz do Gráfico"):
             sucesso = False
             
-            # Loop de contingência real sobre a lista de chaves fornecidas
+            # Loop de contingência sobre a lista de chaves fornecidas
             for i, chave_ativa in enumerate(lista_de_chaves):
-                try:
-                    with st.spinner(f"Analisando gráfico com a API Key {i+1}..."):
-                        # Inicializa o cliente com a chave da iteração atual
-                        client = genai.Client(api_key=chave_ativa)
-                        
-                        # Correção essencial: chamada explícita para o modelo de produção estável 'gemini-2.5-flash'
-                        resposta = client.models.generate_content(
-                            model='gemini-2.5-flash',
-                            contents=[imagem, PROMPT_TRADER]
-                        )
-                        
-                        st.success(f"✅ Análise executada com sucesso usando a Chave {i+1}!")
-                        st.markdown(resposta.text)
-                        sucesso = True
-                        break  # Interrompe o loop de contingência ao obter sucesso
-                        
-                except Exception as e:
-                    st.error(f"❌ Erro na Chave {i+1}: {str(e)}")
-                    if i < len(lista_de_chaves) - 1:
-                        st.info("🔄 Rotacionando para a próxima chave de contingência...")
-            
-            if not sucesso:
-                st.error("🚨 Todas as chaves enviadas falharam. Certifique-se de que os tokens copiados do Google AI Studio estão ativos.")
+                # Modelos atuais compatíveis na nova SDK
+                modelos_para_tentar = ['gemini-3.5-flash', 'gemini-3.0-flash']
+                
+                for modelo in modelos_para_tentar:
+                    try:
+                        with st.spinner(f"Analisando gráfico com a API Key {i+1} no modelo {modelo}..."):
+                            # Inicializa o cliente com a chave ativa
+                            client = genai.Client(api_key=chave_ativa)
+                            
+                            # Chamada usando modelos da geração atual
+                            resposta = client.models.generate_content(
+                                model=modelo,
+                                contents=[imagem, PROMPT_TRADER]
+                            )
+                            
+                            st.success(f"✅ Análise executada com sucesso usando a Chave {i+1} ({modelo})!")
+                            st.markdown(resposta.text)
+                            sucesso = True
+                            break  # Sai do loop de modelos
+                            
+                    except Exception as e:
+                        # Se o erro for especificamente o modelo não encontrado, tenta o próximo modelo do loop interno
+                        if "404" in str(e) and modelo != modelos_para_tentar[-1]:
