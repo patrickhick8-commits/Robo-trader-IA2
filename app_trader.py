@@ -17,7 +17,7 @@ chaves_input = st.sidebar.text_input("Cole suas Gemini API Keys aqui:", type="pa
 # Transforma o texto em uma lista de chaves limpas
 lista_de_chaves = [chave.strip() for chave in chaves_input.split(";") if chave.strip()]
 
-# PROMPT MESTRE (Isolado fora dos blocos para evitar erros de indentação no Python)
+# PROMPT MESTRE
 PROMPT_TRADER = """
 [SYSTEM_ROLE] Você é um algoritmo de trading quantitativo focado em encontrar oportunidades frequentes e de boa precisão para Opções Binárias (M1). Sua postura é moderadamente agressiva: seu objetivo é extrair o máximo de sinais válidos do gráfico, operando por confluência de fatores sem descartar operações por detalhes mínimos de ruído.
 
@@ -107,18 +107,14 @@ if upload_arquivo is not None:
         if st.button("🚀 Analisar Matriz do Gráfico"):
             sucesso = False
             
-            # Loop de contingência sobre a lista de chaves fornecidas
             for i, chave_ativa in enumerate(lista_de_chaves):
-                # Modelos atuais compatíveis na nova SDK (Do mais recente ao legado estável)
                 modelos_para_tentar = ['gemini-2.5-flash', 'gemini-1.5-flash']
                 
                 for modelo in modelos_para_tentar:
                     try:
                         with st.spinner(f"Analisando gráfico com a API Key {i+1} no modelo {modelo}..."):
-                            # Inicializa o cliente com a chave ativa
                             client = genai.Client(api_key=chave_ativa)
                             
-                            # Chamada usando modelos da geração atual
                             resposta = client.models.generate_content(
                                 model=modelo,
                                 contents=[imagem, PROMPT_TRADER]
@@ -127,7 +123,17 @@ if upload_arquivo is not None:
                             st.success(f"✅ Análise executada com sucesso usando a Chave {i+1} ({modelo})!")
                             st.markdown(resposta.text)
                             sucesso = True
-                            break  # Sai do loop de modelos se funcionar
+                            break
                             
                     except Exception as e:
-                        # CORREÇÃO: Bloco devidamente indentado usando 'continue' para pular para o próximo modelo
+                        if "404" in str(e) and modelo != modelos_para_tentar[-1]:
+                            continue
+                        else:
+                            st.error(f"❌ Erro na Chave {i+1} com o modelo {modelo}: {str(e)}")
+                            break
+                
+                if sucesso:
+                    break
+            
+            if not sucesso:
+                st.error("🚨 Todas as chaves e modelos falharam. Verifique se os tokens foram gerados corretamente no Google AI Studio.")
