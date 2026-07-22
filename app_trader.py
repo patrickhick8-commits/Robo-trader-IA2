@@ -93,15 +93,15 @@ if API_KEY:
                 - Lógica de Expiração Adotada: [Justifique matematicamente a escolha do tempo de expiração: 1 minuto para fechamento na mesma vela ou 3 minutos para mitigação e proteção de taxa]
                 - Leitura de Falsos Rompimentos/Pullbacks: [Explique por que o cenário atual é seguro e não se trata de uma armadilha ou falso movimento]
                 - Filtragem de Ruído e Volume por Corpo: [Análise da clareza, direção ou desaceleração real do fluxo das velas]
-                - Absorção e Pressão por Pavios: [O que a pressão dos pavios revealed sobre o volume oculto de defesa no suporte/resistência recente]
+                - Absorção e Pressão por Pavios: [O que a pressão dos pavios revelou sobre o volume oculto de defesa no suporte/resistência recente]
                 - Filtro de Segurança RSI: [Status técnico e posição real da linha roxa do RSI 14 no gráfico para confluência ou justificativa técnica de descarte caso o fluxo ignore o indicador]
                 Seja frio, direto e puramente matemático.
                 """
                 
                 response = None
                 erro_final = ""
+                modelos = ['gemini-2.5-flash', 'gemini-2.5-pro', 'gemini-1.5-flash']
                 
-                # EXECUÇÃO DO MODELO PRINCIPAL (TENTATIVA 1)
-                if response is None:
+                # Execução cíclica limpa e à prova de erros de sintaxe
+                for m in modelos:
                     try:
-                        response = client.models.generate_content(model='gemini-2.5-flash', contents=[image, prompt])
