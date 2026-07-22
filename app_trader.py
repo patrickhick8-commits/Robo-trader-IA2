@@ -8,14 +8,14 @@ import io
 st.set_page_config(page_title="Agente IA Advanced - Matriz Suprema", page_icon="🤖", layout="centered")
 
 st.title("🤖 Agente IA Trader Pro: Matriz Suprema")
-st.write("Fusão Total: Estrutura Dinâmica do Preço, Contexto de Mercado, Volatilidade e Projeção Temporal.")
+st.write("Fusão Total: RSI Padrão, Estrutura Dinâmica do Preço, Contexto de Mercado e Expiração Cirúrgica.")
 
 # 2. Barra Lateral - Gerenciamento de Chaves
 st.sidebar.markdown("### 🔑 Configuração da API")
 api_key = st.sidebar.text_input("Insira sua Gemini API Key:", type="password")
 
 # 3. Interface Principal de Inputs
-uploaded_file = st.file_uploader("📷 Faça o upload do Print do seu Gráfico (M1):", type=["png", "jpg", "jpeg"])
+uploaded_file = st.file_uploader("📷 Faça o upload do Print do seu Gráfico (M1 com RSI):", type=["png", "jpg", "jpeg"])
 
 st.markdown("##### 🌐 Calibração do Ambiente de Negociação")
 tipo_mercado = st.radio(
@@ -26,13 +26,19 @@ tipo_mercado = st.radio(
 
 botao_analise = st.button("🧠 Iniciar Análise Avançada por IA")
 
-# 4. Prompt Mestre Otimizado com Métricas por Item de Operação
+# 4. Prompt Mestre Otimizado com RSI e Nova Regra de Expiração Avançada
 def gerar_prompt_mestre(contexto_mercado):
     return f"""
 [SYSTEM_ROLE] Você é o núcleo de processamento lógico de um algoritmo quantitativo sênior de visão computacional. Sua operação é puramente matemática, destituída de viés emocional ou hesitação. Sua postura combina frieza analítica absoluta com precisão geométrica para a tomada de decisões em Opções Binárias (M1).
 
 [DETECÇÃO VISUAL OBRIGATÓRIA]
 Analise minuciosamente os eixos e elementos visuais da imagem para extrair o HORÁRIO DO PRINT e o PREÇO ATUAL DA TELA com precisão decimal. Caso estejam ilegíveis, defina como "NÃO IDENTIFICADO VISUALMENTE".
+
+[ANÁLISE OBRIGATÓRIA DO RSI PADRÃO]
+Localize visualmente o indicador RSI (Relative Strength Index) na parte inferior ou sobreposto ao gráfico. Execute a seguinte checagem algorítmica:
+1. NÍVEIS EXTREMOS: Avalie se a linha do RSI cruzou ou está prestes a tocar as linhas de Sobrecompra (70 ou 80) ou Sobrevenda (30 ou 20).
+2. CONFLUÊNCIA DE FILTRO: Se o preço estiver tocando uma simetria gráfica mas o RSI estiver em zona neutra (perto do nível 50), reduza drasticamente o Score de Confluência. Só valide operações de retração se o RSI confirmar a exaustão do movimento (apontando sobrecompra para PUT ou sobrevenda para CALL).
+3. DIVERGÊNCIA VISUAL: Caso note o preço fazendo topos mais altos e o RSI fazendo topos mais baixos (ou vice-versa), classifique como Divergência de Alta/Baixa e priorize a entrada a favor da reversão matemática do indicador.
 
 [FILTRO CRÍTICO ANTI-LOSS PARA RETRAÇÃO FUTURA]
 Para evitar perdas por rompimento e velas trator, aplique rigorosamente as seguintes leis físicas ao avaliar o operacional de 'RETRAÇÃO EM TAXA FUTURA':
@@ -45,9 +51,10 @@ Para evitar perdas por rompimento e velas trator, aplique rigorosamente as segui
 5. ASSIMETRIA DE PAVIOS: Certifique-se de que os pavios de referência no passado do gráfico sejam longos (ocupando mais de 60% do candle total). Rejeite zonas com pavios curtos ou corpos cheios travados na linha.
 6. ALINHAMENTO DE MICRO-TENDÊNCIA: Analise o padrão geométrico dos últimos 20 candles. Se houver uma micro-tendência direcional clara, proíba operações de retração contra ela (ex: não dê PUT em tendência de alta forte).
 
-[JANELA DE PROJEÇÃO FUTURA (2 A 7 VELAS) E PROTOCOLO DE EXPIRAÇÃO]
+[JANELA DE PROJEÇÃO FUTURA (2 A 5 VELAS) E PROTOCOLO DE EXPIRAÇÃO CRÍTICO]
 O usuário opera estritamente em gráficos de 1 minuto (M1). Estime o tempo de deslocamento do preço:
-1. JANELA FUTURA DE TOQUE: Calcule visualmente quantas velas de 1 minuto (de 2 a 7 candles à frente) o preço levará para atingir a zona calculada.
+1. JANELA FUTURA DE TOQUE: Calcule visualmente o deslocamento geométrico para o clique ocorrer obrigatoriamente dentro de uma janela temporal de 2 a 5 candles futuros à frente. 
+2. REGRA DE EXPIRAÇÃO DA CORRETORA: A configuração da ordem na plataforma deve ser configurada estritamente para a MESMA VELA DO TOQUE (M1 corrente do minuto em que o preço atingir a taxa gatilho projetada dentro do intervalo de 2 a 5 minutos).
 
 [MÉTODO DE ALTA ASSERTIVIDADE VIA ZONAS DE SIMETRIA]
 Execute o rastreamento estrito de linhas de simetria de corpo, confluência de múltiplos pavios e cálculo de vácuo. O ambiente foi parametrizado como: {contexto_mercado}.
@@ -62,13 +69,14 @@ Retorne o diagnóstico estruturado exatamente neste formato markdown (não mude 
 ### 📌 PARÂMETROS DA OPERAÇÃO ATIVADA
 *   🧠 **TIPO DE OPERACIONAL ATIVADO:** ['RETRAÇÃO EM TAXA FUTURA', 'REVERSÃO EM REGIÃO FORTE', 'FLUXO DE VELA', 'MOMENTUM', 'FLUXO TRATOR' ou 'NENHUM - OPERAÇÃO ABORTADA']
 *   🟢/🔴 **AÇÃO OPERACIONAL E DIREÇÃO:** [COMPRA (CALL) / VENDA (PUT) / NENHUMA - OPERAÇÃO ABORTADA]
-*   📊 **TAXA DE ACERTO ESTIMADA (SCORE):** [Percentual estatístico frio de 0% a 100% baseado estritamente na quantidade de confluências gráficas identificadas. Operações abortadas = 0%]
-*   ⏱️ **HORÁRIO ESTIMADO DA ENTRADA:** [Se a operação for válida, projete o minuto exato com base no horário detectado no print + a quantidade de candles futuros até o alvo, ex: 10:19:00. Se abortada, exiba "N/A"]
-*   🎯 **TAXA GATILHO DA OPERAÇÃO:** [Ponto decimal exato na plataforma para o clique]
-*   ⏳ **PROJEÇÃO DE TEMPO DA JANELA:** [Ex: Toque estimado de 2 a 7 candles à frente]
-*   ⏰ **TEMPO DE EXPIRAÇÃO DA ORDEM:** [Ex: Mesma vela (M1) ou Próxima vela (M1)]
+*   📉 **POSICIONAMENTO DO RSI PADRÃO:** [Indique o estado exato da linha do RSI: Ex: Sobrecomprado no nível 74 / Neutro no nível 52 / Sobrevendido no nível 21 / Não identificado visualmente]
+*   📊 **TAXA DE ACERTO ESTIMADA (SCORE):** [Percentual estatístico frio de 0% a 100% baseado estritamente na quantidade de confluências gráficas e do RSI identificadas. Operações abortadas = 0%]
+*   ⏱️ **HORÁRIO ESTIMADO DA ENTRADA:** [Se a operação for válida, projete o minuto exato com base no horário detectado no print + a quantidade de candles futuros (de 2 a 5) até o alvo. Se abortada, exiba "N/A"]
+*   🎯 **TAXA GATILHO DA OPERAÇÃO:** [Ponto decimal exato na plataforma para o clique baseado na simetria combinada com o RSI]
+*   ⏳ **PROJEÇÃO DE TEMPO DA JANELA:** [Exibe de forma rígida quantos candles futuros faltam para o toque, obrigatoriamente restringido ao intervalo de 2 a 5 candles à frente]
+*   ⏰ **TEMPO DE EXPIRAÇÃO DA ORDEM:** [Exibir obrigatoriamente: "ESTRITAMENTE PARA A MESMA VELA DO TOQUE (M1 corrente dentro da janela de 2 a 5 minutos projetados)"]
 *   ⚡ **ZONA DE SIMETRIA IDENTIFICADA:** [Mapeamento geométrico do nível encontrado]
-*   📝 **JUSTIFICATIVA TÉCNICA E ESTRUTURAL DETALHADA:** [Defesa mecânica do Price Action aplicando as leis de exaustão, assimetria de pavios e vácuo]
+*   📝 **JUSTIFICATIVA TÉCNICA E ESTRUTURAL DETALHADA:** [Defesa mecânica do Price Action aplicando as leis de exaustão, assimetria de pavios, vácuo e a confluência ou divergência matemática detectada na linha do RSI]
 """
 
 # 5. Execução da Análise
@@ -78,7 +86,7 @@ if botao_analise:
     elif not uploaded_file:
         st.error("Por favor, faça o upload do print do gráfico.")
     else:
-        with st.spinner("🧠 Varrendo eixos gráficos, simetrias e aplicando filtros anti-loss de exaustão..."):
+        with st.spinner("🧠 Varrendo eixos gráficos, simetrias, níveis de RSI e aplicando filtros anti-loss de exaustão..."):
             try:
                 # Inicializa o cliente oficial utilizando a SDK nova (google-genai)
                 client = genai.Client(api_key=api_key)
