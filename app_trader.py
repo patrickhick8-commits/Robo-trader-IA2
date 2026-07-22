@@ -1,118 +1,126 @@
 import streamlit as st
 from google import genai
-from google.genai import errors
 from PIL import Image
-import io
+import datetime
 
 # 1. Configuração da Página
 st.set_page_config(page_title="Agente IA Advanced - Matriz Suprema", page_icon="🤖", layout="centered")
 
 st.title("🤖 Agente IA Trader Pro: Matriz Suprema")
-st.write("Fusão Total: RSI Padrão, Estrutura Dinâmica do Preço, Contexto de Mercado e Expiração Cirúrgica.")
+st.write("Fusão Total: Projeção Temporal Avançada (3 a 10 Minutos), Reversão Dinâmica em Região, Fluxo de Cores e Retração.")
 
-# 2. Barra Lateral - Gerenciamento de Chaves
-st.sidebar.markdown("### 🔑 Configuração da API")
-api_key = st.sidebar.text_input("Insira sua Gemini API Key:", type="password")
+# 2. Barra Lateral
+st.sidebar.markdown("### 🔑 Gerenciador de Chaves de Contingência")
+chaves_input = st.sidebar.text_input("Cole suas Gemini API Keys aqui (separadas por ponto e vírgula):", type="password")
+lista_de_chaves = [chave.strip() for chave in chaves_input.split(";") if chave.strip()]
 
-# 3. Interface Principal de Inputs
-uploaded_file = st.file_uploader("📷 Faça o upload do Print do seu Gráfico (M1 com RSI):", type=["png", "jpg", "jpeg"])
-
-st.markdown("##### 🌐 Calibração do Ambiente de Negociação")
-tipo_mercado = st.radio(
-    "Selecione o tipo de mercado atual:",
-    ["Mercado Aberto (Real/Macro)", "Mercado OTC (Algoritmo da Corretora)"],
-    help="O mercado OTC opera sob algoritmos proprietários, enquanto o aberto segue fluxo interbancário e notícias."
+# 3. Definição Limpa do Prompt Mestre
+PROMPT_TRADER = (
+    "[SYSTEM_ROLE] Você é um algoritmo de trading quantitativo focado em Opções Binárias. "
+    "Sua postura é de FRIEZA MÁXIMA, RIGOR ABSOLUTO E PRECISÃO CIRÚRGICA.\n\n"
+    "[DIRETRIZ DE SEGURANÇA MÁXIMA: GATILHO DE REVERSÃO EM REGIÃO VS FLUXO MOMENTÂNEO]\n"
+    "ATENÇÃO: Mude seu comportamento dinamicamente com base na proximidade do preço em relação às zonas demarcadas. "
+    "Mapeie as regiões de suporte e resistência fortes. Se você detectar que o preço JÁ ESTIVER NA REGIÃO de reversão, "
+    "ative o [OPERACIONAL DE REVERSÃO EM REGIÃO], projetando o enfraquecimento e a exaustão das velas dentro da zona para "
+    "uma entrada contra a tendência.\n"
+    "CASO CONTRÁRIO (se o preço estiver distante da região de reversão), você está PROIBIDO de forçar uma reversão antecipada. "
+    "Nesse cenário, você deve ignorar a reversão e entrar imediatamente a favor do [FLUXO MOMENTÂNEO DO GRÁFICO], surfando a "
+    "continuidade do movimento atual do preço até que ele se aproxime do alvo principal.\n\n"
+    "[PASSO 1: IDENTIFICAÇÃO DO AMBIENTE]\n"
+    "Identifique o ativo e se é [MERCADO ABERTO REAL] ou [ALGORITMO OTC].\n\n"
+    "[PASSO 2: FILTROS DE TENDÊNCIA E FLUXO DE CORES (MÍNIMO 4 VELAS)]\n"
+    "Identifique se há uma sequência de 4 velas ou mais consecutiveis da mesma cor com corpos expressivos e poucos pavios para fluxo de continuidade.\n\n"
+    "[PASSO 3: FILTROS DE FLUXO PARA RETRAÇÃO]\n"
+    "Identifique se o preço se movimenta com candles médios que deixam bastante pavio buscando regiões de S/R ou LTA/LTB.\n\n"
+    "[PASSO 4: LOGICA DE OPERAÇÃO DINÂMICA (REVERSÃO OU FLUXO MOMENTÂNEO)]\n"
+    "Avalie a distância até a zona de respeito. Se estiver nela, projete o clique de reversão de 3 a 10 minutos (ideal 5 a 6 min). "
+    "Se estiver longe, configure a entrada para seguir o fluxo momentâneo da tendência atual.\n\n"
+    "[PASSO 5: REGRA DO RSI]\n"
+    "Proibido reverter se o RSI estiver cruzando de forma reta e agressiva os extremos. Aguarde a perda de angulação ou siga o fluxo.\n\n"
+    "[PASSO 6: MATRIZ DE ESTRATÉGIA COMBINADA ATIVADA]\n"
+    "Avalie com base em: 1. OPERACIONAL DE REVERSÃO EM REGIÃO (SE JÁ NA REGIÃO), 2. FLUXO MOMENTÂNEO DO GRÁFICO (SE LONGE DA REGIÃO), 3. FLUXO DE CONTINUIDADE (4+ VELAS), 4. FLUXO PARA RETRAÇÃO.\n\n"
+    "[PASSO 7: PROTOCOLO DE BLOQUEIO]\n"
+    "Bloqueie reversões precoces fora da região demarcada. Aborte se o fluxo momentâneo estiver sem volume ou sem alvo claro.\n\n"
+    "[PASSO 8: CRONOMETRAGEM E GESTÃO]\n"
+    "Projete o clique entre 3 a 10 minutos à frente baseando-se estritamente no HORÁRIO ATUAL DO SISTEMA fornecido. Taxa de acerto de 80% a 95% ou Abortada (0%).\n\n"
+    "Retorne o diagnóstico estruturado exatamente neste formato markdown:\n\n"
+    "🎯 PORCENTAGEM DE ACERTO DA ENTRADA: [Resultado]\n"
+    "⏰ HORÁRIO DO CLIQUE (ENTRADA): [HH:MM:00]\n"
+    "⏳ TEMPO DE EXPIRAÇÃO: [Tempo]\n"
+    "🏁 HORÁRIO DE FECHAMENTO DA ORDEM: [HH:MM:00]\n"
+    "🟥🟩 DIREÇÃO EXATA DA ORDEM: [COMPRA/VENDA/ABORTADA]\n"
+    "💰 GERENCIAMENTO DE LOTE RECOMENDADO: [Gerenciamento]\n"
+    "🧠 ESTRATÉGIA E OPERACIONAL COMBINADO ATIVADO:\n"
+    "- Tipo de operacional isolado ativado (Exemplos: 'OPERACIONAL DE REVERSÃO EM REGIÃO', 'FLUXO MOMENTÂNEO DO GRÁFICO', 'OPERACIONAL DE FLUXO DE VELA EM TENDÊNCIA', ou 'OPERACIONAL DE FLUXO DE CONTINUIDADE').\n"
+    "- Detalhes dos gatilhos e a proximidade da região alvo.\n"
+    "- Descrição minuciosa da combinação (Reversão em região, Fluxo momentâneo por distância, Rompimento+Fluxo, etc).\n"
+    "🌐 MODO DE MERCADO DETECTADO: [Mercado]\n"
+    "📊 CONTEXTO DO MERCADO MACRO E MICRO (ALINHAMENTO): [Tendência]\n"
+    "📈 LEITURA DO RSI PADRÃO E GATILHO CONTRA/A FAVOR DO MOMENTUM: [RSI]\n"
+    "📊 JUSTIFICATIVA DA REGIÃO E PROJEÇÃO TEMPORAL: [Justificativa]\n\n"
+    "🔍 DETALHAMENTO ANATÔMICO, ESTRUTURAL E TÉCNICO:\n"
+    "- Ambiente Identificado\n"
+    "- Trajetória pós-Print\n"
+    "- Análise de Reversão em Região vs Fluxo Momentâneo (Filtro de Posição)\n"
+    "- Padrão Sequencial de Cores\n"
+    "- Densidade dos Pavios\n"
+    "- Comportamento do RSI\n"
+    "- Verificação de Bloqueios\n"
+    "- Regiões de Respeito e Alvos Disponíveis\n"
+    "- Gestão de Lote\n"
 )
+
+def executar_chamada_gemini(chave_api, imagem_objeto, prompt_comando):
+    try:
+        # Inicialização usando o novo SDK padrão da Google
+        client = genai.Client(api_key=chave_api)
+        
+        # Injeta o horário exato da máquina para mitigar erros cronológicos na análise da IA
+        hora_atual = datetime.datetime.now().strftime("%H:%M:%S")
+        prompt_sincronizado = f"[INFORMAÇÃO DE CONTEXTO] HORÁRIO ATUAL DO SISTEMA DO TRADER: {hora_atual}\n\n{prompt_comando}"
+        
+        response = client.models.generate_content(
+            model='gemini-2.5-flash',
+            contents=[imagem_objeto, prompt_sincronizado],
+            config={
+                "temperature": 0.0  # Zera a criatividade para garantir consistência puramente técnica
+            }
+        )
+        return response.text
+    except Exception as e:
+        return f"❌ Erro ao processar com a chave atual: {str(e)}"
+
+# 4. Interface Principal
+uploaded_file = st.file_uploader("📷 Faça o upload do Print do seu Gráfico (M1):", type=["png", "jpg", "jpeg"])
 
 botao_analise = st.button("🧠 Iniciar Análise Avançada por IA")
 
-# 4. Prompt Mestre Otimizado com RSI e Nova Regra de Expiração Avançada
-def gerar_prompt_mestre(contexto_mercado):
-    return f"""
-[SYSTEM_ROLE] Você é o núcleo de processamento lógico de um algoritmo quantitativo sênior de visão computacional. Sua operação é puramente matemática, destituída de viés emocional ou hesitação. Sua postura combina frieza analítica absoluta com precisão geométrica para a tomada de decisões em Opções Binárias (M1).
-
-[DETECÇÃO VISUAL OBRIGATÓRIA]
-Analise minuciosamente os eixos e elementos visuais da imagem para extrair o HORÁRIO DO PRINT e o PREÇO ATUAL DA TELA com precisão decimal. Caso estejam ilegíveis, defina como "NÃO IDENTIFICADO VISUALMENTE".
-
-[ANÁLISE OBRIGATÓRIA DO RSI PADRÃO]
-Localize visualmente o indicador RSI (Relative Strength Index) na parte inferior ou sobreposto ao gráfico. Execute a seguinte checagem algorítmica:
-1. NÍVEIS EXTREMOS: Avalie se a linha do RSI cruzou ou está prestes a tocar as linhas de Sobrecompra (70 ou 80) ou Sobrevenda (30 ou 20).
-2. CONFLUÊNCIA DE FILTRO: Se o preço estiver tocando uma simetria gráfica mas o RSI estiver em zona neutra (perto do nível 50), reduza drasticamente o Score de Confluência. Só valide operações de retração se o RSI confirmar a exaustão do movimento (apontando sobrecompra para PUT ou sobrevenda para CALL).
-3. DIVERGÊNCIA VISUAL: Caso note o preço fazendo topos mais altos e o RSI fazendo topos mais baixos (ou vice-versa), classifique como Divergência de Alta/Baixa e priorize a entrada a favor da reversão matemática do indicador.
-
-[FILTRO CRÍTICO ANTI-LOSS PARA RETRAÇÃO FUTURA]
-Para evitar perdas por rompimento e velas trator, aplique rigorosamente as seguintes leis físicas ao avaliar o operacional de 'RETRAÇÃO EM TAXA FUTURA':
-1. LEI DA EXAUSTÃO: Se o preço estiver indo em direção à taxa gatilho, as últimas 2 ou 3 velas anteriores DEVEM estar diminuindo progressivamente de tamanho (corpo encolhendo). Se as velas anteriores forem grandes, cheias e sem pavio contra, CANCELE a retração imediatamente. O movimento é um fluxo trator.
-2. REGRA DO TOQUE SEGURO: Só recomende o clique de retração se houver um histórico de pelo menos 3 pavios longos isolados na mesma linha horizontal nos últimos 15 minutos do print. Se a região tiver poucos pavios, a probabilidade de rompimento é superior a 75%.
-3. FILTRO DE MOVIMENTO: Caso o cenário indique força compradora/vendedora massiva indo contra uma simetria fraca, mude o veredito para 'FLUXO DE VELA' ou 'FLUXO TRATOR'. Não tente adivinhar topos e fundos contra o momentum institucional.
-
-[NOVAS REGRAS DE PRICE ACTION AVANÇADO]
-4. LEI DO PREENCHIMENTO DE VÁCUO: Avalie a distância (vácuo) entre a última vela e a taxa gatilho. Se o espaço for milimétrico, assuma que o preço irá sugar e preencher a região. Mude a operação para FLUXO até o toque no alvo.
-5. ASSIMETRIA DE PAVIOS: Certifique-se de que os pavios de referência no passado do gráfico sejam longos (ocupando mais de 60% do candle total). Rejeite zonas com pavios curtos ou corpos cheios travados na linha.
-6. ALINHAMENTO DE MICRO-TENDÊNCIA: Analise o padrão geométrico dos últimos 20 candles. Se houver uma micro-tendência direcional clara, proíba operações de retração contra ela (ex: não dê PUT em tendência de alta forte).
-
-[JANELA DE PROJEÇÃO FUTURA (2 A 5 VELAS) E PROTOCOLO DE EXPIRAÇÃO CRÍTICO]
-O usuário opera estritamente em gráficos de 1 minuto (M1). Estime o tempo de deslocamento do preço:
-1. JANELA FUTURA DE TOQUE: Calcule visualmente o deslocamento geométrico para o clique ocorrer obrigatoriamente dentro de uma janela temporal de 2 a 5 candles futuros à frente. 
-2. REGRA DE EXPIRAÇÃO DA CORRETORA: A configuração da ordem na plataforma deve ser configurada estritamente para a MESMA VELA DO TOQUE (M1 corrente do minuto em que o preço atingir a taxa gatilho projetada dentro do intervalo de 2 a 5 minutos).
-
-[MÉTODO DE ALTA ASSERTIVIDADE VIA ZONAS DE SIMETRIA]
-Execute o rastreamento estrito de linhas de simetria de corpo, confluência de múltiplos pavios e cálculo de vácuo. O ambiente foi parametrizado como: {contexto_mercado}.
-
-Retorne o diagnóstico estruturado exatamente neste formato markdown (não mude uma linha sequer do layout):
-
-📊 CONTEXTO E VOLATILIDADE DETECTADA PELA IA: [Descreva friamente a tendência macro, micro e o comportamento atual da volatilidade em poucas palavras]
-⏰ HORÁRIO DO PRINT DETECTADO AUTOMATICAMENTE: [Indique o horário exato extraído ou responda NÃO IDENTIFICADO VISUALMENTE]
-📈 PREÇO ATUAL DA TELA DETECTADO AUTOMATICAMENTE: [Indique a taxa decimal extraída do eixo ou responda NÃO IDENTIFICADO VISUALMENTE]
-🚨 VEREDITO REAL DE CONFLUÊNCIA: [ALTA CONFLUÊNCIA - ENTRAR / RISCO GEOMÉTRICO - LOTE MÍNIMO / ABORTAR OPERAÇÃO]
-
-### 📌 PARÂMETROS DA OPERAÇÃO ATIVADA
-*   🧠 **TIPO DE OPERACIONAL ATIVADO:** ['RETRAÇÃO EM TAXA FUTURA', 'REVERSÃO EM REGIÃO FORTE', 'FLUXO DE VELA', 'MOMENTUM', 'FLUXO TRATOR' ou 'NENHUM - OPERAÇÃO ABORTADA']
-*   🟢/🔴 **AÇÃO OPERACIONAL E DIREÇÃO:** [COMPRA (CALL) / VENDA (PUT) / NENHUMA - OPERAÇÃO ABORTADA]
-*   📉 **POSICIONAMENTO DO RSI PADRÃO:** [Indique o estado exato da linha do RSI: Ex: Sobrecomprado no nível 74 / Neutro no nível 52 / Sobrevendido no nível 21 / Não identificado visualmente]
-*   📊 **TAXA DE ACERTO ESTIMADA (SCORE):** [Percentual estatístico frio de 0% a 100% baseado estritamente na quantidade de confluências gráficas e do RSI identificadas. Operações abortadas = 0%]
-*   ⏱️ **HORÁRIO ESTIMADO DA ENTRADA:** [Se a operação for válida, projete o minuto exato com base no horário detectado no print + a quantidade de candles futuros (de 2 a 5) até o alvo. Se abortada, exiba "N/A"]
-*   🎯 **TAXA GATILHO DA OPERAÇÃO:** [Ponto decimal exato na plataforma para o clique baseado na simetria combinada com o RSI]
-*   ⏳ **PROJEÇÃO DE TEMPO DA JANELA:** [Exibe de forma rígida quantos candles futuros faltam para o toque, obrigatoriamente restringido ao intervalo de 2 a 5 candles à frente]
-*   ⏰ **TEMPO DE EXPIRAÇÃO DA ORDEM:** [Exibir obrigatoriamente: "ESTRITAMENTE PARA A MESMA VELA DO TOQUE (M1 corrente dentro da janela de 2 a 5 minutos projetados)"]
-*   ⚡ **ZONA DE SIMETRIA IDENTIFICADA:** [Mapeamento geométrico do nível encontrado]
-*   📝 **JUSTIFICATIVA TÉCNICA E ESTRUTURAL DETALHADA:** [Defesa mecânica do Price Action aplicando as leis de exaustão, assimetria de pavios, vácuo e a confluência ou divergência matemática detectada na linha do RSI]
-"""
-
-# 5. Execução da Análise
+# 5. Execução Lógica Controlada pós-Clique
 if botao_analise:
-    if not api_key:
-        st.error("Por favor, insira sua Gemini API Key na barra lateral.")
-    elif not uploaded_file:
-        st.error("Por favor, faça o upload do print do gráfico.")
+    if not uploaded_file:
+        st.error("⚠️ Por favor, faça o upload de uma imagem do gráfico antes de iniciar a análise.")
+    elif not lista_de_chaves:
+        st.error("⚠️ Insira pelo menos uma Gemini API Key válida na barra lateral antes de analisar.")
     else:
-        with st.spinner("🧠 Varrendo eixos gráficos, simetrias, níveis de RSI e aplicando filtros anti-loss de exaustão..."):
-            try:
-                # Inicializa o cliente oficial utilizando a SDK nova (google-genai)
-                client = genai.Client(api_key=api_key)
+        imagem = Image.open(uploaded_file)
+        st.image(imagem, caption="Gráfico Carregado com Sucesso", use_container_width=True)
+        
+        sucesso = False
+        with st.spinner("Analisando distância da região, fluxo momentâneo e tempo futuro..."):
+            for i, chave in enumerate(lista_de_chaves):
+                st.write(f"Tentando analisar com a chave de contingência {i+1}...")
+                resultado = executar_chamada_gemini(chave, imagem, PROMPT_TRADER)
                 
-                # Leitura segura da imagem em memória utilizando contexto (with) para evitar leaks
-                imagem_bytes = uploaded_file.read()
-                with Image.open(io.BytesIO(imagem_bytes)) as imagem:
-                    # Força o carregamento dos dados de imagem em RAM antes de fechar o bloco
-                    imagem.load()
-                
-                # Gera o prompt dinâmico ajustado
-                prompt_final = gerar_prompt_mestre(tipo_mercado)
-                
-                # CHAMADA BLINDADA: Utilizando a tag universal estável atualizada
-                response = client.models.generate_content(
-                    model='gemini-flash-latest',
-                    contents=[imagem, prompt_final]
-                )
-                
-                st.success("✅ Análise Computacional Concluída com Sucesso!")
-                st.markdown("### 📊 Painel de Execução Analítica")
-                
-                # Renderiza a resposta do modelo respeitando a formatação markdown original
-                st.markdown(response.text)
-                
-            except errors.APIError as e:
-                st.error(f"Erro de comunicação com a API do Gemini: {e.message} (Código: {e.code})")
-            except Exception as e:
-                st.error(f"Ocorreu um erro inesperado na execução do script: {str(e)}")
+                if "❌ Erro" not in resultado:
+                    st.success("Análise concluída com sucesso!")
+                    st.markdown(resultado)
+                    sucesso = True
+                    break
+                else:
+                    st.warning(f"Chave {i+1} falhou ou está instável. Tentando próxima da lista...")
+            
+            if not sucesso:
+                st.error("Todas as chaves de contingência fornecidas falharam. Verifique as chaves na Google AI Studio.")
+
+if not lista_de_chaves:
+    st.info("💡 Lembrete: Insira as chaves de API na barra lateral esquerda para liberar o processamento.")
