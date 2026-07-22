@@ -38,11 +38,10 @@ if API_KEY:
         if st.button("🚀 EXECUTAR ANÁLISE AVANÇADA DE SINAL"):
             with st.spinner("IA escaneando padrões de velas, volume implícito e mercado..."):
                 
-                # OTIMIZAÇÃO VISUAL: Reduz imagens gigantes e limpa metadados para evitar erro de servidor (503/500)
+                # OTIMIZAÇÃO VISUAL: Reduz imagens gigantes e converte para evitar erros de processamento
                 try:
                     if image.mode in ("RGBA", "P"):
                         image = image.convert("RGB")
-                    # Redimensiona mantendo a proporção se a imagem for maior que 1280px
                     image.thumbnail((1280, 720), Image.Resampling.LANCZOS)
                 except Exception as img_err:
                     st.sidebar.warning(f"Aviso na otimização de imagem: {img_err}")
@@ -88,13 +87,13 @@ if API_KEY:
                 🏁 HORÁRIO DE FECHAMENTO: [Cálculo preciso baseado no horário de entrada + tempo de expiração definido]
                 🟥🟩 DIREÇÃO DA ORDEM: [COMPRA / VENDA / ABORTAR OPERAÇÃO]
                 🌐 MODO DE MERCADO DETECTADO: [MERCADO ABERTO ou MERCADO OTC]
-                🧠 ESTRATÉGIA CORRECTA APLICADA: [FLUXO MOMENTÂNEO EM TENDÊNCIA EM M1 ou OPERACIONAL DE REVERSÃO EM REGIÃO (Suporte de Fundo Recente)]
+                🧠 ESTRATÉGIA CORRETA APLICADA: [FLUXO MOMENTÂNEO EM TENDÊNCIA EM M1 ou OPERACIONAL DE REVERSÃO EM REGIÃO (Suporte de Fundo Recente)]
                 
                 🔍 DIAGNÓSTICO INSTITUCIONAL DE SINAL (PRICE ACTION & FILTROS DE SEGURANÇA):
                 - Lógica de Expiração Adotada: [Justifique matematicamente a escolha do tempo de expiração: 1 minuto para fechamento na mesma vela ou 3 minutos para mitigação e proteção de taxa]
                 - Leitura de Falsos Rompimentos/Pullbacks: [Explique por que o cenário atual é seguro e não se trata de uma armadilha ou falso movimento]
                 - Filtragem de Ruído e Volume por Corpo: [Análise da clareza, direção ou desaceleração real do fluxo das velas]
-                - Absorção e Pressão por Pavios: [O que a pressão dos pavios revelou sobre o volume oculto de defesa no suporte/resistência recente]
+                - Absorção e Pressão por Pavios: [O que a pressão dos pavios revealed sobre o volume oculto de defesa no suporte/resistência recente]
                 - Filtro de Segurança RSI: [Status técnico e posição real da linha roxa do RSI 14 no gráfico para confluência ou justificativa técnica de descarte caso o fluxo ignore o indicador]
                 Seja frio, direto e puramente matemático.
                 """
@@ -102,5 +101,7 @@ if API_KEY:
                 response = None
                 erro_final = ""
                 
-                # Execução Direta e Segura com Fallback Linear Individual
-                try:
+                # EXECUÇÃO DO MODELO PRINCIPAL (TENTATIVA 1)
+                if response is None:
+                    try:
+                        response = client.models.generate_content(model='gemini-2.5-flash', contents=[image, prompt])
