@@ -60,9 +60,10 @@ def executar_chamada_gemini(chave_api, imagem_objeto, prompt_comando):
         # Inicializando o cliente oficial do Google GenAI
         client = genai.Client(api_key=chave_api)
         
-        # Utilizando o modelo adequado para análise visual e raciocínio avançado
+        # ATUALIZADO: Alterado de 'gemini-2.5-pro' para 'gemini-3.6-pro'
+        # Este modelo oferece o maior nível de inteligência e percepção de imagem disponível
         response = client.models.generate_content(
-            model='gemini-2.5-pro',
+            model='gemini-3.6-pro',
             contents=[imagem_objeto, prompt_comando]
         )
         return response.text
@@ -77,7 +78,7 @@ uploaded_file = st.file_uploader(
 
 botao_analise = st.button("🧠 Iniciar Filtro de Segurança por IA")
 
-# 5. Execução Lógica Controlada pós-Clique
+# 5. Execução Lógica Controlled pós-Clique
 if botao_analise:
     if not uploaded_file:
         st.error("⚠️ Por favor, faça o upload de uma imagem do gráfico antes de iniciar a análise.")
@@ -88,7 +89,7 @@ if botao_analise:
         st.image(imagem, caption="Gráfico Carregado com Sucesso", use_container_width=True)
         
         sucesso = False
-        with st.spinner("Analisando anatomia das velas, regiões de respeito e filtros de bloqueio..."):
+        with st.spinner("Analisando anatomia das velas, regiões de respeito e filtros de bloqueio com Gemini 3.6 Pro..."):
             for i, chave in enumerate(lista_de_chaves):
                 st.write(f"Tentando analisar com a chave de contingência {i+1}...")
                 resultado = executar_chamada_gemini(chave, imagem, PROMPT_TRADER)
