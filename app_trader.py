@@ -55,12 +55,12 @@ PROMPT_TRADER = (
     "[Forneça uma recomendação de gerenciamento conservadora baseada estritamente na feiura ou clareza do gráfico analisado.]"
 )
 
-# Alteração aqui: Retorna tupla (Sucesso, Resultado/Erro) para evitar falha de string simples
 def executar_chamada_gemini(chave_api, imagem_objeto, prompt_comando):
     try:
         client = genai.Client(api_key=chave_api)
+        # CORREÇÃO: Atualizado para o modelo vigente estável
         response = client.models.generate_content(
-            model='gemini-1.5-flash',
+            model='gemini-2.5-flash',
             contents=[imagem_objeto, prompt_comando]
         )
         return True, response.text
@@ -73,7 +73,6 @@ uploaded_file = st.file_uploader(
     type=["png", "jpg", "jpeg"]
 )
 
-# Mostrar a imagem imediatamente se o upload for feito (melhoria de UX)
 if uploaded_file:
     imagem = Image.open(uploaded_file)
     st.image(imagem, caption="Gráfico Carregado com Sucesso", use_container_width=True)
@@ -92,7 +91,6 @@ if botao_analise:
             for i, chave in enumerate(lista_de_chaves):
                 st.write(f"Tentando analisar com a chave de contingência {i+1}...")
                 
-                # Desempacota o booleano de sucesso e a resposta
                 sucesso, resultado = executar_chamada_gemini(chave, imagem, PROMPT_TRADER)
                 
                 if sucesso:
