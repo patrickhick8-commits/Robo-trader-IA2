@@ -1,6 +1,5 @@
 import streamlit as st
 from google import genai
-from google.genai import types  # Importação crucial para o novo padrão de configurações da Google
 from PIL import Image
 import datetime
 
@@ -20,7 +19,7 @@ PROMPT_TRADER = (
     "[SYSTEM_ROLE] Você é um algoritmo de trading quantitativo focado em Opções Binárias. "
     "Sua postura é de FRIEZA MÁXIMA, RIGOR ABSOLUTO E PRECISÃO CIRÚRGICA.\n\n"
     "[DIRETRIZ DE SEGURANÇA MÁXIMA: GATILHO DE REVERSÃO EM REGIÃO VS FLUXO MOMENTÂNEO]\n"
-    "ATENÇÃO: Mude seu comportamento dinamicamente com base na proximidade do preço em relação各自 das zonas demarcadas. "
+    "ATENÇÃO: Mude seu comportamento dinamicamente com base na proximidade do preço em relação às zonas demarcadas. "
     "Mapeie as regiões de suporte e resistência fortes. Se você detectar que o preço JÁ ESTIVER NA REGIÃO de reversão, "
     "ative o [OPERACIONAL DE REVERSÃO EM REGIÃO], projetando o enfraquecimento e a exaustão das velas dentro da zona para "
     "uma entrada contra a tendência.\n"
@@ -73,26 +72,25 @@ PROMPT_TRADER = (
 
 def executar_chamada_gemini(chave_api, imagem_objeto, prompt_comando):
     try:
-        # Inicialização do cliente usando o SDK correto
+        # Inicializa o cliente com a chave fornecida
         client = genai.Client(api_key=chave_api)
         
-        # Injeta o horário real do sistema
+        # Injeta o horário atual do sistema
         hora_atual = datetime.datetime.now().strftime("%H:%M:%S")
         prompt_sincronizado = f"[INFORMAÇÃO DE CONTEXTO] HORÁRIO ATUAL DO SISTEMA DO TRADER: {hora_atual}\n\n{prompt_comando}"
         
-        # Configuração instanciada de forma correta pelo módulo types
-        configuracao_ia = types.GenerateContentConfig(
-            temperature=0.0  # Frieza total e consistência nas respostas técnicas
-        )
-        
+        # Configuração simplificada via dicionário para evitar conflitos de versão do SDK
         response = client.models.generate_content(
             model='gemini-2.5-flash',
             contents=[imagem_objeto, prompt_sincronizado],
-            config=configuracao_ia
+            config={
+                'temperature': 0.0
+            }
         )
         return response.text
     except Exception as e:
-        return f"❌ Erro ao processar com a chave atual: {str(e)}"
+        # IMPORTANTE: Retorna a string do erro real capturado do servidor
+        return f"ERRO_API: {str(e)}"
 
 # 4. Interface Principal
 uploaded_file = st.file_uploader("📷 Faça o upload do Print do seu Gráfico (M1):", type=["png", "jpg", "jpeg"])
@@ -115,16 +113,19 @@ if botao_analise:
                 st.write(f"Tentando analisar com a chave de contingência {i+1}...")
                 resultado = executar_chamada_gemini(chave, imagem, PROMPT_TRADER)
                 
-                if "❌ Erro" not in resultado:
+                # Se não contiver a tag de erro mapeada, a chamada foi bem-sucedida
+                if "ERRO_API:" not in resultado:
                     st.success("Análise concluída com sucesso!")
                     st.markdown(resultado)
                     sucesso = True
                     break
                 else:
-                    st.warning(f"Chave {i+1} falhou ou está instável. Próxima da lista...")
+                    # Mostra exatamente o motivo da rejeição da chave (Ex: API key expired, 403 Forbidden, Quota Exceeded)
+                    st.error(f"❌ Falha na Chave {i+1}. Detalhe técnico: {resultado.replace('ERRO_API:', '')}")
+                    st.warning("Tentando próxima chave da lista...")
             
             if not sucesso:
-                st.error("Todas as chaves de contingência fornecidas falharam. Verifique as chaves na Google AI Studio.")
+                st.error("🚨 Todas as chaves de contingência fornecidas falharam. Verifique os erros detalhados acima e suas credenciais na Google AI Studio.")
 
 if not lista_de_chaves:
     st.info("💡 Lembrete: Insira as chaves de API na barra lateral esquerda para liberar o processamento.")
