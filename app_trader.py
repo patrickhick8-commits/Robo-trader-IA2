@@ -38,6 +38,15 @@ if API_KEY:
         if st.button("🚀 EXECUTAR ANÁLISE AVANÇADA DE SINAL"):
             with st.spinner("IA escaneando padrões de velas, volume implícito e mercado..."):
                 
+                # OTIMIZAÇÃO VISUAL: Reduz imagens gigantes e limpa metadados para evitar erro de servidor (503/500)
+                try:
+                    if image.mode in ("RGBA", "P"):
+                        image = image.convert("RGB")
+                    # Redimensiona mantendo a proporção se a imagem for maior que 1280px
+                    image.thumbnail((1280, 720), Image.Resampling.LANCZOS)
+                except Exception as img_err:
+                    st.sidebar.warning(f"Aviso na otimização de imagem: {img_err}")
+
                 # Prompt institucional completo unificando Fluxo em M1, Reversão de Proteção e RSI Seguro
                 prompt = """
                 [SYSTEM_ROLE] Você é um robô de trading institucional de alta performance, programado para operar com frieza milimétrica e precisão cirúrgica. Sua missão é caçar apenas a oportunidade perfeita, garantindo uma assertividade absurda baseada em confluências técnicas avançadas.
@@ -79,7 +88,7 @@ if API_KEY:
                 🏁 HORÁRIO DE FECHAMENTO: [Cálculo preciso baseado no horário de entrada + tempo de expiração definido]
                 🟥🟩 DIREÇÃO DA ORDEM: [COMPRA / VENDA / ABORTAR OPERAÇÃO]
                 🌐 MODO DE MERCADO DETECTADO: [MERCADO ABERTO ou MERCADO OTC]
-                🧠 ESTRATÉGIA CORRETA APLICADA: [FLUXO MOMENTÂNEO EM TENDÊNCIA EM M1 ou OPERACIONAL DE REVERSÃO EM REGIÃO (Suporte de Fundo Recente)]
+                🧠 ESTRATÉGIA CORRECTA APLICADA: [FLUXO MOMENTÂNEO EM TENDÊNCIA EM M1 ou OPERACIONAL DE REVERSÃO EM REGIÃO (Suporte de Fundo Recente)]
                 
                 🔍 DIAGNÓSTICO INSTITUCIONAL DE SINAL (PRICE ACTION & FILTROS DE SEGURANÇA):
                 - Lógica de Expiração Adotada: [Justifique matematicamente a escolha do tempo de expiração: 1 minuto para fechamento na mesma vela ou 3 minutos para mitigação e proteção de taxa]
@@ -95,11 +104,3 @@ if API_KEY:
                 
                 # Execução Direta e Segura com Fallback Linear Individual
                 try:
-                    response = client.models.generate_content(model='gemini-2.5-flash', contents=[image, prompt])
-                except Exception as e1:
-                    erro_final = f"Erro no Flash 2.5: {str(e1)}"
-                    st.sidebar.warning("Servidor Flash 2.5 ocupado ou rejeitou a imagem. Tentando o Pro...")
-                    try:
-                        response = client.models.generate_content(model='gemini-2.5-pro', contents=[image, prompt])
-                    except Exception as e2:
-                        erro_final += f" | Erro no Pro: {str(e2)}"
