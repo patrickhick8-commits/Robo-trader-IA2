@@ -89,7 +89,7 @@ Retorne o diagnóstico estruturado exatamente neste formato markdown limpo e des
 💰 GERENCIAMENTO DE LOTE RECOMENDADO: [SOROS / ENTRADA FIXA / MÃO LEVE / PARADA OBRIGATÓRIA]
 
 📈 TENDÊNCIA PRINCIPAL DETECTADA: [ALTA / BAIXA / LATERAL] (Destaque o alinhamento da operação)
-🧠 ESTRATÉGIA COMBINADA ATIVADA: [Ex: REVERSÃO EM LATERALIDADE (SUPORTE HORIZONTAL RESPEITADO) ou FLUXO EM TENDÊNCIA DE BAIXA (ROMPIMENTO DE S/R) ou PULLBACK EM TENDÊNCIA COM RETRAÇÃO POR PAVIO]
+🧠 ESTRATÉGIA COMBINADA ATIVADA: [Ex: REVERSÃO EM LATERALIDADE (SUPORTE HORIZONTAL RESPEITADO) ou FLUXO EM TENDÊNCIA DE BAIXA (ROMPIMENTO DE S/R) ou PULLBACK EM TENDÊNCIA WITH RETRAÇÃO POR PAVIO]
 🌐 MODO DE MERCADO DETECTADO: [MERCADO ABERTO ou MERCADO OTC]
 📊 CONTEXTO DO MERCADO: [TENDÊNCIA DE ALTA / TENDÊNCIA DE BAIXA / CONSOLIDAÇÃO LATERAL / MERCADO PARADO]
 📊 JUSTIFICATIVA OPERACIONAL DA EXPIRAÇÃO: [Explique resumidamente por que a anatomia das velas de M1 exigiu fechamento na mesma ou na próxima vela para mitigar o risco]
@@ -108,12 +108,11 @@ Retorne o diagnóstico estruturado exatamente neste formato markdown limpo e des
 Seja frio, preciso e direto. Velocidade e precisão salvam bancas.
 """
 
-# Inicializa o estado da imagem de forma correta e sem erros de sintaxe
+# Inicializa o cache de estado do gráfico na memória estável do navegador
 if "grafico_salvo" not in st.session_state:
     st.session_state.grafico_salvo = None
 
-# Interface de upload estável
-upload_arquivo = st.file_uploader("Upload do Print do Gráfico (M1)", type=["png", "jpg", "jpeg"])
-
-if upload_arquivo is not None:
-    st.session_state.grafico_salvo = Image.open(upload_arquivo)
+# CRIAÇÃO DO FORMULÁRIO BLINDADO: Impede que o Streamlit suma com o botão ao atualizar a tela
+with st.form("formulario_trader", clear_on_submit=False):
+    upload_arquivo = st.file_uploader("Upload do Print do Gráfico (M1)", type=["png", "jpg", "jpeg"])
+    
