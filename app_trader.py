@@ -9,7 +9,7 @@ import time
 st.set_page_config(page_title="Agente IA Advanced - M1", page_icon="🤖", layout="centered")
 
 st.title("🤖 Agente IA Trader Pro: Análise Avançada de Candlesticks")
-st.write("Análise cirúrgica de Velas (Cor, Tamanho, Pavio), Tendência, Volume Implícito e Expiração Dinâmica Avançada.")
+st.write("Análise cirúrgica de Velas (Cor, Tamanho, Pavio), Tendência, RSI, Volume Implícito e Expiração Dinâmica Avançada.")
 
 # ==============================================================================
 # 2. CONFIGURAÇÃO DA CHAVE DA IA NA BARRA LATERAL
@@ -24,7 +24,7 @@ if API_KEY:
     # 3. CAMPO DE UPLOAD E VISUALIZAÇÃO DO PRINT
     # ==============================================================================
     uploaded_file = st.file_uploader(
-        "Arraste o print do gráfico M1 (Recomendado: Zoom aproximado de 30-40 velas, sem indicadores):", 
+        "Arraste o print completo do gráfico M1 (inclua Velas, RSI e Relógio):", 
         type=["png", "jpg", "jpeg"]
     )
 
@@ -38,7 +38,7 @@ if API_KEY:
         if st.button("🚀 EXECUTAR ANÁLISE AVANÇADA DE SINAL"):
             with st.spinner("IA escaneando padrões de velas, volume implícito e mercado..."):
                 
-                # Prompt institucional completo unificando Fluxo em M1 e Reversão Curta de Proteção
+                # Prompt institucional completo unificando Fluxo em M1, Reversão de Proteção e RSI Seguro
                 prompt = """
                 [SYSTEM_ROLE] Você é um robô de trading institucional de alta performance, programado para operar com frieza milimétrica e precisão cirúrgica. Sua missão é caçar apenas a oportunidade perfeita, garantindo uma assertividade absurda baseada em confluências técnicas avançadas.
                 
@@ -58,10 +58,11 @@ if API_KEY:
                 2. FILTRO DE FALSO PULLBACK: Bloqueie entradas de pullback se a vela que retorna para testar a região rompida demonstrar força extrema contrária (corpo muito grande). O pullback legítimo deve ser testado por velas de exaustão (corpos decrescentes) e deixar pavio de rejeição exatamente ao tocar a zona rompida.
                 3. FILTRO DE RUÍDO: Se as últimas 5 velas apresentarem alternância constante de cores (verde-vermelho-verde) sem direção definida ou acúmulo de Dojis seguidos, ignore o gráfico por completo e aborte a operação devido ao ruído micro do mercado.
                 
-                [AUTOMATIC_MARKET_ADAPTATION]
-                Identifique visualmente se o gráfico enviado pertence ao Mercado Aberto Tradicional ou ao Mercado OTC (identificável por nomes de pares com "-OTC", comportamento algorítmico contínuo ou padrões característicos das corretoras) e aplique as estratégias corretas, ignorando osciladores de linha como RSI (foque 100% no Price Action puro):
-                1. MERCADO ABERTO: Priorize a leitura de zonas legítimas de Suporte/Resistência, LTA/LTB e confluências micro.
-                2. MERCADO OTC (ALGORÍTMICO): Foque no comportamento computacional das corretoras. Priorize algoritmos de fluxo contínuo (sequências de velas de força), preenchimento milimétrico de pavios anteriores (vácuo de liquidez), exaustão por contagem de velas e armadilhas de falsos rompimentos em zonas saturadas.
+                [AUTOMATIC_MARKET_ADAPTATION & CONDITIONAL RSI FILTER]
+                Identifique visualmente se o gráfico enviado pertence ao Mercado Aberto Tradicional ou ao Mercado OTC (identificável por nomes de pares com "-OTC", comportamento algorítmico contínuo ou padrões característicos das corretoras) e aplique as estratégias corretas, analisando o indicador RSI 14 na parte inferior com as seguintes regras de segurança:
+                1. FILTRO DE SEGURANÇA RSI: Utilize o indicador RSI APENAS se ele estiver em zona extrema (tocando ou rompendo os níveis 30 ou 70) E EM CONGRUÊNCIA total com o padrão de exaustão das velas. Se as velas mostrarem força de fluxo contínuo (sequência de velas grandes em OTC), IGNORE o RSI, pois o algoritmo tende a estagnar o indicador nos extremos e continuar o movimento.
+                2. MERCADO ABERTO: Priorize a leitura de zonas legítimas de Suporte/Resistência, LTA/LTB e confluências micro com o RSI.
+                3. MERCADO OTC (ALGORÍTMICO): Foque no comportamento computacional das corretoras. Priorize algoritmos de fluxo contínuo (sequências de velas de força), preenchimento milimétrico de pavios anteriores (vácuo de liquidez), exaustão por contagem de velas e armadilhas de falsos rompimentos em zonas saturadas.
                 
                 [ORDER_FLOW_&_PURE_CANDLE_VOLUME]
                 Analise o desequilíbrio, a movimentação do preço e o fluxo de ordens (Order Flow) de forma 100% implícita e exclusiva na anatomia visual das velas, SEM depender de indicadores de volume na tela:
@@ -80,12 +81,12 @@ if API_KEY:
                 🌐 MODO DE MERCADO DETECTADO: [MERCADO ABERTO ou MERCADO OTC]
                 🧠 ESTRATÉGIA CORRETA APLICADA: [FLUXO MOMENTÂNEO EM TENDÊNCIA EM M1 ou OPERACIONAL DE REVERSÃO EM REGIÃO (Suporte de Fundo Recente)]
                 
-                🔍 DIAGNÓSTICO INSTITUCIONAL DE SINAL (PRICE ACTION EM GRÁFICO LIMPO):
+                🔍 DIAGNÓSTICO INSTITUCIONAL DE SINAL (PRICE ACTION & FILTROS DE SEGURANÇA):
                 - Lógica de Expiração Adotada: [Justifique matematicamente a escolha do tempo de expiração: 1 minuto para fechamento na mesma vela ou 3 minutos para mitigação e proteção de taxa]
                 - Leitura de Falsos Rompimentos/Pullbacks: [Explique por que o cenário atual é seguro e não se trata de uma armadilha ou falso movimento]
                 - Filtragem de Ruído e Volume por Corpo: [Análise da clareza, direção ou desaceleração real do fluxo das velas]
                 - Absorção e Pressão por Pavios: [O que a pressão dos pavios revelou sobre o volume oculto de defesa no suporte/resistência recente]
-                - Filtro de Segurança e Volume Oculto: [Mapeamento estrutural realizado de forma estritamente implícita com base na geometria pura dos candles e ação do preço]
+                - Filtro de Segurança RSI: [Status técnico e posição real da linha roxa do RSI 14 no gráfico para confluência ou justificativa técnica de descarte caso o fluxo ignore o indicador]
                 Seja frio, direto e puramente matemático.
                 """
                 
@@ -104,12 +105,4 @@ if API_KEY:
                         if response and response.text:
                             break # Conseguiu resposta com sucesso, sai do loop.
                     except Exception as e:
-                        erro_final = str(e)
-                        st.sidebar.warning(f"Modelo {modelo_atual} congestionado. Tentando o próximo...")
-                        time.sleep(1)
 
-                # Exibe o resultado se pelo menos um modelo respondeu
-                if response and response.text:
-                    st.success("Análise Avançada Concluída com Sucesso!")
-                    st.markdown(response.text)
-                    
