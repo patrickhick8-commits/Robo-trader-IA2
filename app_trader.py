@@ -20,7 +20,7 @@ chaves_input = st.sidebar.text_input(
 )
 lista_de_chaves = [chave.strip() for chave in chaves_input.split(";") if chave.strip()]
 
-# 3. Definição Limpa do Prompt Mestre (Otimizado para Visão Computacional do Gemini 3.6 Flash)
+# 3. Definição Limpa do Prompt Mestre (Otimizado para Visão Computacional do Gemini)
 PROMPT_TRADER = (
     "[SYSTEM_ROLE] Você é um algoritmo de trading quantitativo focado em Opções Binárias e análise gráfica puramente visual. "
     "Sua postura é de FRIEZA MÁXIMA, RIGOR ABSOLUTO E PRECISÃO CIRÚRGICA.\n\n"
@@ -78,15 +78,13 @@ PROMPT_TRADER = (
 
 def executar_chamada_gemini(chave_api, imagem_objeto, prompt_comando):
     try:
-        # Nova SDK oficial do Google unificada
         client = genai.Client(api_key=chave_api)
         response = client.models.generate_content(
-            model='gemini-2.5-flash', # Atualizado para o motor moderno e estável de análise visual
+            model='gemini-2.5-flash',
             contents=[imagem_objeto, prompt_comando]
         )
         return response.text
     except Exception as e:
-        # Retorna o erro exato da API do Google para diagnosticar bloqueios ou chaves inválidas
         return f"❌ Erro da API: {str(e)}"
 
 # 4. Interface Principal 
@@ -113,18 +111,17 @@ if botao_analise:
                 st.write(f"Tentando analisar com a chave de contingência {i+1}...")
                 resultado = executar_chamada_gemini(chave, imagem, PROMPT_TRADER)
                 
-                # Modificado para checar se o retorno traz o log bruto de falha estrutural
                 if "❌ Erro da API:" not in resultado:
                     st.success("Análise concluída com sucesso!")
                     st.markdown(resultado)
                     sucesso = True
                     break
                 else:
-                    st.error(f"Falha crítica na Chave {i+1}:")
-                    st.code(resultado) # Exibe o bloco técnico da falha para o usuário identificar
+                    st.error(f"Falha na Chave {i+1}:")
+                    st.code(resultado)
                     st.warning("Tentando próxima chave de contingência da lista...")
             
-            if not sukses:
+            if not sucesso:
                 st.error("Todas as chaves fornecidas falharam. Verifique os códigos de erro acima e configure suas credenciais no Google AI Studio.")
 
 if not lista_de_chaves:
