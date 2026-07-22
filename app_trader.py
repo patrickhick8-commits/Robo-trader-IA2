@@ -99,7 +99,7 @@ Retorne o diagnóstico estruturado exatamente neste formato markdown limpo e des
 - Ambiente Identificado: [MERCADO ABERTO ou OTC]
 - Validação da Tendência Macro: [Justifique visualmente como a direção escolhida protege contra o 'loss' por estar surfando o fluxo da tendência principal]
 - Mapeamento das Regiões (S/R, LTA/LTB e Zonas de Pullback): [Descreva as microzonas, regiões principais ou testes de pullback que o preço tende a respeitar]
-- Comportamento e Retração pelos Pavios: [Explique o que a presença e tamanho dos pavios recentes revelam sobre a rejeição ou preenchimento das zones]
+- Comportamento e Retração pelos Pavios: [Explique o que a presença e tamanho dos pavios recentes revelam sobre a rejeição ou preenchimento das zonas]
 - Posicionamento da EMA 9: [Direção do preço em relação à média móvel para validar a força do sinal]
 - Avaliação de Ruído e Volatilidade: [Explique por que o cenário foi considerado aceitável para clique com filtros moderados]
 - Diagnóstico do Fluxo de Cores e Volume por Corpo: [Análise do tamanho das últimas velas para validar o movimento e a força do gatilho]
@@ -108,12 +108,11 @@ Retorne o diagnóstico estruturado exatamente neste formato markdown limpo e des
 Seja frio, preciso e direto. Velocidade e precisão salvam bancas.
 """
 
-# Inicializa o cache persistente na memória estável do framework
-if "imagem_persistente" not in st.session_state:
-    st.session_state.imagem_persistente = None
-
-# Interface de Upload
+# Interface direta e imune a travamentos de estado
 upload_arquivo = st.file_uploader("Upload do Print do Gráfico (M1)", type=["png", "jpg", "jpeg"])
 
-# Correção da Indentação: bloco lógico limpo salvando no state e desenhando o gráfico
 if upload_arquivo is not None:
+    imagem = Image.open(upload_arquivo)
+    st.image(imagem, caption="Gráfico Carregado", use_container_width=True)
+
+    # O botão de análise agora fica DENTRO do bloco que confirma que a imagem existe.
