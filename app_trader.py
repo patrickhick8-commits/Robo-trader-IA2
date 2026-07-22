@@ -1,120 +1,90 @@
 import streamlit as st
 from google import genai
 from PIL import Image
-import io
 
 # 1. Configuração da Página do Site Separado
-st.set_page_config(page_title="Agente IA Advanced - Matriz Suprema", page_icon="🤖", layout="centered")
+st.set_page_config(page_title="Agente IA Advanced - M1", page_icon="🤖", layout="centered")
 
-st.title("🤖 Agente IA Trader Pro: Matriz Suprema e Projeção Temporal")
-st.write("Fusão Total: Análise M1 Autônoma, Tendência Principal Macro, SMC, Volume Oculto E Price Action.")
+st.title("🤖 Agente IA Trader Pro: Análise Avançada de Candlesticks")
+st.write("Análise cirúrgica de Velas (Cor, Tamanho, Pavio), Tendência, RSI, Volume Implícito e Probabilidade em M1.")
 
-# Configurações na Barra Lateral
-st.sidebar.markdown("### 🔑 Gerenciador de Chaves de Contingência")
-st.sidebar.info("Cole suas chaves protegidas separando-as por ponto e vírgula (;). Exemplo: chave1; chave2; chave3")
+# 2. Configuração da Chave da IA
+API_KEY = st.sidebar.text_input("Cole sua Gemini API Key aqui:", type="password")
 
-chaves_input = st.sidebar.text_input("Cole suas Gemini API Keys aqui:", type="password")
+if API_KEY:
+    # Inicializa o cliente com a nova biblioteca oficial do Google
+    client = genai.Client(api_key=API_KEY)
 
-# Transforma o texto em uma lista de chaves limpas
-lista_de_chaves = [chave.strip() for chave in chaves_input.split(";") if chave.strip()]
+    # 3. Campo de Upload do Print
+    uploaded_file = st.file_uploader("Arraste o print completo do gráfico M1 (inclua Velas, RSI e Relógio - Não precisa de indicador de volume):", type=["png", "jpg", "jpeg"])
 
-# PROMPT MESTRE
-PROMPT_TRADER = """
-[SYSTEM_ROLE] Você é um algoritmo de trading quantitativo focado em encontrar oportunidades frequentes e de boa precisão para Opções Binárias operando estritamente em gráficos de M1. Sua postura é moderadamente agressiva: seu objetivo é extrair o máximo de sinais válidos do gráfico, operando por confluência de fatores sem descartar operações por detalhes mínimos de ruído.
-
-[PASSO 1: IDENTIFICAÇÃO OBRIGATÓRIA DO AMBIENTE]
-Escaneie textualmente a imagem em busca do nome do ativo (ex: EUR/USD, BTC/USD, EUR/GBP-OTC).
-- Identifique se o ativo é [MERCADO ABERTO REAL] ou [ALGORITMO OTC].
-
-[PASSO 2: MAPEAMENTO DA TENDÊNCIA PRINCIPAL (MACRO)]
-- Analise o quadrante geral da imagem para identificar a TENDÊNCIA PRINCIPAL (Direção majoritária do preço no gráfico visível).
-- Se a estrutura geral for de Topos e Fundos Ascendentes, determine TENDÊNCIA PRINCIPAL: ALTA.
-- Se a estrutura geral for de Topos e Fundos Descendentes, determine TENDÊNCIA PRINCIPAL: BAIXA.
-- Se o preço estiver oscilando estritamente dentro de uma faixa lateral sem direção definida, determine TENDÊNCIA PRINCIPAL: LATERAL / CONSOLIDAÇÃO.
-
-[PASSO 3: FILTROS DE TENDÊNCIA E CONFLUÊNCIA WITH EMA 9]
-O sinal deve obrigatoriamente confluir com a TENDÊNCIA PRINCIPAL identificada no Passo 2:
-- COMPRA (CALL): Permitido apenas se a TENDÊNCIA PRINCIPAL for de ALTA (ou lateral) E o preço estiver preferencialmente ACIMA da EMA 9 com inclinação ascendente. Bloqueie compras se a tendência macro for de baixa.
-- VENDA (PUT): Permitido apenas se a TENDÊNCIA PRINCIPAL for de BAIXA (ou lateral) E o preço estiver preferencialmente ABAIXO da EMA 9 com inclinação descendente. Bloqueie vendas se a tendência macro for de alta.
-- Permita operações se o preço estiver ligeiramente próximo à média para correções rápidas, desde que a favor da tendência principal.
-
-[PASSO 4: MATRIZ DE ESTRATÉGIA ADAPTATIVA MULTI-CONFLUENTE]
-Busque de forma ativa por confluências de Price Action em Suporte, Resistência (S/R) e Linhas de Tendência (LTA/LTB) que estejam alinhadas com a tendência principal:
-
-1. SE O MERCADO ESTIVER EM TENDÊNCIA NÍTIDA (OPERE EXCLUSIVAMENTE A FAVOR DELA):
-   - MODO FLUXO / ROMPIMENTO EM TENDÊNCIA: Se houver rompimento de zonas de S/R ou LTA/LTB por velas institucionais cheias (Marubozu) a favor da EMA 9 e da tendência principal, opere a continuidade imediata (Fluxo).
-   - MODO PULLBACK EM TENDÊNCIA: Monitore o preço testando a zona recém-rompida (antigo suporte que virou resistência ou vice-versa). O gatilho deve ocorrer quando a vela de teste tocar a linha a favor do movimento macro majoritário.
-   - MODO RETRAÇÃO EM TENDÊNCIA / LTA / LTB: Identifique toques em canais ou linhas de tendência inclinadas onde o preço deixa pavios longos de prevenção, operando a retração a favor do canal principal.
-
-2. SE O MERCADO ESTIVER EM LATERALIDADE / CONSOLIDAÇÃO:
-   - MODO REVERSÃO EM LATERALIDADE (SUPORTE / RESISTÊNCIA HORIZONTAL): Opere o extremo respeito de zonas horizontais nítidas de Suporte (Fundo) e Resistência (Topo). Quando o preço testar os limites com velas de perda de pressão, opere para a reversão.
-   - MODO RETRAÇÃO PELOS PAVIOS EM LATERALIDADE: Rastreie o histórico recente de pavios longos nas extremidades da consolidação. Se as velas atuais estiverem demonstrando forte rejeição visual através de pavios ao tocar a barreira horizontal, valide a entrada de retração para a mesma vela.
-
-[PASSO 5: SISTEMA DE ESCOLHA AUTOMÁTICA DE EXPIRAÇÃO (M1)]
-Analise a anatomia das velas recentes e defina de forma autônoma o tempo de expiração da ordem:
-- EXPIRAÇÃO DE 1 MINUTO (MESMA VELA): Escolha se identificar padrões fortes de RETRAÇÃO (pavios longos isolados nas extremidades, rejeitando as barreiras de S/R) ou se o fluxo for de correção rápida (toque e rejeição imediata da EMA 9).
-- EXPIRAÇÃO DE 1 MINUTO (PRÓXIMA VELA): Escolha se identificar padrões de ROMPIMENTO CONFIRMADO ou FLUXO DE CONTINUIDADE (velas cheias sem pavios contrários, rompendo caixas de consolidação ou zonas de S/R a favor da tendência principal).
-
-[PASSO 6: FILTROS ANTI-RUÍDO E MANIPULAÇÃO SUAVIZADOS]
-Não seja excessivamente rígido ao filtrar o gráfico. Só aborte a operação em casos extremos de mercado totalmente parado ou em situações CONTRA A TENDÊNCIA:
-- FILTRO CONTRA-TENDÊNCIA: Aborte imediatamente qualquer sinal que tente adivinhar topos/fundos indo contra o fluxo da tendência principal macro do mercado.
-- FILTRO ANTI-XADREZ: Aborte apenas se houver uma alternância perfeita e sem direção de cores por mais de 8 velas seguidas.
-- FILTRO DE MICRO-VELAS: Aborte apenas se houver uma sequência longa de Dojis legítimos (linhas horizontais finas).
-
-[PASSO 7: SYSTEM DE CALIBRAGEM DE ASSERTIVIDADE REALISTA]
-- Avalie os riscos de forma equilibrada. Quanto mais fatores confluírem juntos (ex: Tendência Principal + Toque na EMA 9 + Pavio de Retração + Zona de Suporte), maior deve ser a taxa de acerto.
-- Classifique a taxa de acerto obrigatoriamente dentro da faixa de **80% a 95%**. 
-- Se a oportunidade detectada for contra a tendência macro, emita "OPERAÇÃO ABORTADA" (e taxa 0% com justificativa de filtro de tendência ativo).
-
-[PASSO 8: CRONOMETRAGEM DE EXECUÇÃO PADRÃO]
-- Localize o relógio oficial da plataforma no print. 
-- Projete o HORÁRIO DO CLIQUE rigorosamente para uma janela futura de **2 a 5 minutos** à frente (ex: se o relógio marca 10:15:20, projete o clique para entre 10:17:00 e 10:20:00).
-- Defina o Horário de Fechamento da ordem somando de forma lógica o tempo escolhido no PASSO 5 ao Horário do Clique.
-
-[PASSO 9: SUGESTÃO DE GERENCIAMENTO DE MÃO DE ENTRADA]
-Defina a recomendação de capital com base na taxa calculada de forma matemática:
-- Taxa entre 90% e 95%: MÃO DE SOROS / ENTRADA FORTE (Cenário de confluência tripla/máxima).
-- Taxa entre 85% e 89%: ENTRADA FIXA padrão (Cenário bom com confluência dupla).
-- Taxa entre 80% e 84%: MÃO LEVE / REDUZIDA (Oportunidade isolada de retração ou fluxo simples).
-- Operação Abortada: PARADA OBRIGATÓRIA (Cenário sem condições mínimas).
-
-Retorne o diagnóstico estruturado exatamente neste formato markdown limpo e destacado:
-
-🎯 PORCENTAGEM DE ACERTO DA ENTRADA: [Ex: 84% ou 93% - Dentro do padrão calibrado. Se for Abortada, escreva '0% - FILTRO ATIVADO'] (Escreva destacado e em tamanho grande)
-
-⏰ HORÁRIO DO CLIQUE (ENTRADA FUTURE): [HH:MM:00 exato projetado entre 2 a 5 minutos para o futuro]
-⏳ TEMPO DE EXPIRAÇÃO SELECIONADO PELA IA: [Ex: 1 Minuto (MESMA VELA) ou 1 Minuto (PRÓXIMA VELA)]
-🏁 HORÁRIO DE FECHAMENTO DA ORDEM: [HH:MM:00 do fechamento real da vela após o tempo de expiração decorrido]
-🟥🟩 DIREÇÃO EXATA DA ORDEM: [COMPRA / VENDA / OPERAÇÃO ABORTADA]
-💰 GERENCIAMENTO DE LOTE RECOMENDADO: [SOROS / ENTRADA FIXA / MÃO LEVE / PARADA OBRIGATÓRIA]
-
-📈 TENDÊNCIA PRINCIPAL DETECTADA: [ALTA / BAIXA / LATERAL] (Destaque o alinhamento da operação)
-🧠 ESTRATÉGIA COMBINADA ATIVADA: [Ex: REVERSÃO EM LATERALIDADE (SUPORTE HORIZONTAL RESPEITADO) ou FLUXO EM TENDÊNCIA DE BAIXA (ROMPIMENTO DE S/R) ou PULLBACK EM TENDÊNCIA WITH RETRAÇÃO POR PAVIO]
-🌐 MODO DE MERCADO DETECTADO: [MERCADO ABERTO ou MERCADO OTC]
-📊 CONTEXTO DO MERCADO: [TENDÊNCIA DE ALTA / TENDÊNCIA DE BAIXA / CONSOLIDAÇÃO LATERAL / MERCADO PARADO]
-📊 JUSTIFICATIVA OPERACIONAL DA EXPIRAÇÃO: [Explique resumidamente por que a anatomia das velas de M1 exigiu fechamento na mesma ou na próxima vela para mitigar o risco]
-📊 JUSTIFICATIVA DA PROJEÇÃO TEMPORAL: [Explique resumidamente o porquê o preço vai levar esse tempo exato (2 a 5 minutos) para atingir sua zona de entrada e confirmar a confluência]
-
-🔍 DETALHAMENTO ANATÔMICO, ESTRUTURAL E TÉCNICO (OPORTUNIDADES IDENTIFICADAS):
-- Ambiente Identificado: [MERCADO ABERTO ou OTC]
-- Validação da Tendência Macro: [Justifique visualmente como a direção escolhida protege contra o 'loss' por estar surfando o fluxo da tendência principal]
-- Mapeamento das Regiões (S/R, LTA/LTB e Zonas de Pullback): [Descreva as microzonas, regiões principais ou testes de pullback que o preço tende a respeitar]
-- Comportamento e Retração pelos Pavios: [Explique o que a presença e tamanho dos pavios recentes revelam sobre a rejeição ou preenchimento das zonas]
-- Posicionamento da EMA 9: [Direção do preço em relação à média móvel para validar a força do sinal]
-- Avaliação de Ruído e Volatilidade: [Explique por que o cenário foi considerado aceitável para clique com filtros moderados]
-- Diagnóstico do Fluxo de Cores e Volume por Corpo: [Análise do tamanho das últimas velas para validar o movimento e a força do gatilho]
-- Justificativa da Gestão de Lote: [Explique por que o lote sugerido se adequa a esta oportunidade]
-
-Seja frio, preciso e direto. Velocidade e precisão salvam bancas.
-"""
-
-# Interface estável e plana
-upload_arquivo = st.file_uploader("Upload do Print do Gráfico (M1)", type=["png", "jpg", "jpeg"])
-botao_analise = st.button("🚀 Analisar Matriz do Gráfico")
-
-if upload_arquivo is not None:
-    imagem_render = Image.open(upload_arquivo)
-    st.image(imagem_render, caption="Gráfico Carregado com Sucesso", use_container_width=True)
-
-if botao_analise:
-    if upload_arquivo is None:
+    if uploaded_file is not None:
+        image = Image.open(uploaded_file)
+        st.image(image, caption="Gráfico M1 Carregado para Análise", use_container_width=True)
+        
+        # Botão de disparo rápido para Opções Binárias Avançado
+        if st.button("🚀 EXECUTAR ANÁLISE AVANÇADA DE SINAL"):
+            with st.spinner("IA escaneando padrões de velas, volume implícito e mercado..."):
+                
+                # Prompt institucional completo com filtros anti-ruído, anti-falso rompimento e fluxo de ordens
+                prompt = """
+                [SYSTEM_ROLE] Você é um robô de trading institucional de alta performance, programado para operar com frieza milimétrica e precisão cirúrgica. Sua missão é caçar apenas a oportunidade perfeita, garantindo uma assertividade absurda focada em vitória imediata (WIN) exatamente no candle indicado.
+                
+                [RIGOROUS_FILTERING_PROTOCOL]
+                Opere com rigor máximo. Você está terminantemente proibido de passar sinais com confluências fracas. Se houver o menor ruído, classifique como [ABORTAR OPERAÇÃO - ALTO RISCO]. Aceite apenas a faixa extrema de 85% a 99% de certeza matemática ponderada.
+                
+                [ANTI_NOISE_&_FALSE_BREAKOUT_FILTERS]
+                Aplique filtros severos para blindar a operação contra armadilhas comuns de mercado:
+                1. FILTRO DE FALSO ROMPIMENTO: Descarte rompimentos feitos por velas espremidas, sem expressão ou com pavios longos de rejeição na direção do rompimento. Valide o rompimento apenas se a vela romper com mais de 50% do seu corpo de forma cheia e expressiva (Marubozu), demonstrando volume institucional real e intenção de romper a zona.
+                2. FILTRO DE FALSO PULLBACK: Bloqueie entradas de pullback se a vela que retorna para testar a região rompida demonstrar força extrema contrária (corpo muito grande). O pullback legítimo deve ser testado por velas de exaustão (corpos decrescentes) e deixar pavio de rejeição exatamente ao tocar a zona rompida.
+                3. FILTRO DE RUÍDO: Se as últimas 5 velas apresentarem alternância constante de cores (verde-vermelho-verde) sem direção definida ou acúmulo de Dojis seguidos, ignore o gráfico por completo e aborte a operação devido ao ruído micro do mercado.
+                
+                [AUTOMATIC_MARKET_ADAPTATION]
+                Identifique visualmente se o gráfico enviado pertence ao Mercado Aberto Tradicional ou ao Mercado OTC (identificável por nomes de pares com "-OTC", comportamento algorítmico contínuo ou padrões característicos das corretoras) e aplique as estratégias corretas:
+                1. MERCADO ABERTO: Priorize a leitura de zonas legítimas de Suporte/Resistência, LTA/LTB, confluências micro com RSI 14 (exaustão em 70/30) e validação pelo volume implícito dos candles.
+                2. MERCADO OTC (ALGORÍTMICO): Descarte regras de notícias e foque no comportamento computacional das corretoras. Priorize algoritmos de fluxo contínuo (sequências de velas de força), preenchimento milimétrico de pavios anteriores (vácuo de liquidez), exaustão por contagem de velas e armadilhas de falsos rompimentos em zonas saturadas.
+                
+                [ORDER_FLOW_&_PURE_CANDLE_VOLUME]
+                Analise o desequilíbrio, a movimentação do preço e o fluxo de ordens (Order Flow) de forma 100% implícita e exclusiva na anatomia visual das velas, SEM depender de indicadores de volume na tela:
+                - VOLUME POR CORPO E MOVIMENTAÇÃO: Avalie o volume financeiro real injetado pelo tamanho e expansão do corpo dos candles. Velas expressivas confirmam volume institucional empurrando o mercado.
+                - DEFESA E ABSORÇÃO POR PAVIOS: Avalie o volume de agressão contrária pelo tamanho dos pavios. Pavios longos em zonas críticas indicam rejeição em massa, absorção de ordens e virada iminente no fluxo.
+                
+                [TIME_RULES] Leia o relógio atual no print. Projete o momento do clique de entrada de forma cirúrgica para acontecer entre 2 a 5 velas (minutos) depois do print. A expiração DEVE ser de 1 minuto para fechar exatamente no final da mesma vela de entrada (WIN no candle indicado).
+                
+                Retorne estritamente neste formato markdown limpo:
+                🎯 PORCENTAGEM DE ACERTO DA ENTRADA: [Ex: 96% - EXTREMA CONFLUÊNCIA]
+                ⏰ HORÁRIO DO CLIQUE (ENTRADA): [HH:MM:00 exato]
+                ⏳ TEMPO DE EXPIRAÇÃO: 1 Minuto (Fechamento na mesma vela)
+                🏁 HORÁRIO DE FECHAMENTO: [HH:MM+1:00]
+                🟥🟩 DIREÇÃO DA ORDEM: [COMPRA / VENDA / ABORTAR OPERAÇÃO]
+                🌐 MODO DE MERCADO DETECTADO: [MERCADO ABERTO ou MERCADO OTC]
+                🧠 ESTRATÉGIA CORRETA APLICADA: [Ex: ALGORITMO DE FLUXO OTC ou REVERSÃO EM SUPORTE TRADICIONAL]
+                
+                🔍 DIAGNÓSTICO INSTITUCIONAL DE SINAL (PRICE ACTION & FILTROS DE SEGURANÇA):
+                - Leitura de Falsos Rompimentos/Pullbacks: [Explique por que o cenário atual é seguro e não se trata de uma armadilha ou falso movimento]
+                - Filtragem de Ruído e Volume por Corpo: [Análise da clareza e direção real do fluxo das velas]
+                - Absorção e Pressão por Pavios: [O que a pressão dos pavios revelou sobre o volume oculto de defesa]
+                - Filtro de Segurança RSI: [Status técnico da linha do RSI para confluência]
+                Seja frio, direto e puramente matemático.
+                """
+                
+                try:
+                    # Executa o modelo flash com suporte a leitura avançada de imagem
+                    response = client.models.generate_content(
+                        model='gemini-2.5-flash',
+                        contents=[image, prompt]
+                    )
+                    st.success("Análise Avançada Concluída com Sucesso!")
+                    
+                    # Sistema de som injetado para alertar a entrada no Desktop
+                    st.components.v1.html(
+                        '<audio autoplay src="https://google.com"></audio>',
+                        height=0
+                    )
+                    
+                    st.markdown(response.text)
+                    
+                except Exception as e:
+                    st.error(f"Erro no processamento visual da IA: {e}")
+else:
+    st.info("👈 Insira sua Gemini API Key na barra lateral para ativar o modo de análise avançada.")
