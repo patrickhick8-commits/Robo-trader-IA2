@@ -32,22 +32,20 @@ def gerar_prompt_mestre(contexto_mercado):
 [DETECÇÃO VISUAL OBRIGATÓRIA - AUTO EXTRAÇÃO]
 Antes de processar qualquer estratégia, analise minuciosamente os eixos e elementos visuais da imagem para extrair o HORÁRIO DO PRINT e o PREÇO ATUAL DA TELA com precisão decimal. Jamais deixe esses campos em branco.
 
-[FILTRO CRÍTICO ANTI-LOSS PARA FLUXO DE VELA E EXPIRAÇÃO]
-Para mitigar perdas e eliminar falsos rompimentos no operacional de 'FLUXO DE VELA' / 'MOMENTUM', aplique rigidamente as seguintes leis:
-1. LEI DO VÁCUO SEGURO: Só valide o Fluxo de Vela se houver um espaço livre (vácuo) de pelo menos 1 a 2 corpos de vela até a próxima barreira visual (suporte, resistência, linha de tendência ou número redondo). Se a última vela fechou colada ou muito perto de uma barreira do passado, ABORTE o fluxo imediatamente (risco alto de reversão/retração).
-2. REGRA DO GATILHO DE EXAUSTÃO: Analise o volume visual do candle de força. Se a última vela foi um "candle careca" (sem pavio nenhum a favor do movimento) ou se deixou um pavio de prevenção contra muito longo (maior que 40% do corpo), CANCELE o fluxo. O preço já exauriu.
-3. PROTOCOLO DE EXPIRAÇÃO DE FLUXO (M1): A expiração para operações de Fluxo de Vela/Momentum deve ser estritamente para o FECHAMENTO DA PRÓXIMA VELA (fim do próximo minuto cheio no relógio, M1 corrente). Não projete fluxos para tempos maiores para evitar correções tardias de mercado.
+[BLOQUEIO CRÍTICO ANTI-ROMPIMENTO EM RETRAÇÃO FUTURA]
+Para mitigar perdas por rompimento na estratégia de 'RETRAÇÃO EM TAXA FUTURA', aplique rigorosamente as seguintes leis físicas:
+1. REGRA DO PICO DE VELA E EXTENSÃO: Se a vela atual que está indo em direção à taxa gatilho for um "Marubozu" ou um candle esticado (ocupando o tamanho equivalente a 2 ou 3 velas normais anteriores do histórico), ABORTE A RETRAÇÃO imediatamente. Velas de esticamento massivo possuem momentum institucional e rompem simetrias em mais de 85% dos casos.
+2. REGRA DO TOQUE SEGURO (MÍNIMO DE PAVIOS): Só recomende a entrada de retração se houver no passado recente (últimos 15-20 candles) pelo menos 3 pavios longos e isolados ancorados exatamente sobre a mesma simetria horizontal. Se a linha tiver histórico de corpos travados ou poucos pavios, ignore o sinal por alto risco de rompimento.
+3. LEI DA EXAUSTÃO PROGRESSIVA: Para aceitar uma retração futura, as últimas 2 ou 3 velas anteriores ao toque DEVEM demonstrar perda de volume (corpos encolhendo gradativamente). Se os corpos estiverem aumentando de tamanho conforme se aproximam da taxa, mude o veredito para 'ABORTAR' ou mude para 'FLUXO TRATOR'. Não opere retração contra momentum ascendente/descendente de aceleração.
 
-[FILTRO CRÍTICO ANTI-LOSS PARA RETRAÇÃO FUTURA]
-Para evitar perdas por rompimento e velas trator, aplique rigorosamente as seguintes leis físicas ao avaliar o operacional de 'RETRAÇÃO EM TAXA FUTURA':
-1. LEI DA EXAUSTÃO: Se o preço estiver indo em direção à taxa gatilho, as últimas 2 ou 3 velas anteriores DEVEM estar diminuindo progressivamente de tamanho (corpo encolhengdo). Se as velas anteriores forem grandes, cheias e sem pavio contra, CANCELE a retração imediatamente. O movimento é um fluxo trator.
-2. REGRA DO TOQUE SEGURO: Só recomende o clique de retração se houver um histórico de pelo menos 3 pavios longos isolados na mesma linha horizontal nos últimos 15 minutos do print. Se a região tiver poucos pavios, a probabilidade de rompimento é superior a 75%.
-3. FILTRO DE MOVIMENTO: Caso o cenário indique força compradora/vendedora massiva indo contra uma simetria fraca, mude o veredito para 'FLUXO DE VELA' ou 'FLUXO TRATOR'. Não tente adivinhar topos e fundos contra o momentum institucional.
+[FILTRO CRÍTICO ANTI-LOSS PARA FLUXO DE VELA]
+4. LEI DO VÁCUO SEGURO: Só valide o Fluxo de Vela se houver um espaço livre (vácuo) de pelo menos 1 a 2 corpos de vela até a próxima barreira visual (suporte, resistência, linha de tendência ou número redondo). Se a última vela fechou colada ou muito perto de uma barreira do passado, ABORTE o fluxo imediatamente.
+5. PROTOCOLO DE EXPIRAÇÃO DE FLUXO (M1): A expiração para operações de Fluxo de Vela/Momentum deve ser estritamente para o FECHAMENTO DA PRÓXIMA VELA (fim do próximo minuto cheio no relógio, M1 corrente).
 
 [NOVAS REGRAS DE PRICE ACTION AVANÇADO]
-4. LEI DO PREENCHIMENTO DE VÁCUO: Avalie a distância (vácuo) entre a última vela e a taxa gatilho. Se o espaço for milimétrico, assuma que o preço irá sugar e preencher a região. Mude a operação para FLUXO até o toque no alvo.
-5. ASSIMETRIA DE PAVIOS: Certifique-se de que os pavios de referência nos gráficos do passado sejam longos (ocupando mais de 60% do candle total). Rejeite zonas com pavios curtos ou corpos cheios travados na linha.
-6. ALINHAMENTO DE MICRO-TENDÊNCIA: Analise o padrão geométrico dos últimos 20 candles. Se houver uma micro-tendência direcional clara, proíba operações de retração contra ela (ex: não dê PUT em tendência de alta forte).
+6. LEI DO PREENCHIMENTO DE VÁCUO: Avalie a distância (vácuo) entre a última vela e a taxa gatilho. Se o espaço for milimétrico, assuma que o preço irá sugar e preencher a região. Mude a operação para FLUXO até o toque no alvo.
+7. ASSIMETRIA DE PAVIOS: Certifique-se de que os pavios de referência nos gráficos do passado sejam longos (ocupando mais de 60% do candle total). Rejeite zonas com pavios curtos ou corpos cheios travados na linha.
+8. ALINHAMENTO DE MICRO-TENDÊNCIA: Analise o padrão geométrico dos últimos 20 candles. Se houver uma micro-tendência direcional clara, proíba operações de retração contra ela (ex: não dê PUT em tendência de alta forte).
 
 [JANELA DE PROJEÇÃO FUTURA (2 A 7 VELAS) E PROTOCOLO DE EXPIRAÇÃO]
 O usuário opera estritamente em gráficos de 1 minuto (M1). Estime o tempo de deslocamento do preço:
@@ -74,7 +72,7 @@ Retorne o diagnóstico estruturado exatamente neste formato markdown (não mude 
 ⏰ TEMPO DE EXPIRAÇÃO DA ORDEM: [Defina de forma ultra detalhada a expiração exata do clique na corretora de acordo com o operacional escolhido. Ex: Expiração para a mesma vela do toque (Retração - M1)]
 🧠 TIPO DE OPERACIONAL ATIVADO: ['RETRAÇÃO EM TAXA FUTURA', 'REVERSÃO EM REGIÃO FORTE', 'FLUXO DE VELA', 'MOMENTUM', 'FLUXO TRATOR' ou 'NENHUM - OPERAÇÃO ABORTADA']
 🎯 TAXA GATILHO DA OPERAÇÃO: [Defina com precisão decimal máxima o ponto exato do clique na plataforma baseado no cálculo de vácuo e simetria]
-📝 JUSTIFICATIVA TÉCNICA E ESTRUTURAL DETALHADA: [Exponha uma defesa puramente matemática, fria e mecânica do Price Action. Justifique com rigor o motivo de escolher COMPRA ou VENDA detalhando a aplicação prática das regras de vácuo, assimetria de pavios e o filtro de micro-tendência]
+📝 JUSTIFICATIVA TÉCNICA E ESTRUTURAL DETALHADA: [Exponha uma defesa puramente matemática, fria e mecânica do Price Action. Justifique com rigor o motivo de escolher COMPRA ou VENDA detalhando a aplicação prática das regras de vácuo, assimetria de pavios, o filtro de micro-tendência e a proteção anti-esticamento para evitar o rompimento ocorrido antes]
 """
 
 # 5. Execução da Análise
@@ -95,7 +93,7 @@ if botao_analise:
                 # Gera o prompt dinâmico blindado
                 prompt_final = gerar_prompt_mestre(tipo_mercado)
                 
-                # EXECUÇÃO ATUALIZADA: Usando o modelo estável mais recente para evitar erro 404
+                # Executa o modelo de visão estável de produção vigente (gemini-3.6-flash)
                 response = client.models.generate_content(
                     model='gemini-3.6-flash',
                     contents=[imagem, prompt_final]
