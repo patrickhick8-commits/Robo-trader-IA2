@@ -10,7 +10,7 @@ st.set_page_config(
 )
 
 st.title("🤖 Agente IA Trader Pro: Matriz Suprema")
-st.write("Fusão Total: Projeção Temporal Avançada (2 a 5 Minutos), Reversão Futura por Contagem de Candles, Fluxo de Cores e Retração.")
+st.write("Fusão Total: Projeção Temporal Avançada (2 a 5 Minutos), Reversão em Região Bastante Respeitada Aonde o Preço Realmente Reverteu, Fluxo de Cores e Retração.")
 
 # 2. Barra Lateral
 st.sidebar.markdown("### 🔑 Gerenciador de Chaves de Contingência")
@@ -39,16 +39,16 @@ PROMPT_TRADER = (
     "Identifique se há uma sequência de 4 velas ou mais consecutivas da mesma cor com corpos expressivos e poucos pavios para fluxo de continuidade.\n\n"
     "[PASSO 3: FILTROS DE FLUXO PARA RETRAÇÃO]\n"
     "Identifique se o preço se movimenta com candles médios que deixam bastante pavio buscando regiões de S/R ou LTA/LTB.\n\n"
-    "[PASSO 4: LOGICA DE REVERSÃO INTELIGENTE POR EXAUSTÃO NO TEMPO (2 A 5 MINUTOS)]\n"
-    "Projete o movimento tempo futuro com base estrita no último candle visível do print enviado. Calcule o momento exato em que o movimento esticado chegará ao teto máximo da região de respeito e ative a reversão na janela exata de 2 a 5 minutos à frente.\n\n"
+    "[PASSO 4: LOGICA DE REVERSÃO INTELIGENTE POR EXAUSTÃO NO TEMPO EM REGIÃO DE RESPEITO (2 A 5 MINUTOS)]\n"
+    "Projete o movimento tempo futuro com base estrita no último candle visível do print enviado. Identifique a região de suporte ou resistência de forte respeito histórico — onde o preço realmente reverteu no passado visível — e calcule o momento exato em que o movimento esticado chegará a esse teto ou fundo máximo para ativar a reversão na janela exata de 2 a 5 minutos à frente.\n\n"
     "[PASSO 5: REGRA DO RSI]\n"
-    "Proibido reverter se o RSI estiver cruzando de forma reta e agressiva os extremos. Aguarde a projeção de tempo futuro onde ele perderá angulação.\n\n"
+    "Proibido reverter se o RSI estiver cruzando de forma reta e agressiva os extremos. Aguarde a disposição de tempo futuro onde ele perderá angulação.\n\n"
     "[PASSO 6: DETERMINAÇÃO DO TEMPO DE EXPIRAÇÃO DA OPERAÇÃO]\n"
     "Defina e ajuste de forma estritamente personalizada o tempo de expiração da ordem de acordo com a mecânica da operação analisada. "
     "Se for Retração Clássica de Pavio, use o tempo restante do candle atual (ou M1). Se for Reversão por Exaustão na Região ou Pullback, projete uma expiração adequada "
     "(ex: M1, M2, M5) que garanta tempo suficiente para o preço respeitar a análise pós-clique. Nunca fixe um tempo padrão; determine caso a caso.\n\n"
     "[PASSO 7: MATRIZ DE ESTRATÉGIA COMBINADA ATIVADA]\n"
-    "Avalie com base em: 1. OPERACIONAL DE REVERSÃO EM REGIÃO (POR EXAUSTÃO ESTICADA), 2. FLUXO DE CONTINUIDADE (4+ VELAS), 3. FLUXO PARA RETRAÇÃO.\n\n"
+    "Avalie com base em: 1. OPERACIONAL DE REVERSÃO EM REGIÃO BASTANTE RESPEITADA (POR EXAUSTÃO ESTICADA), 2. FLUXO DE CONTINUIDADE (4+ VELAS), 3. FLUXO PARA RETRAÇÃO.\n\n"
     "[PASSO 8: PROTOCOLO DE BLOQUEIO]\n"
     "Bloqueie reversões precoces. Aborte se não houver alvo claro.\n\n"
     "[PASSO 9: CRONOMETRAGEM E GESTÃO]\n"
@@ -67,16 +67,16 @@ PROMPT_TRADER = (
     "🌐 MODO DE MERCADO DETECTADO: [Mercado]\n"
     "📊 CONTEXTO DO MERCADO MACRO E MICRO (ALINHAMENTO): [Tendência]\n"
     "📈 LEITURA DO RSI PADRÃO E GATILHO CONTRA MOMENTUM: [RSI]\n"
-    "📊 JUSTIFICATIVA DA REGIÃO E PROJEÇÃO TEMPORAL: [Justificativa do cálculo de 2 a 5 minutos e da expiração escolhida]\n\n"
+    "📊 JUSTIFICATIVA DA REGIÃO E PROJEÇÃO TEMPORAL: [Justificativa do cálculo de 2 a 5 minutos, do histórico de reversão da região escolhida e da expiração escolhida]\n\n"
     "🔍 DETALHAMENTO ANATÔMICO, ESTRUTURAL E TÉCNICO:\n"
     "- Ambiente Identificado\n"
     "- Trajetória pós-Print\n"
-    "- Análise de Reversão por Exaustão Esticada (Filtro de Proteção)\n"
+    "- Análise de Reversão por Exaustão Esticada em Região Histórica (Filtro de Proteção)\n"
     "- Padrão Sequencial de Cores\n"
     "- Densidade dos Pavios\n"
     "- Comportamento do RSI\n"
     "- Verificação de Bloqueios\n"
-    "- Regiões de Respeito\n"
+    "- Regiões de Respeito Comprovado\n"
     "- Gestão de Lote\n"
 )
 
