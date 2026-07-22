@@ -1,37 +1,6 @@
 import streamlit as st
 from google import genai
 from PIL import Image
-import time
-
-# ==============================================================================
-# FUNÇÃO ISOLADA PARA PROCESSAR A IA (EVITA ERROS DE INDENTAÇÃO NO STREAMLIT)
-# ==============================================================================
-def executar_analise_ia(client, image, prompt):
-    # Tenta o modelo principal primeiro
-    try:
-        response = client.models.generate_content(model='gemini-2.5-flash', contents=[image, prompt])
-        if response and response.text:
-            return response, ""
-    except Exception as e1:
-        erro = f"[Flash 2.5: {str(e1)}] "
-    
-    # Tenta o modelo Pro caso o primeiro falhe
-    try:
-        response = client.models.generate_content(model='gemini-2.5-pro', contents=[image, prompt])
-        if response and response.text:
-            return response, ""
-    except Exception as e2:
-        erro += f"[Pro 2.5: {str(e2)}] "
-        
-    # Tenta o modelo Flash 1.5 como última alternativa de segurança
-    try:
-        response = client.models.generate_content(model='gemini-1.5-flash', contents=[image, prompt])
-        if response and response.text:
-            return response, ""
-    except Exception as e3:
-        erro += f"[Flash 1.5: {str(e3)}]"
-        
-    return None, erro
 
 # ==============================================================================
 # 1. CONFIGURAÇÃO DA PÁGINA E INTERFACE
@@ -39,7 +8,7 @@ def executar_analise_ia(client, image, prompt):
 st.set_page_config(page_title="Agente IA Advanced - M1", page_icon="🤖", layout="centered")
 
 st.title("🤖 Agente IA Trader Pro: Análise Avançada de Candlesticks")
-st.write("Análise cirúrgica de Velas (Cor, Tamanho, Pavio), Tendência, RSI, Volume Implícito e Expiração Dinâmica Avançada.")
+st.write("Análise cirúrgica de Velas (Cor, Tamanho, Pavio), Tendência, RSI, Volume Implícito e Expiração Dinâmica Avançada com Tempo de Reação.")
 
 # ==============================================================================
 # 2. CONFIGURAÇÃO DA CHAVE DA IA NA BARRA LATERAL
@@ -47,6 +16,7 @@ st.write("Análise cirúrgica de Velas (Cor, Tamanho, Pavio), Tendência, RSI, V
 API_KEY = st.sidebar.text_input("Cole sua Gemini API Key aqui:", type="password")
 
 if API_KEY:
+    # Inicializa o cliente com a biblioteca oficial do Google GenAI
     client = genai.Client(api_key=API_KEY)
 
     # ==============================================================================
@@ -67,15 +37,7 @@ if API_KEY:
         if st.button("🚀 EXECUTAR ANÁLISE AVANÇADA DE SINAL"):
             with st.spinner("IA escaneando padrões de velas, volume implícito e mercado..."):
                 
-                # OTIMIZAÇÃO VISUAL: Reduz imagens gigantes para evitar recusas do servidor da Google
-                try:
-                    if image.mode in ("RGBA", "P"):
-                        image = image.convert("RGB")
-                    image.thumbnail((1280, 720), Image.Resampling.LANCZOS)
-                except Exception as img_err:
-                    st.sidebar.warning(f"Aviso na otimização de imagem: {img_err}")
-
-                # Prompt institucional completo unificando Fluxo em M1, Reversão de Proteção e RSI Seguro
+                # Prompt institucional completo com a regra de expiração ajustada para "3 Minutos se Reversão / Taxa de Defesa"
                 prompt = """
                 [SYSTEM_ROLE] Você é um robô de trading institucional de alta performance, programado para operar com frieza milimétrica e precisão cirúrgica. Sua missão é caçar apenas a oportunidade perfeita, garantindo uma assertividade absurda baseada em confluências técnicas avançadas.
                 
@@ -91,7 +53,7 @@ if API_KEY:
                 
                 [ANTI_NOISE_&_FALSE_BREAKOUT_FILTERS]
                 Aplique filtros severos para blindar a operação contra armadilhas comuns de mercado:
-                1. FILTRO DE FALSO ROMPIMENTO: Descarte rompimentos feitos por velas espremidas, sem expressão ou com pavios longos de prevenção na direção do rompimento. Valide o rompimento apenas se a vela romper com mais de 50% do seu corpo de forma cheia e expressiva (Marubozu), demonstrando volume institucional real e intenção de romper a zona.
+                1. FILTRO DE FALSO ROMPIMENTO: Descarte rompimentos feitos por velas espremidas, sem expressão ou com pavios longos de rejeição na direção do rompimento. Valide o rompimento apenas se a vela romper com mais de 50% do seu corpo de forma cheia e expressiva (Marubozu), demonstrando volume institucional real e intenção de romper a zona.
                 2. FILTRO DE FALSO PULLBACK: Bloqueie entradas de pullback se a vela que retorna para testar a região rompida demonstrar força extrema contrária (corpo muito grande). O pullback legítimo deve ser testado por velas de exaustão (corpos decrescentes) e deixar pavio de rejeição exatamente ao tocar a zona rompida.
                 3. FILTRO DE RUÍDO: Se as últimas 5 velas apresentarem alternância constante de cores (verde-vermelho-verde) sem direção definida ou acúmulo de Dojis seguidos, ignore o gráfico por completo e aborte a operação devido ao ruído micro do mercado.
                 
@@ -106,16 +68,31 @@ if API_KEY:
                 - VOLUME POR CORPO E MOVIMENTAÇÃO: Avalie o volume financeiro real injetado pelo tamanho e expansão do corpo dos candles. Velas expressivas confirmam volume institucional empurrando o mercado.
                 - DEFESA E ABSORÇÃO POR PAVIOS: Avalie o volume de agressão contrária pelo tamanho dos pavios. Pavios longos em zonas críticas indicam rejeição em massa, absorção de ordens e virada iminente no fluxo.
                 
-                [TIME_RULES] Leia o relógio atual no print. Projete o momento do clique de entrada de forma cirúrgica para acontecer entre 1 a 3 minutos depois do print. 
-                Ajuste a expiração estritamente com base na estratégia adotada: 1 minuto se for FLUXO MOMENTÂNEO (fechamento na mesma vela), ou 3 minutos se for REVERSÃO EM REGIÃO / TAXA DE DEFESA.
+                [TIME_RULES - PROTOCOLO DE TEMPO DE REAÇÃO HUMANA]
+                Leia o relógio atual no print enviado. Projete o momento do clique de entrada para acontecer estritamente com uma folga de 1 a 2 minutos à frente em relação ao horário do print (Exemplo: se o print marca 17:18:42, a entrada DEVE ser projetada para as 17:20:00). Nunca mande uma entrada com menos de 45 segundos de folga para dar tempo ao operador humano de receber a resposta, ajustar os valores na corretora e clicar na taxa exata.
+                
+                Ajuste a expiração estritamente com base na estratégia adotada a partir do momento planejado da entrada: 1 minuto se for FLUXO MOMENTÂNEO (fechamento na mesma vela), ou 3 minutos se for REVERSÃO / TAXA DE DEFESA.
                 
                 Retorne estritamente neste formato markdown limpo:
                 🎯 PORCENTAGEM DE ACERTO DA ENTRADA: [Ex: 94% - EXTREMA CONFLUÊNCIA DE FLUXO ou 88% - CONFLUÊNCIA DE DEFESA DE SUPORTE MICRO]
-                ⏰ HORÁRIO DO CLIQUE (ENTRADA): [HH:MM:00 exato]
-                ⏳ TEMPO DE EXPIRAÇÃO: [1 Minuto se Fluxo Momentâneo OU 3 Minutos se Reversão em Região/Taxa de Defesa]
-                🏁 HORÁRIO DE FECHAMENTO: [Cálculo preciso baseado no horário de entrada + tempo de expiração definido]
-                🟥🟩 DIREÇÃO DA ORDEM: [COMPRA / VENDA / ABORTAR OPERAÇÃO]
-                🌐 MODO DE MERCADO DETECTADO: [MERCADO ABERTO ou MERCADO OTC]
-                🧠 ESTRATÉGIA CORRETA APLICADA: [FLUXO MOMENTÂNEO EM TENDÊNCIA EM M1 ou OPERACIONAL DE REVERSÃO EM REGIÃO (Suporte de Fundo Recente)]
+                ⏰ HORÁRIO DO CLIQUE (ENTRADA): [HH:MM:00 exato projetado com margem de segurança]
+                ⏳ TEMPO DE EXPIRAÇÃO: [1 Minuto se Fluxo Momentâneo OU 3 Minutos se Reversão / Taxa de Defesa]
+                📈 DIREÇÃO DA ENTRADA: [COMPRA / CALL ou VENDA / PUT ou ABORTAR OPERAÇÃO]
+                🧠 JUSTIFICATIVA TÉCNICA E CONFLUÊNCIAS: [Explique de forma curta e cirúrgica os motivos baseados nos filtros acima]
+                """
                 
-                🔍 DIAGNÓSTICO INSTITUCIONAL DE SINAL (PRICE ACTION & FILTROS DE SEGURANÇA):
+                try:
+                    response = client.models.generate_content(
+                        model='gemini-2.0-flash',
+                        contents=[image, prompt]
+                    )
+                    st.success("Análise Concluída!")
+                    st.markdown(response.text)
+                except Exception as e:
+                    if "429" in str(e) or "RESOURCE_EXHAUSTED" in str(e):
+                        st.error("⚠️ Limite diário de requisições da sua API Key foi atingido (Cota Gratuita de 20/dia).")
+                        st.info("💡 **Dica:** Ative o faturamento 'Pay-as-you-go' no Google AI Studio para liberar acessos ilimitados.")
+                    else:
+                        st.error(f"Erro ao processar a análise com o Gemini: {e}")
+else:
+    st.info("Por favor, insira sua Gemini API Key na barra lateral para começar.")
