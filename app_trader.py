@@ -47,7 +47,7 @@ if API_KEY:
 
                 [ESTRATÉGIA PRINCIPAL VITORIOSA: EXAUSTÃO MICRO E RETRAÇÃO DE TAXA]
                 Sua principal e mais assertiva forma de operar (especialmente no mercado de Opções Binárias e OTC) deve ser a captura de exaustão imediata de movimento e defesa de taxa:
-                1. IDENTIFICAÇÃO DE EXAUSTÃO: Monitore quando o preço realizar esticadas rápidas de 3 a 5 velas consecutivas da mesma cor, onde as últimas velas comecem a diminuir drasticamente o tamanho do corpo (perda de força/momentum) e a deixar pavios de rejeição proeminentes ao tocar suportes ou resistências recentes deixados em um histórico de até 2 horas atrás.
+                1. IDENTIFICAÇÃO DE EXAUSTÃO: Monitore quando o preço realizar esticadas rápidas de 3 a 5 velas consecutivas da mesma cor, onde as últimas velas comecem a diminuir drasticamente o tamanho do corpo (perda de força/momentum) e a deixar pavios de prevenção proeminentes ao tocar suportes ou resistências recentes deixados em um histórico de até 2 horas atrás.
                 2. REGRA ESTRITA DE EXPIRAÇÃO (ANTI-LOSS EM OTC): Para operações de fluxo ou retração micro em mercado algorítmico (OTC), você está TERMINANTEMENTE PROIBIDO de passar tempos longos de expiração, como 5 minutos (alto risco de reversão e virada de ciclo macro na sua cara). Defina o tempo de expiração estritamente entre 1 a 3 minutos para pegar o repique exato e o isolamento da zona de liquidez.
 
                 [ANTI_NOISE_&_FALSE_BREAKOUT_FILTERS]
@@ -82,7 +82,7 @@ if API_KEY:
                 - Lógica de Expiração Adotada: [Justifique matematicamente o uso do tempo curto de 1 a 3 minutos com base na mitigação e quebra do ciclo algorítmico]
                 - Leitura de Falsos Rompimentos/Pullbacks: [Explique por que o cenário atual é seguro e não se trata de uma armadilha ou falso movimento]
                 - Filtragem de Ruído e Volume por Corpo: [Análise da clareza, direção ou desaceleração real do fluxo das velas]
-                - Absorção e Pressão por Pavios: [O que a rejection dos pavios revelou na zona de suporte ou resistência identificada no histórico recente]
+                - Absorção e Pressão por Pavios: [O que a rejeição dos pavios revelou na zona de suporte ou resistência identificada no histórico recente]
                 - Filtro de Segurança e Volume Oculto: [Mapeamento estrutural realizado de forma estritamente implícita com base na geometria pura dos candles e ação do preço]
 
                 Seja frio, direto e puramente matemático.
@@ -105,7 +105,7 @@ if API_KEY:
                     except Exception as e:
                         erro_final = str(e)
                         st.sidebar.warning(f"Modelo {modelo_atual} congestionado. Tentando o próximo...")
-                        time.sleep(1) # Intervalo curto de segurança entre requisições
+                        time.sleep(1)
 
                 # Exibe o resultado se pelo menos um modelo respondeu
                 if response and response.text:
