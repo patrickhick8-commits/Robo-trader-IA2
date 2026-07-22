@@ -108,11 +108,11 @@ Retorne o diagnóstico estruturado exatamente neste formato markdown limpo e des
 Seja frio, preciso e direto. Velocidade e precisão salvam bancas.
 """
 
-# Interface para o upload de imagem
+# Interface de carregamento do Gráfico (Sempre visível no corpo central)
 upload_arquivo = st.file_uploader("Upload do Print do Gráfico (M1)", type=["png", "jpg", "jpeg"])
 
 if upload_arquivo is not None:
     imagem = Image.open(upload_arquivo)
-    st.image(imagem, caption="Gráfico Carregado - Análise Autônoma de M1 Ativada", use_container_width=True)
-    if not lista_de_chaves:
-        st.warning("⚠️ Insira pelo menos uma Gemini API Key na barra lateral para prosseguir.")
+    st.image(imagem, caption="Gráfico Carregado com Sucesso", use_container_width=True)
+    
+    # O botão agora é gerado imediatamente após o upload, sem travas invisíveis
