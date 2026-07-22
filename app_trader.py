@@ -49,7 +49,7 @@ PROMPT_TRADER = (
     "- **Contexto Macro/Micro:** [Descreva brevemente a estrutura de mercado visível no print: tendência, lateralização ou rompimento]\n"
     "- **Comportamento das Velas Recentes:** [Análise visual se os últimos candles demonstram força de impulsão ou exaustão por pavios]\n"
     "- **Mapeamento de Regiões:** [Identifique visualmente se o preço está próximo de fundos/topos anteriores ou se está em 'vazio gráfico']\n"
-    "- **Filtro de Bloqueio Ativado?:** [Sim/Não - Justifique se há perigo iminente de tomar um 'loss' por operar contra uma força institucional esticada]\n\n"
+    "- **Filtro de Bloqueio Ativado?:** [Sim/Não - Justifique se há perigo iminente de tomar um 'loss' por operar contra uma força institutional esticada]\n\n"
     
     "⚠️ AVISO DE GESTÃO DE RISCO:\n"
     "[Forneça uma recomendação de gerenciamento conservadora baseada estritamente na feiura ou clareza do gráfico analisado.]"
@@ -60,10 +60,10 @@ def executar_chamada_gemini(chave_api, imagem_objeto, prompt_comando):
         # Inicializando o cliente oficial do Google GenAI
         client = genai.Client(api_key=chave_api)
         
-        # Mudança Crítica: Alterado de 'gemini-2.5-pro' para 'gemini-2.5-flash'
-        # Isso garante o uso da cota gratuita e resolve o erro 429 RESOURCE_EXHAUSTED
+        # Correção Crítica: Mudança para 'gemini-2.0-flash'
+        # Modelo oficial de produção ativo com cota gratuita liberada (Free Tier)
         response = client.models.generate_content(
-            model='gemini-2.5-flash',
+            model='gemini-2.0-flash',
             contents=[imagem_objeto, prompt_comando]
         )
         return response.text
@@ -109,4 +109,3 @@ if botao_analise:
 
 if not lista_de_chaves:
     st.info("💡 Lembrete: Insira as chaves de API na barra lateral esquerda para liberar o processamento.")
-
