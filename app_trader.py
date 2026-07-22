@@ -1,6 +1,7 @@
 import streamlit as st
 from google import genai
 from PIL import Image
+import time
 
 # ==============================================================================
 # 1. CONFIGURAÇÃO DA PÁGINA E INTERFACE
@@ -8,7 +9,7 @@ from PIL import Image
 st.set_page_config(page_title="Agente IA Advanced - M1", page_icon="🤖", layout="centered")
 
 st.title("🤖 Agente IA Trader Pro: Análise Avançada de Candlesticks")
-st.write("Análise cirúrgica de Velas (Cor, Tamanho, Pavio), Tendência, RSI, Volume Implícito e Expiração Dinâmica Avançada com Tempo de Reação.")
+st.write("Análise cirúrgica de Velas (Cor, Tamanho, Pavio), Tendência, Volume Implícito e Expiração Dinâmica Avançada.")
 
 # ==============================================================================
 # 2. CONFIGURAÇÃO DA CHAVE DA IA NA BARRA LATERAL
@@ -16,14 +17,14 @@ st.write("Análise cirúrgica de Velas (Cor, Tamanho, Pavio), Tendência, RSI, V
 API_KEY = st.sidebar.text_input("Cole sua Gemini API Key aqui:", type="password")
 
 if API_KEY:
-    # Inicializa o cliente com a biblioteca oficial do Google GenAI
+    # Inicializa o cliente com a biblioteca oficial do Google
     client = genai.Client(api_key=API_KEY)
 
     # ==============================================================================
     # 3. CAMPO DE UPLOAD E VISUALIZAÇÃO DO PRINT
     # ==============================================================================
     uploaded_file = st.file_uploader(
-        "Arraste o print completo do gráfico M1 (inclua Velas, RSI e Relógio):", 
+        "Arraste o print do gráfico M1 (Recomendado: Zoom aproximado de 30-40 velas, sem indicadores):", 
         type=["png", "jpg", "jpeg"]
     )
 
@@ -37,7 +38,7 @@ if API_KEY:
         if st.button("🚀 EXECUTAR ANÁLISE AVANÇADA DE SINAL"):
             with st.spinner("IA escaneando padrões de velas, volume implícito e mercado..."):
                 
-                # Prompt institucional completo otimizado para a arquitetura Gemini 3.x
+                # Prompt institucional completo unificando Fluxo em M1 e Reversão Curta de Proteção
                 prompt = """
                 [SYSTEM_ROLE] Você é um robô de trading institucional de alta performance, programado para operar com frieza milimétrica e precisão cirúrgica. Sua missão é caçar apenas a oportunidade perfeita, garantindo uma assertividade absurda baseada em confluências técnicas avançadas.
                 
@@ -57,43 +58,58 @@ if API_KEY:
                 2. FILTRO DE FALSO PULLBACK: Bloqueie entradas de pullback se a vela que retorna para testar a região rompida demonstrar força extrema contrária (corpo muito grande). O pullback legítimo deve ser testado por velas de exaustão (corpos decrescentes) e deixar pavio de rejeição exatamente ao tocar a zona rompida.
                 3. FILTRO DE RUÍDO: Se as últimas 5 velas apresentarem alternância constante de cores (verde-vermelho-verde) sem direção definida ou acúmulo de Dojis seguidos, ignore o gráfico por completo e aborte a operação devido ao ruído micro do mercado.
                 
-                [AUTOMATIC_MARKET_ADAPTATION & CONDITIONAL RSI FILTER]
-                Identifique visualmente se o gráfico enviado pertence ao Mercado Aberto Tradicional ou ao Mercado OTC (identificável por nomes de pares com "-OTC", comportamento algorítmico contínuo ou padrões característicos das corretoras) e aplique as estratégias corretas, analisando o indicador RSI 14 na parte inferior com as seguintes regras de segurança:
-                1. FILTRO DE SEGURANÇA RSI: Utilize o indicador RSI APENAS se ele estiver em zona extrema (tocando ou rompendo os níveis 30 ou 70) E EM CONGRUÊNCIA total com o padrão de exaustão das velas. Se as velas mostrarem força de fluxo contínuo (sequência de velas grandes em OTC), IGNORE o RSI, pois o algoritmo tende a estagnar o indicador nos extremos e continuar o movimento.
-                2. MERCADO ABERTO: Priorize a leitura de zonas legítimas de Suporte/Resistência, LTA/LTB macro e confluências micro com o RSI.
-                3. MERCADO OTC (ALGORÍTMICO): Foque no comportamento computacional das corretoras. Priorize algoritmos de fluxo contínuo (sequências de velas de força), preenchimento milimétrico de pavios anteriores (vácuo de liquidez), exaustão por contagem de velas e armadilhas de falsos rompimentos in zonas saturadas.
+                [AUTOMATIC_MARKET_ADAPTATION]
+                Identifique visualmente se o gráfico enviado pertence ao Mercado Aberto Tradicional ou ao Mercado OTC (identificável por nomes de pares com "-OTC", comportamento algorítmico contínuo ou padrões característicos das corretoras) e aplique as estratégias corretas, ignorando osciladores de linha como RSI (foque 100% no Price Action puro):
+                1. MERCADO ABERTO: Priorize a leitura de zonas legítimas de Suporte/Resistência, LTA/LTB e confluências micro.
+                2. MERCADO OTC (ALGORÍTMICO): Foque no comportamento computacional das corretoras. Priorize algoritmos de fluxo contínuo (sequências de velas de força), preenchimento milimétrico de pavios anteriores (vácuo de liquidez), exaustão por contagem de velas e armadilhas de falsos rompimentos em zonas saturadas.
                 
                 [ORDER_FLOW_&_PURE_CANDLE_VOLUME]
                 Analise o desequilíbrio, a movimentação do preço e o fluxo de ordens (Order Flow) de forma 100% implícita e exclusiva na anatomia visual das velas, SEM depender de indicadores de volume na tela:
                 - VOLUME POR CORPO E MOVIMENTAÇÃO: Avalie o volume financeiro real injetado pelo tamanho e expansão do corpo dos candles. Velas expressivas confirmam volume institucional empurrando o mercado.
                 - DEFESA E ABSORÇÃO POR PAVIOS: Avalie o volume de agressão contrária pelo tamanho dos pavios. Pavios longos em zonas críticas indicam rejeição em massa, absorção de ordens e virada iminente no fluxo.
                 
-                [TIME_RULES - PROTOCOLO DE TEMPO DE REAÇÃO HUMANA]
-                Leia o relógio atual no print enviado. Projete o momento do clique de entrada para acontecer estritamente com uma folga de 1 a 2 minutos à frente em relação ao horário do print (Exemplo: se o print marca 17:18:42, a entrada DEVE ser projetada para as 17:20:00). Nunca mande uma entrada com menos de 45 segundos de folga para dar tempo ao operador humano de receber a resposta, ajustar os valores na corretora e clicar na taxa exata.
-                
-                Ajuste a expiração estritamente com base na estratégia adotada a partir do momento planejado da entrada: 1 minuto se for FLUXO MOMENTÂNEO (fechamento na mesma vela), ou 3 minutos se for REVERSÃO / TAXA DE DEFESA.
+                [TIME_RULES] Leia o relógio atual no print. Projete o momento do clique de entrada de forma cirúrgica para acontecer entre 1 a 3 minutos depois do print. 
+                Ajuste a expiração estritamente com base na estratégia adotada: 1 minuto se for FLUXO MOMENTÂNEO (fechamento na mesma vela), ou 3 minutos se for REVERSÃO EM REGIÃO / TAXA DE DEFESA.
                 
                 Retorne estritamente neste formato markdown limpo:
                 🎯 PORCENTAGEM DE ACERTO DA ENTRADA: [Ex: 94% - EXTREMA CONFLUÊNCIA DE FLUXO ou 88% - CONFLUÊNCIA DE DEFESA DE SUPORTE MICRO]
-                ⏰ HORÁRIO DO CLIQUE (ENTRADA): [HH:MM:00 exato projetado com margem de segurança]
-                ⏳ TEMPO DE EXPIRAÇÃO: [1 Minuto se Fluxo Momentâneo OU 3 Minutos se Reversão / Taxa de Defesa]
-                📈 DIREÇÃO DA ENTRADA: [COMPRA / CALL ou VENDA / PUT ou ABORTAR OPERAÇÃO]
-                🧠 JUSTIFICATIVA TÉCNICA E CONFLUÊNCIAS: [Explique de forma curta e cirúrgica os motivos baseados nos filtros acima]
+                ⏰ HORÁRIO DO CLIQUE (ENTRADA): [HH:MM:00 exato]
+                ⏳ TEMPO DE EXPIRAÇÃO: [1 Minuto se Fluxo Momentâneo OU 3 Minutos se Reversão em Região/Taxa de Defesa]
+                🏁 HORÁRIO DE FECHAMENTO: [Cálculo preciso baseado no horário de entrada + tempo de expiração definido]
+                🟥🟩 DIREÇÃO DA ORDEM: [COMPRA / VENDA / ABORTAR OPERAÇÃO]
+                🌐 MODO DE MERCADO DETECTADO: [MERCADO ABERTO ou MERCADO OTC]
+                🧠 ESTRATÉGIA CORRETA APLICADA: [FLUXO MOMENTÂNEO EM TENDÊNCIA EM M1 ou OPERACIONAL DE REVERSÃO EM REGIÃO (Suporte de Fundo Recente)]
+                
+                🔍 DIAGNÓSTICO INSTITUCIONAL DE SINAL (PRICE ACTION EM GRÁFICO LIMPO):
+                - Lógica de Expiração Adotada: [Justifique matematicamente a escolha do tempo de expiração: 1 minuto para fechamento na mesma vela ou 3 minutos para mitigação e proteção de taxa]
+                - Leitura de Falsos Rompimentos/Pullbacks: [Explique por que o cenário atual é seguro e não se trata de uma armadilha ou falso movimento]
+                - Filtragem de Ruído e Volume por Corpo: [Análise da clareza, direção ou desaceleração real do fluxo das velas]
+                - Absorção e Pressão por Pavios: [O que a pressão dos pavios revelou sobre o volume oculto de defesa no suporte/resistência recente]
+                - Filtro de Segurança e Volume Oculto: [Mapeamento estrutural realizado de forma estritamente implícita com base na geometria pura dos candles e ação do preço]
+                Seja frio, direto e puramente matemático.
                 """
                 
-                try:
-                    # Mudança do modelo para o novo gemini-3.6-flash
-                    response = client.models.generate_content(
-                        model='gemini-3.6-flash',
-                        contents=[image, prompt]
-                    )
-                    st.success("Análise Concluída com Gemini 3.6!")
+                # Lista de modelos de Fallback para prevenir o erro 503 UNAVAILABLE
+                modelos_fallback = ['gemini-2.5-flash', 'gemini-2.5-pro', 'gemini-1.5-flash']
+                response = None
+                erro_final = ""
+
+                # Sistema de loop de tentativas (Retry/Fallback)
+                for modelo_atual in modelos_fallback:
+                    try:
+                        response = client.models.generate_content(
+                            model=modelo_atual,
+                            contents=[image, prompt]
+                        )
+                        if response and response.text:
+                            break # Conseguiu resposta com sucesso, sai do loop.
+                    except Exception as e:
+                        erro_final = str(e)
+                        st.sidebar.warning(f"Modelo {modelo_atual} congestionado. Tentando o próximo...")
+                        time.sleep(1)
+
+                # Exibe o resultado se pelo menos um modelo respondeu
+                if response and response.text:
+                    st.success("Análise Avançada Concluída com Sucesso!")
                     st.markdown(response.text)
-                except Exception as e:
-                    if "429" in str(e) or "RESOURCE_EXHAUSTED" in str(e):
-                        st.error("⚠️ Limite diário de requisições da sua API Key foi atingido (Cota Gratuita).")
-                        st.info("💡 **Dica:** Ative o faturamento 'Pay-as-you-go' no Google AI Studio para liberar o poder total do Gemini 3.6 de forma ilimitada.")
-                    else:
-                        st.error(f"Erro ao processar a análise com o Gemini: {e}")
-else:
-    st.info("Por favor, insira sua Gemini API Key na barra lateral para começar.")
+                    
