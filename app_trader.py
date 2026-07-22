@@ -40,7 +40,7 @@ Para mitigar perdas e eliminar falsos rompimentos no operacional de 'FLUXO DE VE
 
 [FILTRO CRÍTICO ANTI-LOSS PARA RETRAÇÃO FUTURA]
 Para evitar perdas por rompimento e velas trator, aplique rigorosamente as seguintes leis físicas ao avaliar o operacional de 'RETRAÇÃO EM TAXA FUTURA':
-1. LEI DA EXAUSTÃO: Se o preço estiver indo em direção à taxa gatilho, as últimas 2 ou 3 velas anteriores DEVEM estar diminuindo progressivamente de tamanho (corpo encolhendo). Se as velas anteriores forem grandes, cheias e sem pavio contra, CANCELE a retração imediatamente. O movimento é um fluxo trator.
+1. LEI DA EXAUSTÃO: Se o preço estiver indo em direção à taxa gatilho, as últimas 2 ou 3 velas anteriores DEVEM estar diminuindo progressivamente de tamanho (corpo encolhengdo). Se as velas anteriores forem grandes, cheias e sem pavio contra, CANCELE a retração imediatamente. O movimento é um fluxo trator.
 2. REGRA DO TOQUE SEGURO: Só recomende o clique de retração se houver um histórico de pelo menos 3 pavios longos isolados na mesma linha horizontal nos últimos 15 minutos do print. Se a região tiver poucos pavios, a probabilidade de rompimento é superior a 75%.
 3. FILTRO DE MOVIMENTO: Caso o cenário indique força compradora/vendedora massiva indo contra uma simetria fraca, mude o veredito para 'FLUXO DE VELA' ou 'FLUXO TRATOR'. Não tente adivinhar topos e fundos contra o momentum institucional.
 
@@ -95,16 +95,16 @@ if botao_analise:
                 # Gera o prompt dinâmico blindado
                 prompt_final = gerar_prompt_mestre(tipo_mercado)
                 
-                # Executa o modelo de visão atualizado e estável (gemini-2.5-flash)
+                # EXECUÇÃO ATUALIZADA: Usando o modelo estável mais recente para evitar erro 404
                 response = client.models.generate_content(
-                    model='gemini-2.5-flash',
+                    model='gemini-3.6-flash',
                     contents=[imagem, prompt_final]
                 )
                 
                 st.success("✅ Análise Computacional Concluída com Sucesso!")
                 st.markdown("### 📊 Painel de Execução Analítica")
                 
-                # Renderiza toda a resposta de uma só vez para evitar bugs de loops e indentações quebradas
+                # Exibição segura e nativa de todo o Markdown estruturado pela IA
                 st.markdown(response.text)
                 
             except Exception as e:
