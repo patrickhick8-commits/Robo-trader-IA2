@@ -88,7 +88,7 @@ Retorne o diagnóstico estruturado exatamente neste formato markdown limpo e des
 🟥🟩 DIREÇÃO EXATA DA ORDEM: [COMPRA / VENDA / OPERAÇÃO ABORTADA]
 💰 GERENCIAMENTO DE LOTE RECOMENDADO: [SOROS / ENTRADA FIXA / MÃO LEVE / PARADA OBRIGATÓRIA]
 
-📈 TENDÊNCIA PRINCIPAL DETECTADA: [ALTA / BAIXA / LATERAL] (Destaque o alinhamento da operação)
+📈 TENDÊNCIA PRINCIPAL DETECTADA: [ALTA / BAIXA / LATERAL] (Destaque o alinhamento da operation)
 🧠 ESTRATÉGIA COMBINADA ATIVADA: [Ex: REVERSÃO EM LATERALIDADE (SUPORTE HORIZONTAL RESPEITADO) ou FLUXO EM TENDÊNCIA DE BAIXA (ROMPIMENTO DE S/R) ou PULLBACK EM TENDÊNCIA COM RETRAÇÃO POR PAVIO]
 🌐 MODO DE MERCADO DETECTADO: [MERCADO ABERTO ou MERCADO OTC]
 📊 CONTEXTO DO MERCADO: [TENDÊNCIA DE ALTA / TENDÊNCIA DE BAIXA / CONSOLIDAÇÃO LATERAL / MERCADO PARADO]
@@ -99,7 +99,7 @@ Retorne o diagnóstico estruturado exatamente neste formato markdown limpo e des
 - Ambiente Identificado: [MERCADO ABERTO ou OTC]
 - Validação da Tendência Macro: [Justifique visualmente como a direção escolhida protege contra o 'loss' por estar surfando o fluxo da tendência principal]
 - Mapeamento das Regiões (S/R, LTA/LTB e Zonas de Pullback): [Descreva as microzonas, regiões principais ou testes de pullback que o preço tende a respeitar]
-- Comportamento e Retração pelos Pavios: [Explique o que a presença e tamanho dos pavios recentes revelam sobre a rejeição ou preenchimento das zonas]
+- Comportamento e Retração pelos Pavios: [Explique o que a presença e tamanho dos pavios recentes revelam sobre a rejection ou preenchimento das zonas]
 - Posicionamento da EMA 9: [Direção do preço em relação à média móvel para validar a força do sinal]
 - Avaliação de Ruído e Volatilidade: [Explique por que o cenário foi considerado aceitável para clique com filtros moderados]
 - Diagnóstico do Fluxo de Cores e Volume por Corpo: [Análise do tamanho das últimas velas para validar o movimento e a força do gatilho]
@@ -116,4 +116,3 @@ if upload_arquivo is not None:
     st.image(imagem, caption="Gráfico Carregado - Análise Autônoma de M1 Ativada", use_container_width=True)
 
     if not lista_de_chaves:
-        st.warning("⚠️ Insira pelo menos uma Gemini API Key na barra lateral para prosseguir.")
