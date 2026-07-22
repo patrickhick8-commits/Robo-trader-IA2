@@ -9,7 +9,7 @@ import time
 st.set_page_config(page_title="Agente IA Advanced - M1", page_icon="🤖", layout="centered")
 
 st.title("🤖 Agente IA Trader Pro: Análise Avançada de Candlesticks")
-st.write("Análise cirúrgica de Velas (Cor, Tamanho, Pavio), Tendência, Volume Implícito e Expiração Dinâmica Curta de Alta Assertividade.")
+st.write("Análise cirúrgica de Velas (Cor, Tamanho, Pavio), Tendência, Volume Implícito e Expiração Dinâmica Avançada.")
 
 # ==============================================================================
 # 2. CONFIGURAÇÃO DA CHAVE DA IA NA BARRA LATERAL
@@ -38,53 +38,54 @@ if API_KEY:
         if st.button("🚀 EXECUTAR ANÁLISE AVANÇADA DE SINAL"):
             with st.spinner("IA escaneando padrões de velas, volume implícito e mercado..."):
                 
-                # Prompt Ultra Institucional calibrado com a estratégia de 1 a 3 minutos
+                # Prompt institucional completo unificando Fluxo em M1 e Reversão Curta de Proteção
                 prompt = """
-                [SYSTEM_ROLE] Você é um robô de trading institucional de alta performance, programado para operar com frieza milimétrica e precisão cirúrgica. Sua missão é caçar apenas a oportunidade perfeita, garantindo uma assertividade absurda baseada em confluências geométricas puras de Price Action, focando em retrações rápidas de alta performance.
-
+                [SYSTEM_ROLE] Você é um robô de trading institucional de alta performance, programado para operar com frieza milimétrica e precisão cirúrgica. Sua missão é caçar apenas a oportunidade perfeita, garantindo uma assertividade absurda baseada em confluências técnicas avançadas.
+                
                 [RIGOROUS_FILTERING_PROTOCOL]
-                Opere com rigor máximo. Você está terminantemente proibido de passar sinais com confluências fracas. Se houver o menor ruído ou indefinição estrutural, classifique imediatamente como [ABORTAR OPERAÇÃO - ALTO RISCO]. Aceite apenas a faixa extrema de 85% a 99% de certeza matemática ponderada.
-
-                [ESTRATÉGIA PRINCIPAL VITORIOSA: EXAUSTÃO MICRO E RETRAÇÃO DE TAXA]
-                Sua principal e mais assertiva forma de operar (especialmente no mercado de Opções Binárias e OTC) deve ser a captura de exaustão imediata de movimento e defesa de taxa:
-                1. IDENTIFICAÇÃO DE EXAUSTÃO: Monitore quando o preço realizar esticadas rápidas de 3 a 5 velas consecutivas da mesma cor, onde as últimas velas comecem a diminuir drasticamente o tamanho do corpo (perda de força/momentum) e a deixar pavios de prevenção proeminentes ao tocar suportes ou resistências recentes deixados em um histórico de até 2 horas atrás.
-                2. REGRA ESTRITA DE EXPIRAÇÃO (ANTI-LOSS EM OTC): Para operações de fluxo ou retração micro em mercado algorítmico (OTC), você está TERMINANTEMENTE PROIBIDO de passar tempos longos de expiração, como 5 minutos (alto risco de reversão e virada de ciclo macro na sua cara). Defina o tempo de expiração estritamente entre 1 a 3 minutos para pegar o repique exato e o isolamento da zona de liquidez.
-
+                Opere com rigor máximo. Você está terminantemente proibido de passar sinais com confluências fracas. Se houver o menor ruído, classifique como [ABORTAR OPERAÇÃO - ALTO RISCO]. Aceite apenas a faixa extrema de 85% a 99% de certeza matemática ponderada.
+                
+                [DIRETRIZ DE SEGURANÇA MÁXIMA: DOIS OPERACIONAIS OFICIAIS]
+                Monitore rigorosamente a proximidade do preço em relação às zonas de suporte e resistência fortes para aplicar um dos dois setups abaixo:
+                
+                1. OPERACIONAL DE FLUXO MOMENTÂNEO EM TENDÊNCIA: Se o preço estiver distante das regiões de reversão macro e demonstrar força direcional, siga a favor da continuidade do movimento atual (ou fluxo de cores). Para este cenário de fluxo, você está OBRIGADO a manter a expiração padrão de 1 minuto para fechar exatamente no final da mesma vela de M1 de entrada.
+                
+                2. OPERACIONAL DE REVERSÃO EM REGIÃO (SUPORTE DE FUNDO RECENTE / TAXA DE DEFESA): Se você detectar que o preço atingiu a exaustão visual (corpos decrescentes e esticada de 3 a 5 velas consecutivas) e tocou uma região de suporte ou resistência micro de até 2 horas atrás, ative este modo de contra-ataque. Para este cenário de proteção e reversão, ajuste o tempo de expiração dinamicamente para 3 minutos à frente, projetando o repique e o isolamento seguro da zona de liquidez.
+                
                 [ANTI_NOISE_&_FALSE_BREAKOUT_FILTERS]
                 Aplique filtros severos para blindar a operação contra armadilhas comuns de mercado:
-                1. FILTRO DE FALSO ROMPIMENTO: Só valide rompimentos se a vela romper com mais de 50% de seu corpo cheio (Marubozu), demonstrando volume institucional real. Velas espremidas, sem expressão ou com pavios longos na direção do rompimento indicam falsos movimentos; contra-ataque imediatamente ativando a operação de retração/reversão curta (1 a 3 min).
-                2. FILTRO DE FALSO PULLBACK: Bloqueie entradas se a vela que retorna para testar a região rompida demonstrar força extrema contrária. O pullback legítimo deve ser testado por velas de exaustão (corpos decrescentes) deixando pavio exatamente ao tocar a zona.
-                3. FILTRO DE RUÍDO: Se as últimas 5 velas apresentarem alternância constante e caótica de cores (verde-vermelho-verde) sem direção definida ou acúmulo de Dojis seguidos, ignore o gráfico por completo e aborte a operação devido ao ruído micro.
-
+                1. FILTRO DE FALSO ROMPIMENTO: Descarte rompimentos feitos por velas espremidas, sem expressão ou com pavios longos de rejeição na direção do rompimento. Valide o rompimento apenas se a vela romper com mais de 50% do seu corpo de forma cheia e expressiva (Marubozu), demonstrando volume institucional real e intenção de romper a zona.
+                2. FILTRO DE FALSO PULLBACK: Bloqueie entradas de pullback se a vela que retorna para testar a região rompida demonstrar força extrema contrária (corpo muito grande). O pullback legítimo deve ser testado por velas de exaustão (corpos decrescentes) e deixar pavio de rejeição exatamente ao tocar a zona rompida.
+                3. FILTRO DE RUÍDO: Se as últimas 5 velas apresentarem alternância constante de cores (verde-vermelho-verde) sem direção definida ou acúmulo de Dojis seguidos, ignore o gráfico por completo e aborte a operação devido ao ruído micro do mercado.
+                
                 [AUTOMATIC_MARKET_ADAPTATION]
-                Identifique visualmente se o gráfico enviado pertence ao Mercado Aberto Tradicional ou ao Mercado OTC e aplique as leituras corretas, ignorando completamente indicadores osciladores de linha como RSI (foque 100% na ação do preço na tela):
-                1. MERCADO ABERTO: Priorize a leitura de zonas legítimas e consolidadas de Suporte/Resistência e LTA/LTB macro.
-                2. MERCADO OTC (ALGORÍTMICO): Foque no comportamento computacional das corretoras, priorizando sequências de velas de força, preenchimento milimétrico de pavios anteriores (vácuo de liquidez), exaustão por contagem de velas e falsas esticadas em regiões saturadas.
-
+                Identifique visualmente se o gráfico enviado pertence ao Mercado Aberto Tradicional ou ao Mercado OTC (identificável por nomes de pares com "-OTC", comportamento algorítmico contínuo ou padrões característicos das corretoras) e aplique as estratégias corretas, ignorando osciladores de linha como RSI (foque 100% no Price Action puro):
+                1. MERCADO ABERTO: Priorize a leitura de zonas legítimas de Suporte/Resistência, LTA/LTB e confluências micro.
+                2. MERCADO OTC (ALGORÍTMICO): Foque no comportamento computacional das corretoras. Priorize algoritmos de fluxo contínuo (sequências de velas de força), preenchimento milimétrico de pavios anteriores (vácuo de liquidez), exaustão por contagem de velas e armadilhas de falsos rompimentos em zonas saturadas.
+                
                 [ORDER_FLOW_&_PURE_CANDLE_VOLUME]
-                Analise o desequilíbrio e fluxo de ordens (Order Flow) de forma 100% implícita e exclusiva na anatomia visual das velas, SEM depender de indicadores de volume na tela:
-                - VOLUME POR CORPO E MOVIMENTAÇÃO: Avalie a força injetada pela expansão ou encolhimento repentino do tamanho dos candles.
-                - DEFESA E ABSORÇÃO POR PAVIOS: Pavios longos em zonas críticas de suporte/resistência recente indicam absorção em massa e virada iminente no fluxo de ordens.
-
-                [TIME_RULES] 
-                Leia o relógio atual no print enviado. Projete o momento exato do clique de entrada para acontecer de forma cirúrgica entre 1 a 3 minutos depois do print, casando perfeitamente com a expiração rápida da estratégia adotada.
-
-                Retorne estritamente neste formato markdown limpo, direto e profissional:
-                🎯 PORCENTAGEM DE ACERTO DA ENTRADA: [Ex: 94% - EXTREMA CONFLUÊNCIA DE EXAUSTÃO]
+                Analise o desequilíbrio, a movimentação do preço e o fluxo de ordens (Order Flow) de forma 100% implícita e exclusiva na anatomia visual das velas, SEM depender de indicadores de volume na tela:
+                - VOLUME POR CORPO E MOVIMENTAÇÃO: Avalie o volume financeiro real injetado pelo tamanho e expansão do corpo dos candles. Velas expressivas confirmam volume institucional empurrando o mercado.
+                - DEFESA E ABSORÇÃO POR PAVIOS: Avalie o volume de agressão contrária pelo tamanho dos pavios. Pavios longos em zonas críticas indicam rejeição em massa, absorção de ordens e virada iminente no fluxo.
+                
+                [TIME_RULES] Leia o relógio atual no print. Projete o momento do clique de entrada de forma cirúrgica para acontecer entre 1 a 3 minutos depois do print. 
+                Ajuste a expiração estritamente com base na estratégia adotada: 1 minuto se for FLUXO MOMENTÂNEO (fechamento na mesma vela), ou 3 minutos se for REVERSÃO EM REGIÃO / TAXA DE DEFESA.
+                
+                Retorne estritamente neste formato markdown limpo:
+                🎯 PORCENTAGEM DE ACERTO DA ENTRADA: [Ex: 94% - EXTREMA CONFLUÊNCIA DE FLUXO ou 88% - CONFLUÊNCIA DE DEFESA DE SUPORTE MICRO]
                 ⏰ HORÁRIO DO CLIQUE (ENTRADA): [HH:MM:00 exato]
-                ⏳ TEMPO DE EXPIRAÇÃO: [1 a 3 Minutos calculados com base na exaustão imediata]
+                ⏳ TEMPO DE EXPIRAÇÃO: [1 Minuto se Fluxo Momentâneo OU 3 Minutos se Reversão em Região/Taxa de Defesa]
                 🏁 HORÁRIO DE FECHAMENTO: [Cálculo preciso baseado no horário de entrada + tempo de expiração definido]
                 🟥🟩 DIREÇÃO DA ORDEM: [COMPRA / VENDA / ABORTAR OPERAÇÃO]
                 🌐 MODO DE MERCADO DETECTADO: [MERCADO ABERTO ou MERCADO OTC]
-                🧠 ESTRATÉGIA CORRETA APLICADA: [EXAUSTÃO MICRO E RETRAÇÃO DE TAXA CURTA]
-
+                🧠 ESTRATÉGIA CORRETA APLICADA: [FLUXO MOMENTÂNEO EM TENDÊNCIA EM M1 ou OPERACIONAL DE REVERSÃO EM REGIÃO (Suporte de Fundo Recente)]
+                
                 🔍 DIAGNÓSTICO INSTITUCIONAL DE SINAL (PRICE ACTION EM GRÁFICO LIMPO):
-                - Lógica de Expiração Adotada: [Justifique matematicamente o uso do tempo curto de 1 a 3 minutos com base na mitigação e quebra do ciclo algorítmico]
+                - Lógica de Expiração Adotada: [Justifique matematicamente a escolha do tempo de expiração: 1 minuto para fechamento na mesma vela ou 3 minutos para mitigação e proteção de taxa]
                 - Leitura de Falsos Rompimentos/Pullbacks: [Explique por que o cenário atual é seguro e não se trata de uma armadilha ou falso movimento]
                 - Filtragem de Ruído e Volume por Corpo: [Análise da clareza, direção ou desaceleração real do fluxo das velas]
-                - Absorção e Pressão por Pavios: [O que a rejeição dos pavios revelou na zona de suporte ou resistência identificada no histórico recente]
+                - Absorção e Pressão por Pavios: [O que a pressão dos pavios revelou sobre o volume oculto de defesa no suporte/resistência recente]
                 - Filtro de Segurança e Volume Oculto: [Mapeamento estrutural realizado de forma estritamente implícita com base na geometria pura dos candles e ação do preço]
-
                 Seja frio, direto e puramente matemático.
                 """
                 
@@ -112,15 +113,3 @@ if API_KEY:
                     st.success("Análise Avançada Concluída com Sucesso!")
                     st.markdown(response.text)
                     
-                    # Injeta o aviso sonoro curto de relógio digital
-                    st.components.v1.html(
-                        """
-                        <audio autoplay>
-                          <source src="https://google.com" type="audio/ogg">
-                        </audio>
-                        """,
-                        height=0
-                    )
-                else:
-                    st.error(f"Todos os servidores da Google IA estão sob alta demanda no momento. Detalhes do erro: {erro_final}")
-else:
