@@ -108,12 +108,12 @@ Retorne o diagnóstico estruturado exatamente neste formato markdown limpo e des
 Seja frio, preciso e direto. Velocidade e precisão salvam bancas.
 """
 
-# Inicializa o estado da imagem para evitar que sumidades no recarregamento da tela
-if "grafico_salvo" not rst.session_state:
+# Inicializa o estado da imagem de forma correta e sem erros de sintaxe
+if "grafico_salvo" not in st.session_state:
     st.session_state.grafico_salvo = None
 
 # Interface de upload estável
 upload_arquivo = st.file_uploader("Upload do Print do Gráfico (M1)", type=["png", "jpg", "jpeg"])
 
 if upload_arquivo is not None:
-    # Salva no cache de sessão para blindar contra o clique do botão
+    st.session_state.grafico_salvo = Image.open(upload_arquivo)
