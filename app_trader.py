@@ -109,8 +109,8 @@ if upload_arquivo is not None:
             
             # Loop de contingência sobre a lista de chaves fornecidas
             for i, chave_ativa in enumerate(lista_de_chaves):
-                # Modelos atuais compatíveis na nova SDK
-                modelos_para_tentar = ['gemini-3.5-flash', 'gemini-3.0-flash']
+                # Modelos atuais compatíveis na nova SDK (Do mais recente ao legado estável)
+                modelos_para_tentar = ['gemini-2.5-flash', 'gemini-1.5-flash']
                 
                 for modelo in modelos_para_tentar:
                     try:
@@ -127,8 +127,7 @@ if upload_arquivo is not None:
                             st.success(f"✅ Análise executada com sucesso usando a Chave {i+1} ({modelo})!")
                             st.markdown(resposta.text)
                             sucesso = True
-                            break  # Sai do loop de modelos
+                            break  # Sai do loop de modelos se funcionar
                             
                     except Exception as e:
-                        # Se o erro for especificamente o modelo não encontrado, tenta o próximo modelo do loop interno
-                        if "404" in str(e) and modelo != modelos_para_tentar[-1]:
+                        # CORREÇÃO: Bloco devidamente indentado usando 'continue' para pular para o próximo modelo
