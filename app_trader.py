@@ -35,7 +35,7 @@ Antes de processar qualquer estratégia, analise minuciosamente os eixos e eleme
 [FILTRO CRÍTICO ANTI-LOSS PARA FLUXO DE VELA E EXPIRAÇÃO]
 Para mitigar perdas e eliminar falsos rompimentos no operacional de 'FLUXO DE VELA' / 'MOMENTUM', aplique rigidamente as seguintes leis:
 1. LEI DO VÁCUO SEGURO: Só valide o Fluxo de Vela se houver um espaço livre (vácuo) de pelo menos 1 a 2 corpos de vela até a próxima barreira visual (suporte, resistência, linha de tendência ou número redondo). Se a última vela fechou colada ou muito perto de uma barreira do passado, ABORTE o fluxo imediatamente (risco alto de reversão/retração).
-2. REGRA DO GATILHO DE EXAUSTÃO: Analise o volume visual do candle de força. Se a última vela foi um "candle careca" (sem pavio nenhum a favor do movimento) ou se deixou um pavio de rejeição contra muito longo (maior que 40% do corpo), CANCELE o fluxo. O preço já exauriu.
+2. REGRA DO GATILHO DE EXAUSTÃO: Analise o volume visual do candle de força. Se a última vela foi um "candle careca" (sem pavio nenhum a favor do movimento) ou se deixou um pavio de prevenção contra muito longo (maior que 40% do corpo), CANCELE o fluxo. O preço já exauriu.
 3. PROTOCOLO DE EXPIRAÇÃO DE FLUXO (M1): A expiração para operações de Fluxo de Vela/Momentum deve ser estritamente para o FECHAMENTO DA PRÓXIMA VELA (fim do próximo minuto cheio no relógio, M1 corrente). Não projete fluxos para tempos maiores para evitar correções tardias de mercado.
 
 [FILTRO CRÍTICO ANTI-LOSS PARA RETRAÇÃO FUTURA]
@@ -104,20 +104,8 @@ if botao_analise:
                 st.success("✅ Análise Computacional Concluída com Sucesso!")
                 st.markdown("### 📊 Painel de Execução Analítica")
                 
-                # Separa as linhas do texto retornado pela IA
-                linhas = response.text.split('\n')
+                # Renderiza toda a resposta de uma só vez para evitar bugs de loops e indentações quebradas
+                st.markdown(response.text)
                 
-                for linha in linhas:
-                    linha_limpa = linha.strip()
-                    if linha_limpa:
-                        with st.container(border=True):
-                            if "🚨 VEREDITO REAL DE CONFIANÇA:" in linha_limpa:
-                                st.warning(linha_limpa.replace("**", ""))
-                            elif "🟢/🔴 AÇÃO OPERACIONAL E DIREÇÃO:" in linha_limpa:
-                                st.info(linha_limpa.replace("**", ""))
-                            elif "🎯 TAXA GATILHO DA OPERAÇÃO:" in linha_limpa:
-                                st.success(linha_limpa.replace("**", ""))
-                            else:
-                                st.write(linha_limpa)
-                                
             except Exception as e:
+                st.error(f"Erro ao processar a análise: {e}")
