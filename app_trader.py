@@ -108,11 +108,12 @@ Retorne o diagnóstico estruturado exatamente neste formato markdown limpo e des
 Seja frio, preciso e direto. Velocidade e precisão salvam bancas.
 """
 
-# Interface direta e imune a travamentos de estado
+# INTERFACE VISUAL TOTALMENTE PLANA E ESTÁVEL
 upload_arquivo = st.file_uploader("Upload do Print do Gráfico (M1)", type=["png", "jpg", "jpeg"])
 
-if upload_arquivo is not None:
-    imagem = Image.open(upload_arquivo)
-    st.image(imagem, caption="Gráfico Carregado", use_container_width=True)
+# O botão fica fixo na tela o tempo todo, logo abaixo do uploader
+botao_analise = st.button("🚀 Analisar Matriz do Gráfico")
 
-    # O botão de análise agora fica DENTRO do bloco que confirma que a imagem existe.
+# Exibe a imagem de forma independente se ela for enviada
+if upload_arquivo is not None:
+    imagem_aberta = Image.open(upload_arquivo)
