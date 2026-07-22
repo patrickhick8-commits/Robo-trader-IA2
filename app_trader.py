@@ -14,10 +14,10 @@ st.sidebar.markdown("### 🔑 Gerenciador de Chaves de Contingência")
 chaves_input = st.sidebar.text_input("Cole suas Gemini API Keys aqui (separadas por ponto e vírgula):", type="password")
 lista_de_chaves = [chave.strip() for chave in chaves_input.split(";") if chave.strip()]
 
-# Seletor de Modelo para evitar problemas de obsolescência futura
+# Seletor atualizado com os modelos vigentes recomendados pela Google
 modelo_selecionado = st.sidebar.selectbox(
     "🤖 Versão do Motor Gemini:",
-    ["gemini-1.5-flash", "gemini-2.5-flash"]
+    ["gemini-2.0-flash", "gemini-2.5-flash-pro"]
 )
 
 # 3. Definição Limpa do Prompt Mestre
@@ -124,8 +124,9 @@ if botao_analise:
                     st.error(f"❌ Falha na Chave {i+1}. Detalhe técnico: {resultado.replace('ERRO_API:', '')}")
                     st.warning("Tentando próxima chave da lista...")
             
-            if not success:
-                st.error("🚨 Todas as chaves falharam. Certifique-se de escolher um modelo suportado por sua API key no menu lateral.")
+            # CORREÇÃO APLICADA: Mudado de 'success' para 'sucesso'
+            if not sucesso:
+                st.error("🚨 Todas as chaves falharam. Selecione outro modelo na barra lateral ou gere chaves atualizadas no Google AI Studio.")
 
 if not lista_de_chaves:
     st.info("💡 Lembrete: Insira as chaves de API na barra lateral esquerda para liberar o processamento.")
