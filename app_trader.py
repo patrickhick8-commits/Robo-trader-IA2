@@ -12,15 +12,23 @@ st.set_page_config(
 st.title("📊 Agente IA Trader Pro: Validador de Cenários")
 st.write("Análise Visual de Price Action: Filtro de Segurança, Detecção de Exaustão e Validação de Região de Respeito.")
 
-# 2. Barra Lateral
-st.sidebar.markdown("### 🔑 Gerenciador de Chaves de Contingência")
+# 2. Barra Lateral e Seleção de Modelos
+st.sidebar.markdown("### 🛠️ Configurações do Sistema")
 chaves_input = st.sidebar.text_input(
     "Cole suas Gemini API Keys aqui (separadas por ponto e vírgula):", 
     type="password"
 )
 lista_de_chaves = [chave.strip() for chave in chaves_input.split(";") if chave.strip()]
 
-# 3. Prompt Mestre Otimizado e Reorganizado
+# Lista dinâmica de modelos disponíveis solicitada por você
+modelos_disponiveis = ['gemini-3.6-flash', 'gemini-2.5-flash', 'gemini-2.0-flash']
+modelo_selecionado = st.sidebar.selectbox(
+    "Escolha o Modelo do Gemini:",
+    options=modelos_disponiveis,
+    index=0  # Define o gemini-3.6-flash como padrão inicial
+)
+
+# 3. Prompt Mestre Altamente Estruturado
 PROMPT_TRADER = (
     "[SYSTEM_ROLE] Você é um assistente avançado de validação estatística e analista visual de Price Action "
     "focado em Opções Binárias. Sua função é analisar o print do gráfico e fornecer dados exatos de execução.\n\n"
@@ -33,7 +41,7 @@ PROMPT_TRADER = (
     "Retorne o diagnóstico estruturado exatamente neste formato markdown (Siga rigorosamente cada item):\n\n"
     
     "🎯 DADOS CRÍTICOS DA OPERAÇÃO:\n"
-    "- **🟢 Direção da Entrada:** [Defina estritamente se é COMPRA (CALL) ou VENDA (PUT) ou AGUARDAR FORA]\n"
+    "- **🟢 Direção da Entrada:** [Defina estritamente se é COMPRA (CALL), VENDA (PUT) ou AGUARDAR FORA DO MERCADO]\n"
     "- **📈 Taxa de Assertividade Estimada:** [Calcule uma porcentagem de 0% a 100% baseada na clareza do padrão visual analisado]\n"
     "- **⏱️ Horário Sugerido para Entrada:** [Identifique o relógio no print e estipule o gatilho, ex: 'Na abertura da próxima vela após o fechamento do candle atual de HH:MM' ou 'Ao tocar na taxa X no minuto Y']\n\n"
     
@@ -51,12 +59,12 @@ PROMPT_TRADER = (
     "[Forneça uma recomendação de gerenciamento conservadora baseada estritamente na feiura ou clareza do gráfico analisado.]"
 )
 
-def executar_chamada_gemini(chave_api, imagem_objeto, prompt_comando):
+def executar_chamada_gemini(chave_api, imagem_objeto, prompt_comando, modelo_alvo):
     try:
         client = genai.Client(api_key=chave_api)
-        # Utilizando o modelo Flash que possui cotas gratuitas liberadas para imagens
+        # Nota: Parâmetros descontinuados (temperature, top_p, top_k) foram omitidos para o Gemini 3.x
         response = client.models.generate_content(
-            model='gemini-2.5-flash',
+            model=modelo_alvo,
             contents=[imagem_objeto, prompt_comando]
         )
         return True, response.text
@@ -83,11 +91,12 @@ if botao_analise:
         st.error("⚠️ Insira pelo menos uma Gemini API Key válida na barra lateral antes de analisar.")
     else:
         sucesso_geral = False
-        with st.spinner("Analisando anatomia das velas, regiões de respeito e filtros de bloqueio..."):
+        with st.spinner(f"Analisando anatomia gráfica com o modelo {modelo_selecionado}..."):
             for i, chave in enumerate(lista_de_chaves):
                 st.write(f"Tentando analisar com a chave de contingência {i+1}...")
                 
-                sucesso, resultado = executar_chamada_gemini(chave, imagem, PROMPT_TRADER)
+                # Executa passando o modelo escolhido dinamicamente pelo selectbox
+                sucesso, resultado = executar_chamada_gemini(chave, imagem, PROMPT_TRADER, modelo_selecionado)
                 
                 if sucesso:
                     st.success("Análise de risco concluída com sucesso!")
