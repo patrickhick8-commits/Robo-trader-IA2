@@ -62,7 +62,7 @@ if API_KEY:
                 
                 1. OPERACIONAL DE FLUXO MOMENTÂNEO EM TENDÊNCIA: Se o preço estiver distante das regiões de reversão macro e demonstrar força direcional, siga a favor da continuidade do movimento atual (ou fluxo de cores). Para este cenário de fluxo, você está OBRIGADO a manter a expiração padrão de 1 minuto para fechar exatamente no final da mesma vela de M1 de entrada.
                 
-                2. OPERACIONAL DE REVERSÃO EM REGIÃO (SUPORTE DE FUNDO RECENTE / TAXA DE DEFESA): Se você detectar que o preço atingiu a exaustão visual (corpos decrescentes e esticada de 3 a 5 velas consecutivas) e tocou uma região de suporte ou resistência micro de até 2 horas atrás, ative este modo de contra-ataque. Para este cenário de proteção e reversão, ajuste o tempo de expiração dinamicamente para 3 minutos à frente, projetando o repique e o isolamento seguro da zona de liquidez.
+                2. OPERACIONAL DE REVERSÃO EM REGIÃO (SUPORTE DE FUNDO RECENTE / TAXA DE DEFESA): Se você detectar que o preço atingiu a exaustão visual (corpos decrescentes e esticada de 3 a 5 velas consecutivas) e tocou uma região de suporte ou resistência micro de até 2 hours atrás, ative este modo de contra-ataque. Para este cenário de proteção e reversão, ajuste o tempo de expiração dinamicamente para 3 minutos à frente, projetando o repique e o isolamento seguro da zona de liquidez.
                 
                 [ANTI_NOISE_&_FALSE_BREAKOUT_FILTERS]
                 Aplique filtros severos para blindar a operação contra armadilhas comuns de mercado:
@@ -100,8 +100,9 @@ if API_KEY:
                 """
                 
                 try:
+                    # Linha corrigida: migrado para o modelo de produção estável atualizado
                     response = client.models.generate_content(
-                        model='gemini-2.5-flash',
+                        model='gemini-3.6-flash',
                         contents=[image, prompt]
                     )
                     st.success("Análise Concluída com Margem de Reação!")
