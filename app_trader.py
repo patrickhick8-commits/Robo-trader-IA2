@@ -61,7 +61,7 @@ if API_KEY:
                 [AUTOMATIC_MARKET_ADAPTATION & CONDITIONAL RSI FILTER]
                 Identifique visualmente se o gráfico enviado pertence ao Mercado Aberto Tradicional ou ao Mercado OTC (identificável por nomes de pares com "-OTC", comportamento algorítmico contínuo ou padrões característicos das corretoras) e aplique as estratégias corretas, analisando o indicador RSI 14 na parte inferior com as seguintes regras de segurança:
                 1. FILTRO DE SEGURANÇA RSI: Utilize o indicador RSI APENAS se ele estiver em zona extrema (tocando ou rompendo os níveis 30 ou 70) E EM CONGRUÊNCIA total com o padrão de exaustão das velas. Se as velas mostrarem força de fluxo contínuo (sequência de velas grandes em OTC), IGNORE o RSI, pois o algoritmo tende a estagnar o indicador nos extremos e continuar o movimento.
-                2. MERCADO ABERTO: Priorize a leitura de zonas legítimas de Suporte/Resistência, LTA/LTB e confluências micro com o RSI.
+                2. MERCADO ABERTO: Priorize a leitura de zonas legítimas de Suporte/Resistência, LTA/LTB macro e confluências micro com o RSI.
                 3. MERCADO OTC (ALGORÍTMICO): Foque no comportamento computacional das corretoras. Priorize algoritmos de fluxo contínuo (sequências de velas de força), preenchimento milimétrico de pavios anteriores (vácuo de liquidez), exaustão por contagem de velas e armadilhas de falsos rompimentos em zonas saturadas.
                 
                 [ORDER_FLOW_&_PURE_CANDLE_VOLUME]
@@ -105,4 +105,3 @@ if API_KEY:
                         if response and response.text:
                             break # Conseguiu resposta com sucesso, sai do loop.
                     except Exception as e:
-
