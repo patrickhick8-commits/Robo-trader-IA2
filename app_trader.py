@@ -108,11 +108,12 @@ Retorne o diagnóstico estruturado exatamente neste formato markdown limpo e des
 Seja frio, preciso e direto. Velocidade e precisão salvam bancas.
 """
 
-# Interface estruturada de forma plana para blindar a exibição do botão
+# Inicializa o estado da imagem para evitar que sumidades no recarregamento da tela
+if "grafico_salvo" not rst.session_state:
+    st.session_state.grafico_salvo = None
+
+# Interface de upload estável
 upload_arquivo = st.file_uploader("Upload do Print do Gráfico (M1)", type=["png", "jpg", "jpeg"])
 
-# O botão de análise foi retirado de condições internas e fica VISÍVEL SEMPRE
-botao_analise = st.button("🚀 Analisar Matriz do Gráfico")
-
 if upload_arquivo is not None:
-    imagem = Image.open(upload_arquivo)
+    # Salva no cache de sessão para blindar contra o clique do botão
