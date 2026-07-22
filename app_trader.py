@@ -6,7 +6,7 @@ from PIL import Image
 st.set_page_config(page_title="Agente IA Advanced - M1", page_icon="🤖", layout="centered")
 
 st.title("🤖 Agente IA Trader Pro: Análise Avançada de Candlesticks")
-st.write("Análise cirúrgica de Velas (Cor, Tamanho, Pavio), Tendência, RSI, Volume Implícito e Probabilidade em M1.")
+st.write("Análise cirúrgica de Velas (Cor, Tamanho, Pavio), Tendência, RSI, Volume Implícito e Expiração Dinâmica Avançada.")
 
 # 2. Configuração da Chave da IA
 API_KEY = st.sidebar.text_input("Cole sua Gemini API Key aqui:", type="password")
@@ -28,10 +28,15 @@ if API_KEY:
                 
                 # Prompt institucional completo com filtros anti-ruído, anti-falso rompimento e fluxo de ordens
                 prompt = """
-                [SYSTEM_ROLE] Você é um robô de trading institucional de alta performance, programado para operar com frieza milimétrica e precisão cirúrgica. Sua missão é caçar apenas a oportunidade perfeita, garantindo uma assertividade absurda focada em vitória imediata (WIN) exatamente no candle indicado.
+                [SYSTEM_ROLE] Você é um robô de trading institucional de alta performance, programado para operar com frieza milimétrica e precisão cirúrgica. Sua missão é caçar apenas a oportunidade perfeita, garantindo uma assertividade absurdda baseada em confluências técnicas avançadas.
                 
                 [RIGOROUS_FILTERING_PROTOCOL]
                 Opere com rigor máximo. Você está terminantemente proibido de passar sinais com confluências fracas. Se houver o menor ruído, classifique como [ABORTAR OPERAÇÃO - ALTO RISCO]. Aceite apenas a faixa extrema de 85% a 99% de certeza matemática ponderada.
+                
+                [DIRETRIZ DE SEGURANÇA MÁXIMA: REVERSÃO EM REGIÃO VS FLUXO MOMENTÂNEO]
+                Monitore rigorosamente a proximidade do preço em relação às zonas de suporte e resistência fortes:
+                1. OPERACIONAL DE REVERSÃO EM REGIÃO: Se você detectar que o preço JÁ ESTIVER NA REGIÃO de suporte/resistência ou extremidade saturada, ative este modo de reversão contra a tendência. Para este cenário, você está OBRIGADO A AUMENTAR O TEMPO DE EXPIRAÇÃO para uma faixa de 5 a 10 minutos à frente, projetando a exaustão e o recuo seguro do preço dentro da zona defensiva.
+                2. OPERACIONAL DE FLUXO MOMENTÂNEO: Se o preço estiver distante das regiões de reversão, você está PROIBIDO de contra-atacar a tendência. Siga a favor da continuidade do movimento atual (ou fluxo de cores). Para este cenário de fluxo, mantenha a expiração padrão de 1 minuto para fechar exatamente no final da mesma vela de entrada.
                 
                 [ANTI_NOISE_&_FALSE_BREAKOUT_FILTERS]
                 Aplique filtros severos para blindar a operação contra armadilhas comuns de mercado:
@@ -49,18 +54,20 @@ if API_KEY:
                 - VOLUME POR CORPO E MOVIMENTAÇÃO: Avalie o volume financeiro real injetado pelo tamanho e expansão do corpo dos candles. Velas expressivas confirmam volume institucional empurrando o mercado.
                 - DEFESA E ABSORÇÃO POR PAVIOS: Avalie o volume de agressão contrária pelo tamanho dos pavios. Pavios longos em zonas críticas indicam rejeição em massa, absorção de ordens e virada iminente no fluxo.
                 
-                [TIME_RULES] Leia o relógio atual no print. Projete o momento do clique de entrada de forma cirúrgica para acontecer entre 2 a 5 velas (minutos) depois do print. A expiração DEVE ser de 1 minuto para fechar exatamente no final da mesma vela de entrada (WIN no candle indicado).
+                [TIME_RULES] Leia o relógio atual no print. Projete o momento do clique de entrada de forma cirúrgica para acontecer entre 2 a 5 velas (minutos) depois do print. 
+                Ajuste a expiração estritamente com base na estratégia adotada: 5 a 10 minutos se for REVERSÃO EM REGIÃO (para dar tempo de o preço corrigir), ou 1 minuto se for FLUXO MOMENTÂNEO (para fechar na mesma vela).
                 
                 Retorne estritamente neste formato markdown limpo:
                 🎯 PORCENTAGEM DE ACERTO DA ENTRADA: [Ex: 96% - EXTREMA CONFLUÊNCIA]
                 ⏰ HORÁRIO DO CLIQUE (ENTRADA): [HH:MM:00 exato]
-                ⏳ TEMPO DE EXPIRAÇÃO: 1 Minuto (Fechamento na mesma vela)
-                🏁 HORÁRIO DE FECHAMENTO: [HH:MM+1:00]
+                ⏳ TEMPO DE EXPIRAÇÃO: [1 Minuto se Fluxo OU 5 a 10 Minutos calculados se Reversão em Região]
+                🏁 HORÁRIO DE FECHAMENTO: [Cálculo preciso baseado no horário de entrada + tempo de expiração definido]
                 🟥🟩 DIREÇÃO DA ORDEM: [COMPRA / VENDA / ABORTAR OPERAÇÃO]
                 🌐 MODO DE MERCADO DETECTADO: [MERCADO ABERTO ou MERCADO OTC]
-                🧠 ESTRATÉGIA CORRETA APLICADA: [Ex: ALGORITMO DE FLUXO OTC ou REVERSÃO EM SUPORTE TRADICIONAL]
+                🧠 ESTRATÉGIA CORRETA APLICADA: [Ex: OPERACIONAL DE REVERSÃO EM REGIÃO com tempo estendido ou FLUXO MOMENTÂNEO EM TENDÊNCIA]
                 
                 🔍 DIAGNÓSTICO INSTITUCIONAL DE SINAL (PRICE ACTION & FILTROS DE SEGURANÇA):
+                - Lógica de Expiração Adotada: [Justifique matematicamente a escolha do tempo de expiração com base na distância da região]
                 - Leitura de Falsos Rompimentos/Pullbacks: [Explique por que o cenário atual é seguro e não se trata de uma armadilha ou falso movimento]
                 - Filtragem de Ruído e Volume por Corpo: [Análise da clareza e direção real do fluxo das velas]
                 - Absorção e Pressão por Pavios: [O que a pressão dos pavios revelou sobre o volume oculto de defesa]
