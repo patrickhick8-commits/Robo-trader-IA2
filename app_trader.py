@@ -93,13 +93,13 @@ if API_KEY:
                 response = None
                 erro_final = ""
                 
-                # Execução Direta e Segura com Fallback Linear Individual para evitar erros de indentação profunda
+                # Execução Direta e Segura com Fallback Linear Individual
                 try:
                     response = client.models.generate_content(model='gemini-2.5-flash', contents=[image, prompt])
                 except Exception as e1:
-                    erro_final = str(e1)
-                    st.sidebar.warning("Servidor Flash 2.5 ocupado. Tentando o Pro...")
+                    erro_final = f"Erro no Flash 2.5: {str(e1)}"
+                    st.sidebar.warning("Servidor Flash 2.5 ocupado ou rejeitou a imagem. Tentando o Pro...")
                     try:
                         response = client.models.generate_content(model='gemini-2.5-pro', contents=[image, prompt])
                     except Exception as e2:
-                        erro_final = str(e2)
+                        erro_final += f" | Erro no Pro: {str(e2)}"
