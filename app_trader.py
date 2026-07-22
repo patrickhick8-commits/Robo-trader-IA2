@@ -1,6 +1,8 @@
 import streamlit as st
 from google import genai
+from google.genai import types
 from PIL import Image
+import io
 import datetime
 
 # 1. Configuração da Página
@@ -14,10 +16,10 @@ st.sidebar.markdown("### 🔑 Gerenciador de Chaves de Contingência")
 chaves_input = st.sidebar.text_input("Cole suas Gemini API Keys aqui (separadas por ponto e vírgula):", type="password")
 lista_de_chaves = [chave.strip() for chave in chaves_input.split(";") if chave.strip()]
 
-# Seletor atualizado com os modelos vigentes recomendados pela Google
+# Seletor com as nomenclaturas oficiais corretas do Google AI Studio
 modelo_selecionado = st.sidebar.selectbox(
     "🤖 Versão do Motor Gemini:",
-    ["gemini-2.0-flash", "gemini-2.5-flash-pro"]
+    ["gemini-2.5-flash", "gemini-2.5-pro", "gemini-2.0-flash"]
 )
 
 # 3. Definição Limpa do Prompt Mestre
@@ -80,12 +82,20 @@ def executar_chamada_gemini(chave_api, imagem_objeto, prompt_comando, modelo):
     try:
         client = genai.Client(api_key=chave_api)
         
+        # Converte a imagem Pillow para bytes (JPEG) para evitar erros de serialização de objetos no SDK
+        img_byte_arr = io.BytesIO()
+        imagem_objeto.save(img_byte_arr, format='JPEG')
+        img_bytes = img_byte_arr.getvalue()
+        
+        # Cria a estrutura correta de parte de dados multimídia
+        imagem_part = types.Part.from_bytes(data=img_bytes, mime_type='image/jpeg')
+        
         hora_atual = datetime.datetime.now().strftime("%H:%M:%S")
         prompt_sincronizado = f"[INFORMAÇÃO DE CONTEXTO] HORÁRIO ATUAL DO SISTEMA DO TRADER: {hora_atual}\n\n{prompt_comando}"
         
         response = client.models.generate_content(
             model=modelo,
-            contents=[imagem_objeto, prompt_sincronizado],
+            contents=[imagem_part, prompt_sincronizado],
             config={
                 'temperature': 0.0
             }
@@ -124,7 +134,6 @@ if botao_analise:
                     st.error(f"❌ Falha na Chave {i+1}. Detalhe técnico: {resultado.replace('ERRO_API:', '')}")
                     st.warning("Tentando próxima chave da lista...")
             
-            # CORREÇÃO APLICADA: Mudado de 'success' para 'sucesso'
             if not sucesso:
                 st.error("🚨 Todas as chaves falharam. Selecione outro modelo na barra lateral ou gere chaves atualizadas no Google AI Studio.")
 
