@@ -13,9 +13,9 @@ st.sidebar.markdown("### 🔑 Gerenciador de Chaves de Contingência")
 chaves_input = st.sidebar.text_input("Cole suas Gemini API Keys aqui (separadas por ponto e vírgula):", type="password")
 lista_de_chaves = [chave.strip() for chave in chaves_input.split(";") if chave.strip()]
 
-# 3. Definição Limpa do Prompt Mestre
+# 3. Definição Limpa do Prompt Mestre (Otimizado para Visão Computacional do Gemini 2.5)
 PROMPT_TRADER = (
-    "[SYSTEM_ROLE] Você é um algoritmo de trading quantitativo focado em Opções Binárias. "
+    "[SYSTEM_ROLE] Você é um algoritmo de trading quantitativo focado em Opções Binárias e análise gráfica puramente visual. "
     "Sua postura é de FRIEZA MÁXIMA, RIGOR ABSOLUTO E PRECISÃO CIRÚRGICA.\n\n"
     "[DIRETRIZ DE SEGURANÇA MÁXIMA: GATILHO DE REVERSÃO POR EXAUSTÃO ESTICADA]\n"
     "ATENÇÃO: Para eliminar os erros anteriores de reversão, aplique a leitura de deslocamento temporal. "
@@ -41,7 +41,7 @@ PROMPT_TRADER = (
     "[PASSO 7: PROTOCOLO DE BLOQUEIO]\n"
     "Bloqueie reversões precoces. Aborte se não houver alvo claro.\n\n"
     "[PASSO 8: CRONOMETRAGEM E GESTÃO]\n"
-    "Projete o clique entre 3 a 10 minutos à frente. Taxa de acerto de 80% a 95% ou Abortada (0%).\n\n"
+    "Projete o clique entre 3 a 10 minutos à frente com base no último candle visível. Taxa de acerto de 80% a 95% ou Abortada (0%).\n\n"
     "Retorne o diagnóstico estruturado exatamente neste formato markdown:\n\n"
     "🎯 PORCENTAGEM DE ACERTO DA ENTRADA: [Resultado]\n"
     "⏰ HORÁRIO DO CLIQUE (ENTRADA): [HH:MM:00]\n"
@@ -71,6 +71,7 @@ PROMPT_TRADER = (
 
 def executar_chamada_gemini(chave_api, imagem_objeto, prompt_comando):
     try:
+        # Inicialização com a nova SDK unificada (genai.Client)
         client = genai.Client(api_key=chave_api)
         response = client.models.generate_content(
             model='gemini-2.5-flash',
@@ -80,7 +81,7 @@ def executar_chamada_gemini(chave_api, imagem_objeto, prompt_comando):
     except Exception as e:
         return f"❌ Erro ao processar com a chave atual: {str(e)}"
 
-# 4. Interface Principal (Elementos Isolados de Qualquer Condicional)
+# 4. Interface Principal
 uploaded_file = st.file_uploader("📷 Faça o upload do Print do seu Gráfico (M1):", type=["png", "jpg", "jpeg"])
 
 botao_analise = st.button("🧠 Iniciar Análise Avançada por IA")
@@ -110,7 +111,7 @@ if botao_analise:
                     st.warning(f"Chave {i+1} falhou ou está instável. Tentando próxima da lista...")
             
             if not sucesso:
-                st.error("Todas as chaves de contingência fornecidas falharam. Verifique as chaves na Google AI Studio.")
+                st.error("Todas as chaves de contingência fornecidas falharam. Verifique as chaves no Google AI Studio.")
 
 if not lista_de_chaves:
     st.info("💡 Lembrete: Insira as chaves de API na barra lateral esquerda para liberar o processamento.")
