@@ -7,7 +7,7 @@ import io
 st.set_page_config(page_title="Agente IA Advanced - Matriz Suprema", page_icon="🤖", layout="centered")
 
 st.title("🤖 Agente IA Trader Pro: Matriz Suprema e Projeção Temporal")
-st.write("Fusão Total: Análise M1 Autônoma, Tendência Principal Macro, SMC, Volume Oculto e Price Action.")
+st.write("Fusão Total: Análise M1 Autônoma, Tendência Principal Macro, SMC, Volume Oculto E Price Action.")
 
 # Configurações na Barra Lateral
 st.sidebar.markdown("### 🔑 Gerenciador de Chaves de Contingência")
@@ -108,12 +108,12 @@ Retorne o diagnóstico estruturado exatamente neste formato markdown limpo e des
 Seja frio, preciso e direto. Velocidade e precisão salvam bancas.
 """
 
-# Bloco estático sem condicionais de desenho: o botão FICA SEMPRE VISÍVEL no topo da interface
-botao_analise = st.button("🚀 CLIQUE AQUI PARA ANALISAR GRÁFICO")
+# 1. Cria a variável estável persistente na memória do Streamlit
+if "imagem_persistente" not in st.session_state:
+    st.session_state.imagem_persistente = None
 
-# Campo de Upload de arquivo padrão
+# 2. Caixa de upload de arquivos
 upload_arquivo = st.file_uploader("Upload do Print do Gráfico (M1)", type=["png", "jpg", "jpeg"])
 
+# Se o usuário enviou uma nova foto, ela fica gravada na memória cache imediatamente
 if upload_arquivo is not None:
-    imagem = Image.open(upload_arquivo)
-
