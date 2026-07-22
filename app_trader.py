@@ -55,25 +55,28 @@ PROMPT_TRADER = (
     "[Forneça uma recomendação de gerenciamento conservadora baseada estritamente na feiura ou clareza do gráfico analisado.]"
 )
 
+# Alteração aqui: Retorna tupla (Sucesso, Resultado/Erro) para evitar falha de string simples
 def executar_chamada_gemini(chave_api, imagem_objeto, prompt_comando):
     try:
-        # Inicializando o cliente oficial do SDK Google GenAI
         client = genai.Client(api_key=chave_api)
-        
-        # Uso do modelo estável da linha 1.5 Flash para contornar restrições de cota gratuita (Free Tier)
         response = client.models.generate_content(
             model='gemini-1.5-flash',
             contents=[imagem_objeto, prompt_comando]
         )
-        return response.text
+        return True, response.text
     except Exception as e:
-        return f"❌ Erro da API: {str(e)}"
+        return False, str(e)
 
 # 4. Interface Principal 
 uploaded_file = st.file_uploader(
     "📷 Faça o upload do Print do seu Gráfico:", 
     type=["png", "jpg", "jpeg"]
 )
+
+# Mostrar a imagem imediatamente se o upload for feito (melhoria de UX)
+if uploaded_file:
+    imagem = Image.open(uploaded_file)
+    st.image(imagem, caption="Gráfico Carregado com Sucesso", use_container_width=True)
 
 botao_analise = st.button("🧠 Iniciar Filtro de Segurança por IA")
 
@@ -84,26 +87,25 @@ if botao_analise:
     elif not lista_de_chaves:
         st.error("⚠️ Insira pelo menos uma Gemini API Key válida na barra lateral antes de analisar.")
     else:
-        imagem = Image.open(uploaded_file)
-        st.image(imagem, caption="Gráfico Carregado com Sucesso", use_container_width=True)
-        
-        sucesso = False
+        sucesso_geral = False
         with st.spinner("Analisando anatomia das velas, regiões de respeito e filtros de bloqueio..."):
             for i, chave in enumerate(lista_de_chaves):
                 st.write(f"Tentando analisar com a chave de contingência {i+1}...")
-                resultado = executar_chamada_gemini(chave, imagem, PROMPT_TRADER)
                 
-                if "❌ Erro da API:" not in resultado:
+                # Desempacota o booleano de sucesso e a resposta
+                sucesso, resultado = executar_chamada_gemini(chave, imagem, PROMPT_TRADER)
+                
+                if sucesso:
                     st.success("Análise de risco concluída com sucesso!")
                     st.markdown(resultado)
-                    sucesso = True
+                    sucesso_geral = True
                     break
                 else:
                     st.error(f"Falha na Chave {i+1}:")
                     st.code(resultado)
                     st.warning("Tentando próxima chave de contingência da lista...")
             
-            if not sucesso:
+            if not sucesso_geral:
                 st.error("Todas as chaves fornecidas falharam. Verifique suas credenciais e permissões no Google AI Studio.")
 
 if not lista_de_chaves:
