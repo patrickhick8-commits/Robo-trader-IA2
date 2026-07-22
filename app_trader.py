@@ -1,7 +1,6 @@
 import streamlit as st
 from google import genai
 from PIL import Image
-import time
 
 # ==============================================================================
 # 1. CONFIGURAÇÃO DA PÁGINA E INTERFACE
@@ -67,7 +66,7 @@ if API_KEY:
                 [ORDER_FLOW_&_PURE_CANDLE_VOLUME]
                 Analise o desequilíbrio, a movimentação do preço e o fluxo de ordens (Order Flow) de forma 100% implícita e exclusiva na anatomia visual das velas, SEM depender de indicadores de volume na tela:
                 - VOLUME POR CORPO E MOVIMENTAÇÃO: Avalie o volume financeiro real injetado pelo tamanho e expansão do corpo dos candles. Velas expressivas confirmam volume institucional empurrando o mercado.
-                - DEFESA E ABSORÇÃO POR PAVIOS: Avalie o volume de agressão contrária pelo tamanho dos pavios. Pavios longos em zonas críticas indicam rejeição em massa, absorção de ordens e virada iminente no fluxo.
+                - DEFESA E ABSORÇÃO POR PAVIOS: Avalie o volume de agressão contrária pelo tamanho dos pavios. Pavios longos in zonas críticas indicam rejeição em massa, absorção de ordens e virada iminente no fluxo.
                 
                 [TIME_RULES - PROTOCOLO DE TEMPO DE REAÇÃO HUMANA]
                 Leia o relógio atual no print enviado. Projete o momento do clique de entrada para acontecer estritamente com uma folga de 1 a 2 minutos à frente em relação ao horário do print (Exemplo: se o print marca 17:18:42, a entrada DEVE ser projetada para as 17:20:00). Nunca mande uma entrada com menos de 45 segundos de folga para dar tempo ao operador humano de receber a resposta, ajustar os valores na corretora e clicar na taxa exata.
@@ -77,24 +76,20 @@ if API_KEY:
                 Retorne estritamente neste formato markdown limpo:
                 🎯 PORCENTAGEM DE ACERTO DA ENTRADA: [Ex: 94% - EXTREMA CONFLUÊNCIA DE FLUXO ou 88% - CONFLUÊNCIA DE DEFESA DE SUPORTE MICRO]
                 ⏰ HORÁRIO DO CLIQUE (ENTRADA): [HH:MM:00 exato projetado com margem de segurança]
-                ⏳ TEMPO DE EXPIRAÇÃO: [1 Minuto se Fluxo Momentâneo OU 3 Minutos se Reversão em Região/Taxa de Defesa]
-                🏁 HORÁRIO DE FECHAMENTO: [Cálculo preciso baseado no horário de entrada + tempo de expiração definido]
-                🟥🟩 DIREÇÃO DA ORDEM: [COMPRA / VENDA / ABORTAR OPERAÇÃO]
-                🌐 MODO DE MERCADO DETECTADO: [MERCADO ABERTO ou MERCADO OTC]
-                🧠 ESTRATÉGIA CORRETA APLICADA: [FLUXO MOMENTÂNEO EM TENDÊNCIA EM M1 ou OPERACIONAL DE REVERSÃO EM REGIÃO (Suporte de Fundo Recente)]
-                
-                🔍 DIAGNÓSTICO INSTITUCIONAL DE SINAL (PRICE ACTION & FILTROS DE SEGURANÇA):
-                - Lógica de Expiração Adotada: [Justifique matematicamente a escolha do tempo de expiração: 1 minuto para fechamento na mesma vela ou 3 minutos para mitigação e proteção de taxa]
-                - Leitura de Falsos Rompimentos/Pullbacks: [Explique por que o cenário atual é seguro e não se trata de uma armadilha ou falso movimento]
-                - Filtragem de Ruído e Volume por Corpo: [Análise da clareza, direção ou desaceleração real do fluxo das velas]
-                - Absorção e Pressão por Pavios: [O que a pressão dos pavios revelou sobre o volume oculto de defesa no suporte/resistência recente]
-                - Filtro de Segurança RSI: [Status técnico e posição real da linha roxa do RSI 14 no gráfico para confluência ou justificativa técnica de descarte caso o fluxo ignore o indicador]
-                Seja frio, direto e puramente matemático.
+                ⏳ TEMPO DE EXPIRAÇÃO: [1 Minuto se Fluxo Momentâneo OU 3 Minutos se Reversão]
+                📈 DIREÇÃO DA ENTRADA: [COMPRA / CALL ou VENDA / PUT ou ABORTAR OPERAÇÃO]
+                🧠 JUSTIFICATIVA TÉCNICA E CONFLUÊNCIAS: [Explique de forma curta e cirúrgica os motivos baseados nos filtros acima]
                 """
                 
-                response = None
-                erro_final = ""
-                
-                # Execução Direta e Segura com Fallback Linear Individual
+                # Executa a chamada à API tratando os blocos try/except corretamente
                 try:
-                    response = client.models.generate_content(model='gemini-2.5-flash', contents=[image, prompt])
+                    response = client.models.generate_content(
+                        model='gemini-2.5-flash',
+                        contents=[image, prompt]
+                    )
+                    st.success("Análise Concluída!")
+                    st.markdown(response.text)
+                except Exception as e:
+                    st.error(f"Erro ao processar a análise com o Gemini: {e}")
+else:
+    st.info("Por favor, insira sua Gemini API Key na barra lateral para começar.")
