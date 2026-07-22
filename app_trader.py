@@ -20,7 +20,7 @@ chaves_input = st.sidebar.text_input(
 )
 lista_de_chaves = [chave.strip() for chave in chaves_input.split(";") if chave.strip()]
 
-# 3. Definição Limpa do Prompt Mestre (Otimizado para Visão Computacional do Gemini)
+# 3. Definição Limpa do Prompt Mestre (Otimizado para Visão Computacional do Gemini 3.6)
 PROMPT_TRADER = (
     "[SYSTEM_ROLE] Você é um algoritmo de trading quantitativo focado em Opções Binárias e análise gráfica puramente visual. "
     "Sua postura é de FRIEZA MÁXIMA, RIGOR ABSOLUTO E PRECISÃO CIRÚRGICA.\n\n"
@@ -80,7 +80,7 @@ def executar_chamada_gemini(chave_api, imagem_objeto, prompt_comando):
     try:
         client = genai.Client(api_key=chave_api)
         response = client.models.generate_content(
-            model='gemini-2.5-flash',
+            model='gemini-3.6-flash',  # Atualizado para o motor mais recente de 2026
             contents=[imagem_objeto, prompt_comando]
         )
         return response.text
