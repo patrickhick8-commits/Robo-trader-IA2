@@ -24,7 +24,7 @@ tipo_mercado = st.radio(
 
 botao_analise = st.button("🧠 Iniciar Análise Avançada por IA")
 
-# 4. Prompt Mestre Otimizado com Filtro Anti-Loss e Novas Regras de Price Action
+# 4. Prompt Mestre Altamente Estruturado
 def gerar_prompt_mestre(contexto_mercado):
     return f"""
 [SYSTEM_ROLE] Você é o núcleo de processamento lógico de um algoritmo quantitativo sênior de visão computacional. Sua operação é puramente matemática, destituída de viés emocional ou hesitação. Sua postura combina frieza analítica absoluta com precisão geométrica cirúrgica para a tomada de decisões em Opções Binárias (M1).
@@ -58,21 +58,22 @@ O usuário opera estritamente em gráficos de 1 minuto (M1). Estime o tempo de d
 [MÉTODO DE ALTA ASSERTIVIDADE VIA ZONAS DE SIMETRIA E MICRO-REGIÕES]
 Execute o rastreamento estrito de linhas de simetria de corpo, confluência de múltiplos pavios e cálculo de vácuo (espaço vazio restante até o alvo). O ambiente foi parametrizado como: {contexto_mercado}.
 
-Retorne o diagnóstico estruturado exatamente neste formato markdown (não mude uma linha sequer do layout):
+Sua resposta DEVE ser estritamente estruturada seguindo o padrão de tags abaixo para que o parser do código consiga organizar a interface gráfica do usuário. Não adicione textos fora das tags:
 
-📊 CONTEXTO E VOLATILIDADE DETECTADA PELA IA: [Descreva friamente a tendência macro, micro e o comportamento atual da volatilidade em poucas palavras]
-⏰ HORÁRIO DO PRINT DETECTADO AUTOMATICAMENTE: [Indique o horário exato extraído por lógica matemática da imagem, ex: 10:15:23]
-📈 PREÇO ATUAL DA TELA DETECTADO AUTOMATICAMENTE: [Indique a taxa decimal extraída do eixo, ex: 1.34521]
-🚨 VEREDITO REAL DE CONFIANÇA: [ENTRAR COM CONFIANÇA / ENTRAR COM LOTE MÍNIMO POR RISCO GEOMÉTRICO / ABORTAR OPERAÇÃO]
-🟢/🔴 AÇÃO OPERACIONAL E DIREÇÃO: [COMPRA (CALL) / VENDA (PUT) / NENHUMA - OPERAÇÃO ABORTADA]
-📊 TAXA DE ACERTO ESTIMADA: [Forneça um percentual estatístico frio de probabilidade de vitória de 0% a 100% com base nas confluências. Operações abortadas = 0%]
-⚡ DETECTOU ZONA DE SIMETRIA OU MÚLTIPLOS PAVIOS? [Mapeie de forma cirúrgica o nível geométrico exato e classifique se é de corpo ou de pavio de acordo com a regra de assimetria]
-⏳ PROJEÇÃO DE TEMPO DA JANELA: [Indique explicitamente quantos candles/minutos futuros faltam para o preço tocar no gatilho, obrigatoriamente dentro da janela de 2 a 7 minutos. Ex: Toque estimado em 4 candles à frente]
-⏱️ HORÁRIO ESTIMADO DA ENTRADA: [Calcule o minuto provável do toque com base na velocidade média de deslocamento visual, ex: 10:18:00]
-⏰ TEMPO DE EXPIRAÇÃO DA ORDEM: [Defina de forma ultra detalhada a expiração exata do clique na corretora de acordo com o operacional escolhido. Ex: Expiração para a mesma vela do toque (Retração - M1)]
-🧠 TIPO DE OPERACIONAL ATIVADO: ['RETRAÇÃO EM TAXA FUTURA', 'REVERSÃO EM REGIÃO FORTE', 'FLUXO DE VELA', 'MOMENTUM', 'FLUXO TRATOR' ou 'NENHUM - OPERAÇÃO ABORTADA']
-🎯 TAXA GATILHO DA OPERAÇÃO: [Defina com precisão decimal máxima o ponto exato do clique na plataforma baseado no cálculo de vácuo e simetria]
-📝 JUSTIFICATIVA TÉCNICA E ESTRUTURAL DETALHADA: [Exponha uma defesa puramente matemática, fria e mecânica do Price Action. Justifique com rigor o motivo de escolher COMPRA ou VENDA detalhando a aplicação prática das regras de vácuo, assimetria de pavios, o filtro de micro-tendência e a proteção anti-esticamento para evitar o rompimento ocorrido antes]
+[TAXA] O valor decimal exato da taxa calculada, ex: 1.34521
+[HORARIO] O horário estimado para a entrada, ex: 10:18:00
+[ACAO] Ação exata em texto puro: COMPRA (CALL), VENDA (PUT) ou OPERAÇÃO ABORTADA
+[DETALHES]
+📊 CONTEXTO E VOLATILIDADE DETECTADA PELA IA: [Detalhes]
+⏰ HORÁRIO DO PRINT DETECTADO AUTOMATICAMENTE: [Detalhes]
+📈 PREÇO ATUAL DA TELA DETECTADO AUTOMATICAMENTE: [Detalhes]
+🚨 VEREDITO REAL DE CONFIANÇA: [Detalhes]
+📊 TAXA DE ACERTO ESTIMADA: [Detalhes]
+⚡ DETECTOU ZONA DE SIMETRIA OU MÚLTIPLOS PAVIOS? [Detalhes]
+⏳ PROJEÇÃO DE TEMPO DA JANELA: [Detalhes]
+⏰ TEMPO DE EXPIRAÇÃO DA ORDEM: [Detalhes]
+🧠 TIPO DE OPERACIONAL ATIVADO: [Detalhes]
+📝 JUSTIFICATIVA TÉCNICA E ESTRUTURAL DETALHADA: [Detalhes]
 """
 
 # 5. Execução da Análise
@@ -82,7 +83,7 @@ if botao_analise:
     elif not uploaded_file:
         st.error("Por favor, faça o upload do print do gráfico.")
     else:
-        with st.spinner("🧠 Varrendo eixos gráficos, simetrias e aplicando filtros anti-loss de exaustão..."):
+        with st.spinner("🧠 Varrendo eixos gráficos, simetrias e aplicando filtros anti-loss..."):
             try:
                 # Inicializa o cliente oficial da SDK do Gemini
                 client = genai.Client(api_key=api_key)
@@ -99,11 +100,55 @@ if botao_analise:
                     contents=[imagem, prompt_final]
                 )
                 
-                st.success("✅ Análise Computacional Concluída com Sucesso!")
-                st.markdown("### 📊 Painel de Execução Analítica")
+                texto_resposta = response.text
                 
-                # Exibição segura e nativa de todo o Markdown estruturado pela IA
-                st.markdown(response.text)
+                # Parsing inteligente dos blocos prioritários
+                taxa = "Não detectada"
+                horario = "Não estimado"
+                acao = "OPERAÇÃO ABORTADA"
+                detalhes_markdown = texto_resposta
+                
+                for linha in texto_resposta.split('\n'):
+                    if linha.startswith("[TAXA]"):
+                        taxa = linha.replace("[TAXA]", "").strip()
+                    elif line_clean := linha.strip():
+                        if line_clean.startswith("[HORARIO]"):
+                            horario = line_clean.replace("[HORARIO]", "").strip()
+                        elif line_clean.startswith("[ACAO]"):
+                            acao = line_clean.replace("[ACAO]", "").strip()
+                
+                # Limpa as tags de controle do texto de detalhes final
+                if "[DETALHES]" in detalhes_markdown:
+                    detalhes_markdown = detalhes_markdown.split("[DETALHES]")[-1].strip()
+                
+                st.success("✅ Análise Computacional Concluída com Sucesso!")
+                
+                # ----------------------------------------------------
+                # PAINEL DE SINAIS DE ACESSO RÁPIDO (UM AO LADO DO OUTRO / NO TOPO)
+                # ----------------------------------------------------
+                st.markdown("### 🎯 SINAL DE ENTRADA IMEDIATO")
+                col1, col2, col3 = st.columns(3)
+                
+                with col1:
+                    st.metric(label="🎯 TAXA GATILHO", value=taxa)
+                with col2:
+                    st.metric(label="⏱️ HORÁRIO ESTIMADO", value=horario)
+                with col3:
+                    if "COMPRA" in acao or "CALL" in acao:
+                        st.success(f"🟢 {acao}")
+                    elif "VENDA" in acao or "PUT" in acao:
+                        st.error(f"🔴 {acao}")
+                    else:
+                        st.warning(f"⚪ {acao}")
+                
+                # ----------------------------------------------------
+                # PAINEL DETALHADO VERTICAL (UM EMBAIXO DO OUTRO)
+                # ----------------------------------------------------
+                st.markdown("---")
+                st.markdown("### 📊 Relatório Técnico Detalhado Sequencial")
+                
+                # Imprime todas as especificações do Price Action empilhadas sequencialmente
+                st.markdown(detalhes_markdown)
                 
             except Exception as e:
                 st.error(f"Erro ao processar a análise: {e}")
