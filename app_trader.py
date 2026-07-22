@@ -4,6 +4,36 @@ from PIL import Image
 import time
 
 # ==============================================================================
+# FUNÇÃO ISOLADA PARA PROCESSAR A IA (EVITA ERROS DE INDENTAÇÃO NO STREAMLIT)
+# ==============================================================================
+def executar_analise_ia(client, image, prompt):
+    # Tenta o modelo principal primeiro
+    try:
+        response = client.models.generate_content(model='gemini-2.5-flash', contents=[image, prompt])
+        if response and response.text:
+            return response, ""
+    except Exception as e1:
+        erro = f"[Flash 2.5: {str(e1)}] "
+    
+    # Tenta o modelo Pro caso o primeiro falhe
+    try:
+        response = client.models.generate_content(model='gemini-2.5-pro', contents=[image, prompt])
+        if response and response.text:
+            return response, ""
+    except Exception as e2:
+        erro += f"[Pro 2.5: {str(e2)}] "
+        
+    # Tenta o modelo Flash 1.5 como última alternativa de segurança
+    try:
+        response = client.models.generate_content(model='gemini-1.5-flash', contents=[image, prompt])
+        if response and response.text:
+            return response, ""
+    except Exception as e3:
+        erro += f"[Flash 1.5: {str(e3)}]"
+        
+    return None, erro
+
+# ==============================================================================
 # 1. CONFIGURAÇÃO DA PÁGINA E INTERFACE
 # ==============================================================================
 st.set_page_config(page_title="Agente IA Advanced - M1", page_icon="🤖", layout="centered")
@@ -17,7 +47,6 @@ st.write("Análise cirúrgica de Velas (Cor, Tamanho, Pavio), Tendência, RSI, V
 API_KEY = st.sidebar.text_input("Cole sua Gemini API Key aqui:", type="password")
 
 if API_KEY:
-    # Inicializa o cliente com a biblioteca oficial do Google
     client = genai.Client(api_key=API_KEY)
 
     # ==============================================================================
@@ -38,7 +67,7 @@ if API_KEY:
         if st.button("🚀 EXECUTAR ANÁLISE AVANÇADA DE SINAL"):
             with st.spinner("IA escaneando padrões de velas, volume implícito e mercado..."):
                 
-                # OTIMIZAÇÃO VISUAL: Reduz imagens gigantes e converte para evitar erros de processamento
+                # OTIMIZAÇÃO VISUAL: Reduz imagens gigantes para evitar recusas do servidor da Google
                 try:
                     if image.mode in ("RGBA", "P"):
                         image = image.convert("RGB")
@@ -90,18 +119,3 @@ if API_KEY:
                 🧠 ESTRATÉGIA CORRETA APLICADA: [FLUXO MOMENTÂNEO EM TENDÊNCIA EM M1 ou OPERACIONAL DE REVERSÃO EM REGIÃO (Suporte de Fundo Recente)]
                 
                 🔍 DIAGNÓSTICO INSTITUCIONAL DE SINAL (PRICE ACTION & FILTROS DE SEGURANÇA):
-                - Lógica de Expiração Adotada: [Justifique matematicamente a escolha do tempo de expiração: 1 minuto para fechamento na mesma vela ou 3 minutos para mitigação e proteção de taxa]
-                - Leitura de Falsos Rompimentos/Pullbacks: [Explique por que o cenário atual é seguro e não se trata de uma armadilha ou falso movimento]
-                - Filtragem de Ruído e Volume por Corpo: [Análise da clareza, direção ou desaceleração real do fluxo das velas]
-                - Absorção e Pressão por Pavios: [O que a pressão dos pavios revelou sobre o volume oculto de defesa no suporte/resistência recente]
-                - Filtro de Segurança RSI: [Status técnico e posição real da linha roxa do RSI 14 no gráfico para confluência ou justificativa técnica de descarte caso o fluxo ignore o indicador]
-                Seja frio, direto e puramente matemático.
-                """
-                
-                response = None
-                erro_final = ""
-                modelos = ['gemini-2.5-flash', 'gemini-2.5-pro', 'gemini-1.5-flash']
-                
-                # Execução cíclica limpa e à prova de erros de sintaxe
-                for m in modelos:
-                    try:
