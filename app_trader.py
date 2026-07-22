@@ -1,6 +1,6 @@
 import streamlit as st
 from google import genai
-from google.genai import types
+from google.genai import types  # Obrigatório nas versões estáveis do novo SDK
 from PIL import Image
 import io
 import datetime
@@ -16,7 +16,7 @@ st.sidebar.markdown("### 🔑 Gerenciador de Chaves de Contingência")
 chaves_input = st.sidebar.text_input("Cole suas Gemini API Keys aqui (separadas por ponto e vírgula):", type="password")
 lista_de_chaves = [chave.strip() for chave in chaves_input.split(";") if chave.strip()]
 
-# Seletor com as nomenclaturas oficiais corretas do Google AI Studio
+# Seletor com as strings oficiais aceitas pelos servidores da Google
 modelo_selecionado = st.sidebar.selectbox(
     "🤖 Versão do Motor Gemini:",
     ["gemini-2.0-flash", "gemini-2.5-flash", "gemini-2.5-pro"]
@@ -50,7 +50,7 @@ PROMPT_TRADER = (
     "[PASSO 7: PROTOCOLO DE BLOQUEIO]\n"
     "Bloqueie reversões precoces fora da região demarcada. Aborte se o fluxo momentâneo estiver sem volume ou sem alvo claro.\n\n"
     "[PASSO 8: CRONOMETRAGEM E GESTÃO]\n"
-    "Projete o clique entre 3 a 10 minutos à frente baseando-se estritamente no HORÁRIO ATUAL DO SISTEMA fornecido. Taxa de acerto of 80% a 95% ou Abortada (0%).\n\n"
+    "Projete o clique entre 3 a 10 minutos à frente baseando-se estritamente no HORÁRIO ATUAL DO SISTEMA fornecido. Taxa de acerto de 80% a 95% ou Abortada (0%).\n\n"
     "Retorne o diagnóstico estruturado exatamente neste formato markdown:\n\n"
     "🎯 PORCENTAGEM DE ACERTO DA ENTRADA: [Resultado]\n"
     "⏰ HORÁRIO DO CLIQUE (ENTRADA): [HH:MM:00]\n"
@@ -80,8 +80,10 @@ PROMPT_TRADER = (
 
 def executar_chamada_gemini(chave_api, imagem_objeto, prompt_comando, modelo):
     try:
+        # Padrão de inicialização exigido pelo SDK 3.x
         client = genai.Client(api_key=chave_api)
         
+        # Elimina o canal alpha caso o usuário suba prints PNG transparentes
         if imagem_objeto.mode in ("RGBA", "P"):
             imagem_objeto = imagem_objeto.convert("RGB")
             
@@ -89,6 +91,7 @@ def executar_chamada_gemini(chave_api, imagem_objeto, prompt_comando, modelo):
         imagem_objeto.save(img_byte_arr, format='JPEG')
         img_bytes = img_byte_arr.getvalue()
         
+        # Estrutura estrita de partes multimídia da versão 3.x
         imagem_part = types.Part.from_bytes(data=img_bytes, mime_type='image/jpeg')
         
         hora_atual = datetime.datetime.now().strftime("%H:%M:%S")
@@ -97,9 +100,9 @@ def executar_chamada_gemini(chave_api, imagem_objeto, prompt_comando, modelo):
         response = client.models.generate_content(
             model=modelo,
             contents=[imagem_part, prompt_sincronizado],
-            config={
-                'temperature': 0.0
-            }
+            config=types.GenerateContentConfig(
+                temperature=0.0
+            )
         )
         return response.text
     except Exception as e:
@@ -134,14 +137,14 @@ if botao_analise:
                 else:
                     erro_limpo = resultado.replace('ERRO_API:', '')
                     if "429" in erro_limpo or "RESOURCE_EXHAUSTED" in erro_limpo:
-                        st.error(f"❌ Falha na Chave {i+1}: Limite de cota esgotado para o modelo '{modelo_selecionado}'.")
-                        st.info("💡 Dica: Mude para 'gemini-2.0-flash' no menu lateral para usar a cota gratuita.")
+                        st.error(f"❌ Falha na Chave {i+1}: Cota esgotada para o modelo '{modelo_selecionado}'.")
+                        st.info("💡 Sugestão: Altere para 'gemini-2.0-flash' no menu lateral para operar sem custos.")
                     else:
                         st.error(f"❌ Falha na Chave {i+1}. Detalhe técnico: {erro_limpo}")
                     st.warning("Tentando próxima chave da lista...")
             
             if not sucesso:
-                st.error("🚨 Todas as chaves falharam. Altere o modelo na barra lateral esquerda e tente novamente.")
+                st.error("🚨 Todas as chaves falharam. Mude o modelo na barra lateral esquerda para 'gemini-2.0-flash' se as suas chaves forem do plano gratuito.")
 
 if not lista_de_chaves:
     st.info("💡 Lembrete: Insira as chaves de API na barra lateral esquerda para liberar o processamento.")
