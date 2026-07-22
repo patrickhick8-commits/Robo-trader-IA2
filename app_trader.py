@@ -16,7 +16,7 @@ st.write("Análise cirúrgica de Velas (Cor, Tamanho, Pavio), Tendência, RSI, V
 API_KEY = st.sidebar.text_input("Cole sua Gemini API Key aqui:", type="password")
 
 if API_KEY:
-    # Inicializa o cliente com a biblioteca oficial do Google
+    # Inicializa o cliente com a biblioteca oficial do Google GenAI
     client = genai.Client(api_key=API_KEY)
 
     # ==============================================================================
@@ -66,7 +66,7 @@ if API_KEY:
                 [ORDER_FLOW_&_PURE_CANDLE_VOLUME]
                 Analise o desequilíbrio, a movimentação do preço e o fluxo de ordens (Order Flow) de forma 100% implícita e exclusiva na anatomia visual das velas, SEM depender de indicadores de volume na tela:
                 - VOLUME POR CORPO E MOVIMENTAÇÃO: Avalie o volume financeiro real injetado pelo tamanho e expansão do corpo dos candles. Velas expressivas confirmam volume institucional empurrando o mercado.
-                - DEFESA E ABSORÇÃO POR PAVIOS: Avalie o volume de agressão contrária pelo tamanho dos pavios. Pavios longos in zonas críticas indicam rejeição em massa, absorção de ordens e virada iminente no fluxo.
+                - DEFESA E ABSORÇÃO POR PAVIOS: Avalie o volume de agressão contrária pelo tamanho dos pavios. Pavios longos em zonas críticas indicam rejeição em massa, absorção de ordens e virada iminente no fluxo.
                 
                 [TIME_RULES - PROTOCOLO DE TEMPO DE REAÇÃO HUMANA]
                 Leia o relógio atual no print enviado. Projete o momento do clique de entrada para acontecer estritamente com uma folga de 1 a 2 minutos à frente em relação ao horário do print (Exemplo: se o print marca 17:18:42, a entrada DEVE ser projetada para as 17:20:00). Nunca mande uma entrada com menos de 45 segundos de folga para dar tempo ao operador humano de receber a resposta, ajustar os valores na corretora e clicar na taxa exata.
@@ -81,15 +81,19 @@ if API_KEY:
                 🧠 JUSTIFICATIVA TÉCNICA E CONFLUÊNCIAS: [Explique de forma curta e cirúrgica os motivos baseados nos filtros acima]
                 """
                 
-                # Executa a chamada à API tratando os blocos try/except corretamente
                 try:
+                    # Modelo alterado para 'gemini-2.0-flash', amplamente disponível e veloz para visão
                     response = client.models.generate_content(
-                        model='gemini-2.5-flash',
+                        model='gemini-2.0-flash',
                         contents=[image, prompt]
                     )
                     st.success("Análise Concluída!")
                     st.markdown(response.text)
                 except Exception as e:
-                    st.error(f"Erro ao processar a análise com o Gemini: {e}")
+                    if "429" in str(e) or "RESOURCE_EXHAUSTED" in str(e):
+                        st.error("⚠️ Limite diário de requisições da sua API Key foi atingido (Cota Gratuita de 20/dia).")
+                        st.info("💡 **Dica:** Ative o faturamento 'Pay-as-you-go' no Google AI Studio para liberar acessos ilimitados.")
+                    else:
+                        st.error(f"Erro ao processar a análise com o Gemini: {e}")
 else:
     st.info("Por favor, insira sua Gemini API Key na barra lateral para começar.")
