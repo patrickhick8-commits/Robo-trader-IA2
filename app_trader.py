@@ -29,7 +29,7 @@ Escaneie textualmente a imagem em busca do nome do ativo (ex: EUR/USD, BTC/USD, 
 [PASSO 2: MAPEAMENTO DA TENDÊNCIA PRINCIPAL (MACRO)]
 - Analise o quadrante geral da imagem para identificar a TENDÊNCIA PRINCIPAL (Direção majoritária do preço no gráfico visível).
 - Se a estrutura geral for de Topos e Fundos Ascendentes, determine TENDÊNCIA PRINCIPAL: ALTA.
-- Se a estrutura geral for de Topos e Fundos Descendentes, determine TENDÊNCIA PRINCIPAL: BAIXA.
+- Se a estrutura geral for de Topos e Fundos Descendentes, determine TENDENSIA PRINCIPAL: BAIXA.
 - Se o preço estiver oscilando estritamente dentro de uma faixa lateral sem direção definida, determine TENDÊNCIA PRINCIPAL: LATERAL / CONSOLIDAÇÃO.
 
 [PASSO 3: FILTROS DE TENDÊNCIA E CONFLUÊNCIA WITH EMA 9]
@@ -108,12 +108,11 @@ Retorne o diagnóstico estruturado exatamente neste formato markdown limpo e des
 Seja frio, preciso e direto. Velocidade e precisão salvam bancas.
 """
 
-# INTERFACE VISUAL TOTALMENTE PLANA E ESTÁVEL
+# INTERFACE PLANÍSSIMA - Imune a bugs de reinicialização do Streamlit
 upload_arquivo = st.file_uploader("Upload do Print do Gráfico (M1)", type=["png", "jpg", "jpeg"])
 
-# O botão fica fixo na tela o tempo todo, logo abaixo do uploader
+# Botão estático fixado no corpo central da página
 botao_analise = st.button("🚀 Analisar Matriz do Gráfico")
 
-# Exibe a imagem de forma independente se ela for enviada
 if upload_arquivo is not None:
     imagem_aberta = Image.open(upload_arquivo)
