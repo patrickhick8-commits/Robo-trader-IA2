@@ -2,112 +2,123 @@ import streamlit as st
 from google import genai
 from PIL import Image
 
-# 1. Configuração da Página
+# 1. Configuração da Página do Site Separado
 st.set_page_config(page_title="Agente IA Advanced - Matriz Suprema", page_icon="🤖", layout="centered")
 
-st.title("🤖 Agente IA Trader Pro: Matriz Suprema")
-st.write("Fusão Total: Estrutura Dinâmica do Preço, Contexto de Mercado, Volatilidade e Projeção Temporal.")
+st.title("🤖 Agente IA Trader Pro: Matriz Suprema e Projeção Temporal")
+st.write("Fusão Total: Projeção de Tempo (Mesma Vela M1), SMC, Volume Oculto, Fluxo de Cores, Médias, RSI e S/R / LTA / LTB.")
 
-# 2. Barra Lateral - Gerenciamento de Chaves
-st.sidebar.markdown("### 🔑 Configuração da API")
-api_key = st.sidebar.text_input("Insira sua Gemini API Key:", type="password")
+st.sidebar.markdown("### 🔑 Gerenciador de Chaves de Contingência")
+st.sidebar.info("Cole suas chaves protegidas separando-as por ponto e vírgula (;). Exemplo: chave1; chave2; chave3")
 
-# 3. Interface Principal de Inputs
-uploaded_file = st.file_uploader("📷 Faça o upload do Print do seu Gráfico (M1):", type=["png", "jpg", "jpeg"])
+chaves_input = st.sidebar.text_input("Cole suas Gemini API Keys aqui:", type="password")
 
-st.markdown("##### 🌐 Calibração do Ambiente de Negociação")
-tipo_mercado = st.radio(
-    "Selecione o tipo de mercado atual:",
-    ["Mercado Aberto (Real/Macro)", "Mercado OTC (Algoritmo da Corretora)"],
-    help="O mercado OTC opera sob algoritmos proprietários, enquanto o aberto segue fluxo interbancário e notícias."
-)
+# Transforma o texto em uma lista de chaves limpas
+lista_de_chaves = [chave.strip() for chave in chaves_input.split(";") if chave.strip()]
 
-botao_analise = st.button("🧠 Iniciar Análise Avançada por IA")
+# PROMPT MESTRE (Isolado fora dos blocos para evitar erros de indentação no Python)
+PROMPT_TRADER = """
+[SYSTEM_ROLE] Você é um algoritmo de trading quantitativo focado em encontrar oportunidades frequentes e de boa precisão para Opções Binárias (M1). Sua postura é moderadamente agressiva: seu objetivo é extrair o máximo de sinais válidos do gráfico, operando por confluência de fatores sem descartar operações por detalhes mínimos de ruído.
 
-# 4. Prompt Mestre Otimizado com Filtro Anti-Loss
-def gerar_prompt_mestre(contexto_mercado):
-    return f"""
-[SYSTEM_ROLE] Você é o núcleo de processamento lógico de um algoritmo quantitativo sênior de visão computacional. Sua operação é puramente matemática, destituída de viés emocional ou hesitação. Sua postura combina frieza analítica absoluta com precisão geométrica cirúrgica para a tomada de decisões em Opções Binárias (M1).
+[PASSO 1: IDENTIFICAÇÃO OBRIGATÓRIA DO AMBIENTE]
+Escaneie textualmente a imagem em busca do nome do ativo (ex: EUR/USD, BTC/USD, EUR/GBP-OTC).
+- Identifique se o ativo é [MERCADO ABERTO REAL] ou [ALGORITMO OTC].
 
-[DETECÇÃO VISUAL OBRIGATÓRIA - AUTO EXTRAÇÃO]
-Antes de processar qualquer estratégia, analise minuciosamente os eixos e elementos visuais da imagem para extrair o HORÁRIO DO PRINT e o PREÇO ATUAL DA TELA com precisão decimal. Jamais deixe esses campos em branco.
+[PASSO 2: FILTROS DE TENDÊNCIA E CONFLUÊNCIA COM EMA 9]
+- Rastreie visualmente o fluxo do preço em relação à Média Móvel Exponencial de 9 períodos (EMA 9).
+- COMPRA (CALL): Preço preferencialmente ACIMA da EMA 9 com inclinação ascendente.
+- VENDA (PUT): Preço preferencialmente ABAIXO da EMA 9 com inclinação descendente.
+- Permita operações se o preço estiver ligeiramente próximo à média, validando correções rápidas e continuidades.
 
-[FILTRO CRÍTICO ANTI-LOSS PARA RETRAÇÃO FUTURA]
-Para evitar perdas por rompimento e velas trator, aplique rigorosamente as seguintes leis físicas ao avaliar o operacional de 'RETRAÇÃO EM TAXA FUTURA':
-1. LEI DA EXAUSTÃO: Se o preço estiver indo em direção à taxa gatilho, as últimas 2 ou 3 velas anteriores DEVEM estar diminuindo progressivamente de tamanho (corpo encolhendo). Se as velas anteriores forem grandes, cheias e sem pavio contra, CANCELE a retração imediatamente. O movimento é um fluxo trator.
-2. REGRA DO TOQUE SEGURO: Só recomende o clique de retração se houver um histórico de pelo menos 3 pavios longos isolados na mesma linha horizontal nos últimos 15 minutos do print. Se a região tiver poucos pavios, a probabilidade de rompimento é superior a 75%.
-3. FILTRO DE MOVIMENTO: Caso o cenário indique força compradora/vendedora massiva indo contra uma simetria fraca, mude o veredito para 'FLUXO DE VELA' ou 'FLUXO TRATOR'. Não tente adivinhar topos e fundos contra o momentum institucional.
+[PASSO 3: MATRIZ DE ESTRATÉGIA ADAPTATIVA MULTI-CONFLUENTE]
+Busque de forma ativa por confluências de Price Action em Suporte, Resistência (S/R) e Linhas de Tendência (LTA/LTB). Funda as estratégias para buscar a maior quantidade de confluências possíveis:
 
-[JANELA DE PROJEÇÃO FUTURA (2 A 7 VELAS) E PROTOCOLO DE EXPIRAÇÃO]
-O usuário opera estritamente em gráficos de 1 minuto (M1). Estime o tempo de deslocamento do preço:
-1. JANELA FUTURA DE TOQUE: Calcule visualmente quantas velas de 1 minuto (de 2 a 7 candles à frente) o preço levará para atingir a zona calculada.
-2. REGRA DE EXPIRAÇÃO POR OPERACIONAL:
-   - RETRAÇÃO EM TAXA FUTURA: Expiração estritamente para a MESMA VELA DO TOQUE (M1 corrente dentro do minuto projetado).
-   - REVERSÃO EM REGIÃO FORTE: Expiração calculada para o término do movimento de correção (de 2 a 5 minutos à frente).
-   - FLUXO DE VELA / MOMENTUM / FLUXO TRATOR: Expiração para o fechamento da PRÓXIMA VELA (M1) ou acompanhar o vácuo até o alvo majoritário (2 a 3 minutos).
+1. SE O MERCADO ESTIVER EM TENDÊNCIA NÍTIDA:
+   - MODO FLUXO / ROMPIMENTO EM TENDÊNCIA: Se houver rompimento de zonas de S/R ou LTA/LTB por velas institucionais cheias (Marubozu) a favor da EMA 9, opere a continuidade imediata (Fluxo).
+   - MODO PULLBACK EM TENDÊNCIA: Monitore o preço testando a zona recém-rompida (antigo suporte que virou resistência ou vice-versa). O sinal deve ocorrer quando a vela de teste tocar a linha e demonstrar exaustão.
+   - MODO RETRAÇÃO EM TENDÊNCIA / LTA / LTB: Identifique toques em canais ou linhas de tendência inclinadas onde o preço deixa pavios longos de rejeição, operando a retração a favor do canal.
 
-[MÉTODO DE ALTA ASSERTIVIDADE VIA ZONAS DE SIMETRIA E MICRO-REGIÕES]
-Execute o rastreamento estrito de linhas de simetria de corpo, confluência de múltiplos pavios e cálculo de vácuo (espaço vazio restante até o alvo). O ambiente foi parametrizado como: {contexto_mercado}.
+2. SE O MERCADO ESTIVER EM LATERALIDADE / CONSOLIDAÇÃO:
+   - MODO REVERSÃO EM LATERALIDADE (SUPORTE / RESISTÊNCIA HORIZONTAL): Opere o extremo respeito de zonas horizontais nítidas de Suporte (Fundo) e Resistência (Topo). Quando o preço testar os limites com velas de perda de pressão, opere para a reversão.
+   - MODO RETRAÇÃO PELOS PAVIOS EM LATERALIDADE: Rastreie o histórico recente de pavios longos nas extremidades da consolidação. Se as velas atuais estiverem demonstrando forte rejeição visual através de pavios ao tocar a barreira horizontal, valide a entrada de retração para a mesma vela.
+   - MODO PULLBACK EM LATERALIDADE (ROMPIMENTO DA CAIXA): Se uma vela romper os limites horizontais da acumulação e a vela seguinte for testar a região rompida deixando pavio de rejeição, valide o pullback na consolidação.
 
-Retorne o diagnóstico estruturado exatamente neste formato markdown (não mude uma linha sequer do layout):
+[PASSO 4: FILTROS ANTI-RUÍDO E MANIPULAÇÃO SUAVIZADOS]
+Não seja excessivamente rígido ao filtrar o gráfico. Só aborte a operação em casos extremos de mercado totalmente parado:
+- FILTRO ANTI-XADREZ: Aborte apenas se houver uma alternância perfeita e sem direção de cores por mais de 8 velas seguidas. Pequenas oscilações normais intercaladas devem ser operadas.
+- FILTRO DE MICRO-VELAS: Aborte apenas se houver uma sequência longa de Dojis legítimos (linhas horizontais finas). Velas pequenas com corpos mínimos e pavios curtos ainda são elegíveis para operação.
+- EM OTC: Permita operações de retração de pavios e pullbacks se as regiões estiverem bem marcadas, aproveitando o fluxo comprador/vendedor para preenchimento de zonas.
 
-📊 CONTEXTO E VOLATILIDADE DETECTADA PELA IA: [Descreva friamente a tendência macro, micro e o comportamento atual da volatilidade em poucas palavras]
-⏰ HORÁRIO DO PRINT DETECTADO AUTOMATICAMENTE: [Indique o horário exato extraído por lógica matemática da imagem, ex: 10:15:23]
-📈 PREÇO ATUAL DA TELA DETECTADO AUTOMATICAMENTE: [Indique a taxa decimal extraída do eixo, ex: 1.34521]
-🚨 VEREDITO REAL DE CONFIANÇA: [ENTRAR COM CONFIANÇA / ENTRAR COM LOTE MÍNIMO POR RISCO GEOMÉTRICO / ABORTAR OPERAÇÃO]
-🟢/🔴 AÇÃO OPERACIONAL E DIREÇÃO: [COMPRA (CALL) / VENDA (PUT) / NENHUMA - OPERAÇÃO ABORTADA]
-📊 TAXA DE ACERTO ESTIMADA: [Forneça um percentual esportivo frio de probabilidade de vitória de 0% a 100% com base nas confluências. Operações abortadas = 0%]
-⚡ DETECTOU ZONA DE SIMETRIA OU MÚLTIPLOS PAVIOS? [Mapeie de forma cirúrgica o nível geométrico exato e classifique se é de corpo ou de pavio]
-⏳ PROJEÇÃO DE TEMPO DA JANELA: [Indique explicitamente quantos candles/minutos futuros faltam para o preço tocar no gatilho, obrigatoriamente dentro da janela de 2 a 7 minutos. Ex: Toque estimado em 4 candles à frente]
-⏱️ HORÁRIO ESTIMADO DA ENTRADA: [Calcule o minuto provável do toque com base na velocidade média de deslocamento visual, ex: 10:18:00]
-⏰ TEMPO DE EXPIRAÇÃO DA ORDEM: [Defina de forma ultra detalhada a expiração exata do clique na corretora de acordo com o operacional escolhido. Ex: Expiração para a mesma vela do toque (Retração - M1)]
-🧠 TIPO DE OPERACIONAL ATIVADO: ['RETRAÇÃO EM TAXA FUTURA', 'REVERSÃO EM REGIÃO FORTE', 'FLUXO DE VELA', 'MOMENTUM', 'FLUXO TRATOR' ou 'NENHUM - OPERAÇÃO ABORTADA']
-🎯 TAXA GATILHO DA OPERAÇÃO: [Defina com precisão decimal máxima o ponto exato do clique na plataforma baseado na zona calculada]
-📝 JUSTIFICATIVA TÉCNICA E ESTRUTURAL DETALHADA: [Exponha uma defesa puramente matemática, fria e mecânica do Price Action. Justifique com rigor o motivo de escolher COMPRA ou VENDA e detalhe o porquê a taxa selecionada está protegida contra rompimentos de acordo com o filtro anti-loss de exaustão]
+[PASSO 5: SISTEMA DE CALIBRAGEM DE ASSERTIVIDADE REALISTA]
+- Avalie os riscos de forma equilibrada. Quanto mais fatores confluírem juntos (ex: Toque na EMA 9 + Pavio de Retração + Zona de Suporte), maior deve ser a taxa de acerto.
+- Classifique a taxa de acerto obrigatoriamente dentro da faixa de **80% a 95%**. 
+- Só emita "OPERAÇÃO ABORTADA" (e taxa 0%) se o gráfico estiver completamente plano, sem tendência alguma e sem zonas visíveis. Se o cenário for minimamente operável, determine uma direção dentro da faixa estipulada.
+
+[PASSO 6: CRONOMETRAGEM DE EXECUÇÃO PADRÃO]
+- Localize o relógio oficial da plataforma no print. 
+- Projete o HORÁRIO DO CLIQUE rigorosamente para uma janela futura de **2 a 5 minutos** à frente (ex: se o relógio marca 10:15:20, projete o clique para entre 10:17:00 e 10:20:00).
+- A expiração deve ser rígida de exatamente 1 minuto para fechar na mesma vela do clique projetado.
+
+[PASSO 7: SUGESTÃO DE GERENCIAMENTO DE MÃO DE ENTRADA]
+Defina a recomendação de capital com base na taxa calculada de forma matemática:
+- Taxa entre 90% e 95%: MÃO DE SOROS / ENTRADA FORTE (Cenário de confluência tripla/máxima).
+- Taxa entre 85% e 89%: ENTRADA FIXA padrão (Cenário bom com confluência dupla).
+- Taxa entre 80% e 84%: MÃO LEVE / REDUZIDA (Oportunidade isolada de retração ou fluxo simples).
+- Operação Abortada: PARADA OBRIGATÓRIA (Cenário sem condições mínimas).
+
+Retorne o diagnóstico estruturado exatamente neste formato markdown limpo e destacado:
+
+🎯 PORCENTAGEM DE ACERTO DA ENTRADA: [Ex: 84% ou 93% - Dentro do padrão calibrado. Se for Abortada, escreva '0% - FILTRO ATIVADO'] (Escreva destacado e em tamanho grande)
+
+⏰ HORÁRIO DO CLIQUE (ENTRADA): [HH:MM:00 exato projetado entre 2 a 5 minutos para o futuro]
+⏳ TEMPO DE EXPIRAÇÃO: 1 Minuto (Para fechar na mesma vela do clique)
+🏁 HORÁRIO DE FECHAMENTO DA ORDEM: [HH:MM:00 do fechamento real da vela]
+🟥🟩 DIREÇÃO EXATA DA ORDEM: [COMPRA / VENDA / OPERAÇÃO ABORTADA]
+💰 GERENCIAMENTO DE LOTE RECOMENDADO: [SOROS / ENTRADA FIXA / MÃO LEVE / PARADA OBRIGATÓRIA]
+
+🧠 ESTRATÉGIA COMBINADA ATIVADA: [Ex: REVERSÃO EM LATERALIDADE (SUPORTE HORIZONTAL RESPEITADO) ou FLUXO EM TENDÊNCIA DE BAIXA (ROMPIMENTO DE S/R) ou PULLBACK EM TENDÊNCIA COM RETRAÇÃO POR PAVIO]
+🌐 MODO DE MERCADO DETECTADO: [MERCADO ABERTO ou MERCADO OTC]
+📊 CONTEXTO DO MERCADO: [TENDÊNCIA DE ALTA / TENDÊNCIA DE BAIXA / CONSOLIDAÇÃO LATERAL / MERCADO PARADO]
+📊 JUSTIFICATIVA DA PROJEÇÃO TEMPORAL: [Explique resumidamente o porquê o preço vai levar esse tempo exato (2 a 5 minutos) para atingir sua zona de entrada e confirmar a confluência]
+
+🔍 DETALHAMENTO ANATÔMICO, ESTRUTURAL E TÉCNICO (OPORTUNIDADES IDENTIFICADAS):
+- Ambiente Identificado: [MERCADO ABERTO ou OTC]
+- Mapeamento das Regiões (S/R, LTA/LTB e Zonas de Pullback): [Descreva as microzonas, regiões principais ou testes de pullback que o preço tende a respeitar]
+- Comportamento e Retração pelos Pavios: [Explique o que a presença e tamanho dos pavios recentes revelam sobre a rejeição ou preenchimento das zonas]
+- Posicionamento da EMA 9: [Direção do preço em relação à média móvel para validar a força do sinal]
+- Avaliação de Ruído e Volatilidade: [Explique por que o cenário foi considerado aceitável para clique com filtros moderados]
+- Diagnóstico do Fluxo de Cores e Volume por Corpo: [Análise do tamanho das últimas velas para validar o movimento e a força do gatilho]
+- Justificativa da Gestão de Lote: [Explique por que o lote sugerido se adequa a esta oportunidade]
+
+Seja frio, preciso e direto. Velocidade e precisão salvam bancas.
 """
 
-# 5. Execução da Análise
-if botao_analise:
-    if not api_key:
-        st.error("Por favor, insira sua Gemini API Key na barra lateral.")
-    elif not uploaded_file:
-        st.error("Por favor, faça o upload do print do gráfico.")
-    else:
-        with st.spinner("🧠 Varrendo eixos gráficos, simetrias e aplicando filtros anti-loss de exaustão..."):
-            try:
-                # Inicializa o cliente oficial da SDK do Gemini
-                client = genai.Client(api_key=api_key)
-                
-                # Abre a imagem salva
-                imagem = Image.open(uploaded_file)
-                
-                # Gera o prompt dinâmico blindado
-                prompt_final = gerar_prompt_mestre(tipo_mercado)
-                
-                # Executa o modelo de visão atualizado e vigente (gemini-3.5-flash)
-                response = client.models.generate_content(
-                    model='gemini-3.5-flash',
-                    contents=[imagem, prompt_final]
-                )
-                
-                st.success("✅ Análise Computacional Concluída com Sucesso!")
-                st.markdown("### 📊 Painel de Execução Analítica")
-                
-                # Separa as linhas da resposta para organizar verticalmente uma embaixo da outra
-                linhas = response.text.split('\n')
-                
-                for linha in linhas:
-                    if linha.strip():
-                        # Renderiza cada bloco de forma limpa, empilhada e sequencial
-                        with st.container(border=True):
-                            if "🚨 VEREDITO REAL DE CONFIANÇA:" in linha:
-                                st.warning(linha.replace("**", ""))
-                            elif "🟢/🔴 AÇÃO OPERACIONAL E DIREÇÃO:" in linha:
-                                st.info(linha.replace("**", ""))
-                            elif "🎯 TAXA GATILHO DA OPERAÇÃO:" in linha:
-                                st.success(linha.replace("**", ""))
-                            else:
-                                st.write(linha)
-                                
-            except Exception as e:
-                st.error(f"Erro ao processar a análise: {e}")
+if lista_de_chaves:
+    # Seleciona a primeira chave válida da contingência
+    chave_ativa = lista_de_chaves[0]
+    
+    # Inicializa o cliente oficial da nova SDK do Google GenAI
+    client = genai.Client(api_key=chave_ativa)
+
+    # 3. Campo de Upload do Print
+    uploaded_file = st.file_uploader("Arraste o print completo do gráfico M1 (Obrigatório conter o Relógio da Plataforma visível, Velas, RSI e Volume):", type=["png", "jpg", "jpeg"])
+
+    if uploaded_file is not None:
+        image = Image.open(uploaded_file)
+        st.image(image, caption="Gráfico M1 Carregado para Análise de Confluência Suprema", use_container_width=True)
+        
+        if st.button("🚀 EXECUTAR ANÁLISE SUPREMA MATRICIAL"):
+            with st.spinner("IA escaneando padrões e buscando oportunidades..."):
+                try:
+                    # Executa a chamada utilizando o modelo multimodal
+                    response = client.models.generate_content(
+                        model='gemini-2.5-flash',
+                        contents=[image, PROMPT_TRADER]
+                    )
+                    st.success("Análise Suprema de Confluência Matricial Concluída!")
+                    st.markdown(response.text)
+                except Exception as e:
+                    st.error(f"Erro ao processar com a chave atual: {str(e)}")
+                    st.warning("Verifique suas chaves de contingência na barra lateral.")
+else:
+    st.warning("Insira pelo menos uma Gemini API Key válida na barra lateral para ativar o Agente.")
