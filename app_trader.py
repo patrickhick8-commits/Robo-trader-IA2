@@ -35,7 +35,7 @@ Antes de processar qualquer estratégia, analise minuciosamente os eixos e eleme
 [FILTRO CRÍTICO ANTI-LOSS PARA FLUXO DE VELA E EXPIRAÇÃO]
 Para mitigar perdas e eliminar falsos rompimentos no operacional de 'FLUXO DE VELA' / 'MOMENTUM', aplique rigidamente as seguintes leis:
 1. LEI DO VÁCUO SEGURO: Só valide o Fluxo de Vela se houver um espaço livre (vácuo) de pelo menos 1 a 2 corpos de vela até a próxima barreira visual (suporte, resistência, linha de tendência ou número redondo). Se a última vela fechou colada ou muito perto de uma barreira do passado, ABORTE o fluxo imediatamente (risco alto de reversão/retração).
-2. REGRA DO GATILHO DE EXAUSTÃO: Analise o volume visual do candle de força. Se a última vela foi um "candle careca" (sem pavio nenhum a favor do movimento) ou se deixou um pavio de rejeição contra muito longo (maior que 40% do corpo), CANCELE o fluxo. O preço já exauriu.
+2. REGRA DO GATILHO DE EXAUSTÃO: Analise o volume visual do candle de força. Se a última vela foi um "candle careca" (sem pavio nenhum a favor do movimento) ou se deixou um pavio de prevenção contra muito longo (maior que 40% do corpo), CANCELE o fluxo. O preço já exauriu.
 3. PROTOCOLO DE EXPIRAÇÃO DE FLUXO (M1): A expiração para operações de Fluxo de Vela/Momentum deve ser estritamente para o FECHAMENTO DA PRÓXIMA VELA (fim do próximo minuto cheio no relógio, M1 corrente). Não projete fluxos para tempos maiores para evitar correções tardias de mercado.
 
 [FILTRO CRÍTICO ANTI-LOSS PARA RETRAÇÃO FUTURA]
@@ -46,7 +46,7 @@ Para evitar perdas por rompimento e velas trator, aplique rigorosamente as segui
 
 [NOVAS REGRAS DE PRICE ACTION AVANÇADO]
 4. LEI DO PREENCHIMENTO DE VÁCUO: Avalie a distância (vácuo) entre a última vela e a taxa gatilho. Se o espaço for milimétrico, assuma que o preço irá sugar e preencher a região. Mude a operação para FLUXO até o toque no alvo.
-5. ASSIMETRIA DE PAVIOS: Certifique-se de que os pavios de referência no passado do gráfico sejam longos (ocupando mais de 60% do candle total). Rejeite zonas com pavios curtos ou corpos cheios travados na linha.
+5. ASSIMETRIA DE PAVIOS: Certifique-se de que os pavios de referência nos gráficos do passado sejam longos (ocupando mais de 60% do candle total). Rejeite zonas com pavios curtos ou corpos cheios travados na linha.
 6. ALINHAMENTO DE MICRO-TENDÊNCIA: Analise o padrão geométrico dos últimos 20 candles. Se houver uma micro-tendência direcional clara, proíba operações de retração contra ela (ex: não dê PUT em tendência de alta forte).
 
 [JANELA DE PROJEÇÃO FUTURA (2 A 7 VELAS) E PROTOCOLO DE EXPIRAÇÃO]
@@ -95,7 +95,7 @@ if botao_analise:
                 # Gera o prompt dinâmico blindado
                 prompt_final = gerar_prompt_mestre(tipo_mercado)
                 
-                # Executa o modelo de visão atualizado e vigente (gemini-2.5-flash)
+                # Executa o modelo de visão atualizado e estável (gemini-2.5-flash)
                 response = client.models.generate_content(
                     model='gemini-2.5-flash',
                     contents=[imagem, prompt_final]
@@ -104,7 +104,7 @@ if botao_analise:
                 st.success("✅ Análise Computacional Concluída com Sucesso!")
                 st.markdown("### 📊 Painel de Execução Analítica")
                 
-                # Separa as linhas da resposta para organizar verticalmente uma embaixo da outra
+                # Separa as linhas da resposta para organizar verticalmente
                 linhas = response.text.split('\n')
                 
                 for linha in linhas:
@@ -120,3 +120,4 @@ if botao_analise:
                             else:
                                 st.write(linha)
                                 
+            except Exception as e:
