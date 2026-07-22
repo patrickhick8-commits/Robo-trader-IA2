@@ -49,7 +49,7 @@ PROMPT_TRADER = (
     "- **Contexto Macro/Micro:** [Descreva brevemente a estrutura de mercado visível no print: tendência, lateralização ou rompimento]\n"
     "- **Comportamento das Velas Recentes:** [Análise visual se os últimos candles demonstram força de impulsão ou exaustão por pavios]\n"
     "- **Mapeamento de Regiões:** [Identifique visualmente se o preço está próximo de fundos/topos anteriores ou se está em 'vazio gráfico']\n"
-    "- **Filtro de Bloqueio Ativado?:** [Sim/Não - Justifique se há perigo iminente de tomar um 'loss' por operar contra uma força institucional esticada]\n\n"
+    "- **Filtro de Bloqueio Ativado?:** [Sim/Não - Justifique se há perigo iminente de tomar um 'loss' por operar contra uma força institutional esticada]\n\n"
     
     "⚠️ AVISO DE GESTÃO DE RISCO:\n"
     "[Forneça uma recomendação de gerenciamento conservadora baseada estritamente na feiura ou clareza do gráfico analisado.]"
@@ -58,9 +58,9 @@ PROMPT_TRADER = (
 def executar_chamada_gemini(chave_api, imagem_objeto, prompt_comando):
     try:
         client = genai.Client(api_key=chave_api)
-        # CORREÇÃO: Atualizado para o modelo vigente estável
+        # CORREÇÃO: Atualizado para o modelo de produção vigente e amplamente disponível
         response = client.models.generate_content(
-            model='gemini-2.5-flash',
+            model='gemini-2.0-flash',
             contents=[imagem_objeto, prompt_comando]
         )
         return True, response.text
@@ -103,7 +103,7 @@ if botao_analise:
                     st.code(resultado)
                     st.warning("Tentando próxima chave de contingência da lista...")
             
-            if not sucesso_geral:
+            if not ThreadSafeContext := sucesso_geral:
                 st.error("Todas as chaves fornecidas falharam. Verifique suas credenciais e permissões no Google AI Studio.")
 
 if not lista_de_chaves:
