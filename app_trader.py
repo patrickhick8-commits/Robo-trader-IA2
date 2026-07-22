@@ -60,9 +60,10 @@ def executar_chamada_gemini(chave_api, imagem_objeto, prompt_comando):
         # Inicializando o cliente oficial do Google GenAI
         client = genai.Client(api_key=chave_api)
         
-        # Utilizando o modelo adequado para análise visual e raciocínio avançado
+        # Mudança Crítica: Alterado de 'gemini-2.5-pro' para 'gemini-2.5-flash'
+        # Isso garante o uso da cota gratuita e resolve o erro 429 RESOURCE_EXHAUSTED
         response = client.models.generate_content(
-            model='gemini-2.5-pro',
+            model='gemini-2.5-flash',
             contents=[imagem_objeto, prompt_comando]
         )
         return response.text
@@ -108,3 +109,4 @@ if botao_analise:
 
 if not lista_de_chaves:
     st.info("💡 Lembrete: Insira as chaves de API na barra lateral esquerda para liberar o processamento.")
+
