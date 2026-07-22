@@ -36,7 +36,7 @@ PROMPT_TRADER = (
     "- TENDÊNCIA E MATRIZ DE VELAS: Avalie visualmente a força dominante dos últimos candles (corpos cheios vs. pavios longos).\n"
     "- FILTRO DE EXAUSTÃO ESTICADA: Se o preço estiver se deslocando agressivamente com velas grandes e cheias em direção a um suporte/resistência, "
     "alerte o trader que a reversão imediata é perigosa e que ele deve aguardar o travamento ou perda de ângulo da tendência.\n"
-    "- COMPORTAMENTO DO RSI: Se houver um indicador RSI visível e ele estiver cruzando as linhas extremas de forma totalmente vertical/agressiva, "
+    "- COMPORTAMENTO DO RSI: Se houver um indicador RSI visível e ele estiver cruzando as lines extremas de forma totalmente vertical/agressiva, "
     "classifique como cenário de alto risco contra a tendência imediata.\n\n"
     
     "Retorne o diagnóstico estruturado exatamente neste formato markdown:\n\n"
@@ -49,7 +49,7 @@ PROMPT_TRADER = (
     "- **Contexto Macro/Micro:** [Descreva brevemente a estrutura de mercado visível no print: tendência, lateralização ou rompimento]\n"
     "- **Comportamento das Velas Recentes:** [Análise visual se os últimos candles demonstram força de impulsão ou exaustão por pavios]\n"
     "- **Mapeamento de Regiões:** [Identifique visualmente se o preço está próximo de fundos/topos anteriores ou se está em 'vazio gráfico']\n"
-    "- **Filtro de Bloqueio Ativado?:** [Sim/Não - Justifique se há perigo iminente de tomar um 'loss' por operar contra uma força institutional esticada]\n\n"
+    "- **Filtro de Bloqueio Ativado?:** [Sim/Não - Justifique se há perigo iminente de tomar um 'loss' por operar contra uma força institucional esticada]\n\n"
     
     "⚠️ AVISO DE GESTÃO DE RISCO:\n"
     "[Forneça uma recomendação de gerenciamento conservadora baseada estritamente na feiura ou clareza do gráfico analisado.]"
@@ -58,7 +58,6 @@ PROMPT_TRADER = (
 def executar_chamada_gemini(chave_api, imagem_objeto, prompt_comando):
     try:
         client = genai.Client(api_key=chave_api)
-        # CORREÇÃO: Atualizado para o modelo de produção vigente e amplamente disponível
         response = client.models.generate_content(
             model='gemini-2.0-flash',
             contents=[imagem_objeto, prompt_comando]
@@ -103,7 +102,8 @@ if botao_analise:
                     st.code(resultado)
                     st.warning("Tentando próxima chave de contingência da lista...")
             
-            if not ThreadSafeContext := sucesso_geral:
+            # CORREÇÃO DA SINTAXE AQUI:
+            if not sucesso_geral:
                 st.error("Todas as chaves fornecidas falharam. Verifique suas credenciais e permissões no Google AI Studio.")
 
 if not lista_de_chaves:
