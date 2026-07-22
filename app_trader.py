@@ -37,7 +37,7 @@ if API_KEY:
         if st.button("🚀 EXECUTAR ANÁLISE AVANÇADA DE SINAL"):
             with st.spinner("IA escaneando padrões de velas, volume implícito e mercado..."):
                 
-                # Prompt institucional completo com a regra de expiração ajustada para "3 Minutos se Reversão / Taxa de Defesa"
+                # Prompt institucional completo otimizado para a arquitetura Gemini 3.x
                 prompt = """
                 [SYSTEM_ROLE] Você é um robô de trading institucional de alta performance, programado para operar com frieza milimétrica e precisão cirúrgica. Sua missão é caçar apenas a oportunidade perfeita, garantindo uma assertividade absurda baseada em confluências técnicas avançadas.
                 
@@ -61,7 +61,7 @@ if API_KEY:
                 Identifique visualmente se o gráfico enviado pertence ao Mercado Aberto Tradicional ou ao Mercado OTC (identificável por nomes de pares com "-OTC", comportamento algorítmico contínuo ou padrões característicos das corretoras) e aplique as estratégias corretas, analisando o indicador RSI 14 na parte inferior com as seguintes regras de segurança:
                 1. FILTRO DE SEGURANÇA RSI: Utilize o indicador RSI APENAS se ele estiver em zona extrema (tocando ou rompendo os níveis 30 ou 70) E EM CONGRUÊNCIA total com o padrão de exaustão das velas. Se as velas mostrarem força de fluxo contínuo (sequência de velas grandes em OTC), IGNORE o RSI, pois o algoritmo tende a estagnar o indicador nos extremos e continuar o movimento.
                 2. MERCADO ABERTO: Priorize a leitura de zonas legítimas de Suporte/Resistência, LTA/LTB macro e confluências micro com o RSI.
-                3. MERCADO OTC (ALGORÍTMICO): Foque no comportamento computacional das corretoras. Priorize algoritmos de fluxo contínuo (sequências de velas de força), preenchimento milimétrico de pavios anteriores (vácuo de liquidez), exaustão por contagem de velas e armadilhas de falsos rompimentos em zonas saturadas.
+                3. MERCADO OTC (ALGORÍTMICO): Foque no comportamento computacional das corretoras. Priorize algoritmos de fluxo contínuo (sequências de velas de força), preenchimento milimétrico de pavios anteriores (vácuo de liquidez), exaustão por contagem de velas e armadilhas de falsos rompimentos in zonas saturadas.
                 
                 [ORDER_FLOW_&_PURE_CANDLE_VOLUME]
                 Analise o desequilíbrio, a movimentação do preço e o fluxo de ordens (Order Flow) de forma 100% implícita e exclusiva na anatomia visual das velas, SEM depender de indicadores de volume na tela:
@@ -82,16 +82,17 @@ if API_KEY:
                 """
                 
                 try:
+                    # Mudança do modelo para o novo gemini-3.6-flash
                     response = client.models.generate_content(
-                        model='gemini-2.0-flash',
+                        model='gemini-3.6-flash',
                         contents=[image, prompt]
                     )
-                    st.success("Análise Concluída!")
+                    st.success("Análise Concluída com Gemini 3.6!")
                     st.markdown(response.text)
                 except Exception as e:
                     if "429" in str(e) or "RESOURCE_EXHAUSTED" in str(e):
-                        st.error("⚠️ Limite diário de requisições da sua API Key foi atingido (Cota Gratuita de 20/dia).")
-                        st.info("💡 **Dica:** Ative o faturamento 'Pay-as-you-go' no Google AI Studio para liberar acessos ilimitados.")
+                        st.error("⚠️ Limite diário de requisições da sua API Key foi atingido (Cota Gratuita).")
+                        st.info("💡 **Dica:** Ative o faturamento 'Pay-as-you-go' no Google AI Studio para liberar o poder total do Gemini 3.6 de forma ilimitada.")
                     else:
                         st.error(f"Erro ao processar a análise com o Gemini: {e}")
 else:
