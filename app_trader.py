@@ -34,8 +34,8 @@ if API_KEY:
                 Opere com rigor máximo. Você está terminantemente proibido de passar sinais com confluências fracas. Se houver o menor ruído, classifique como [ABORTAR OPERAÇÃO - ALTO RISCO]. Aceite apenas a faixa extrema de 85% a 99% de certeza matemática ponderada.
                 
                 [DIRETRIZ DE SEGURANÇA MÁXIMA: REVERSÃO EM REGIÃO VS FLUXO MOMENTÂNEO]
-                Monitore rigorosamente a proximidade do preço em relação às zonas de suporte e resistência fortes:
-                1. OPERACIONAL DE REVERSÃO EM REGIÃO: Se você detectar que o preço JÁ ESTIVER NA REGIÃO de suporte/resistência ou extremidade saturada, ative este modo de reversão contra a tendência. Para este cenário, você está OBRIGADO A AUMENTAR O TEMPO DE EXPIRAÇÃO para uma faixa de 5 a 10 minutos à frente, projetando a exaustão e o recuo seguro do preço dentro da zona defensiva.
+                Monitore rigorosamente a proximidade do preço em relação各自 zonas de suporte e resistência fortes:
+                1. OPERACIONAL DE REVERSÃO EM REGIÃO: Se você detectar que o preço JÁ ESTIVER NA REGIÃO de suporte/resistência ou extremidade saturada, ative este modo de reversão contra a tendência. Para este cenário, você está OBRIGADO A AJUSTAR O TEMPO DE EXPIRAÇÃO para uma faixa de 2 a 10 minutos à frente, projetando a exaustão e o recuo seguro do preço dentro da zona defensiva.
                 2. OPERACIONAL DE FLUXO MOMENTÂNEO: Se o preço estiver distante das regiões de reversão, você está PROIBIDO de contra-atacar a tendência. Siga a favor da continuidade do movimento atual (ou fluxo de cores). Para este cenário de fluxo, mantenha a expiração padrão de 1 minuto para fechar exatamente no final da mesma vela de entrada.
                 
                 [ANTI_NOISE_&_FALSE_BREAKOUT_FILTERS]
@@ -47,7 +47,7 @@ if API_KEY:
                 [AUTOMATIC_MARKET_ADAPTATION]
                 Identifique visualmente se o gráfico enviado pertence ao Mercado Aberto Tradicional ou ao Mercado OTC (identificável por nomes de pares com "-OTC", comportamento algorítmico contínuo ou padrões característicos das corretoras) e aplique as estratégias corretas:
                 1. MERCADO ABERTO: Priorize a leitura de zonas legítimas de Suporte/Resistência, LTA/LTB, confluências micro com RSI 14 (exaustão em 70/30) e validação pelo volume implícito dos candles.
-                2. MERCADO OTC (ALGORÍTMICO): Descarte regras de notícias e foque no comportamento computacional das corretoras. Priorize algoritmos de fluxo contínuo (sequências de velas de força), preenchimento milimétrico de pavios anteriores (vácuo de liquidez), exaustão por contagem de velas e armadilhas de falsos rompimentos em zonas saturadas.
+                2. MERCADO OTC (ALGORÍTMICO): Descarte regras de notícias e foque no comportamento computacional das corretoras. Priorize algoritmos de fluxo contínuo (sequências de velas de força), preenchimento milimétrico de pavios anteriores (vácuo de liquidez), exaustão por contagem de velas e armadilhas de falsos rompimentos in zonas saturadas.
                 
                 [ORDER_FLOW_&_PURE_CANDLE_VOLUME]
                 Analise o desequilíbrio, a movimentação do preço e o fluxo de ordens (Order Flow) de forma 100% implícita e exclusiva na anatomia visual das velas, SEM depender de indicadores de volume na tela:
@@ -55,12 +55,12 @@ if API_KEY:
                 - DEFESA E ABSORÇÃO POR PAVIOS: Avalie o volume de agressão contrária pelo tamanho dos pavios. Pavios longos em zonas críticas indicam rejeição em massa, absorção de ordens e virada iminente no fluxo.
                 
                 [TIME_RULES] Leia o relógio atual no print. Projete o momento do clique de entrada de forma cirúrgica para acontecer entre 2 a 5 velas (minutos) depois do print. 
-                Ajuste a expiração estritamente com base na estratégia adotada: 5 a 10 minutos se for REVERSÃO EM REGIÃO (para dar tempo de o preço corrigir), ou 1 minuto se for FLUXO MOMENTÂNEO (para fechar na mesma vela).
+                Ajuste a expiração estritamente com base na estratégia adotada: 2 a 10 minutos se for REVERSÃO EM REGIÃO (para dar tempo de o preço corrigir), ou 1 minuto se for FLUXO MOMENTÂNEO (para fechar na mesma vela).
                 
                 Retorne estritamente neste formato markdown limpo:
                 🎯 PORCENTAGEM DE ACERTO DA ENTRADA: [Ex: 96% - EXTREMA CONFLUÊNCIA]
                 ⏰ HORÁRIO DO CLIQUE (ENTRADA): [HH:MM:00 exato]
-                ⏳ TEMPO DE EXPIRAÇÃO: [1 Minuto se Fluxo OU 5 a 10 Minutos calculados se Reversão em Região]
+                ⏳ TEMPO DE EXPIRAÇÃO: [1 Minuto se Fluxo OU 2 a 10 Minutos calculados se Reversão em Região]
                 🏁 HORÁRIO DE FECHAMENTO: [Cálculo preciso baseado no horário de entrada + tempo de expiração definido]
                 🟥🟩 DIREÇÃO DA ORDEM: [COMPRA / VENDA / ABORTAR OPERAÇÃO]
                 🌐 MODO DE MERCADO DETECTADO: [MERCADO ABERTO ou MERCADO OTC]
@@ -81,17 +81,6 @@ if API_KEY:
                         model='gemini-2.5-flash',
                         contents=[image, prompt]
                     )
-                    st.success("Análise Avançada Concluída com Sucesso!")
-                    
-                    # Sistema de som injetado para alertar a entrada no Desktop
-                    st.components.v1.html(
-                        '<audio autoplay src="https://google.com"></audio>',
-                        height=0
-                    )
-                    
                     st.markdown(response.text)
-                    
                 except Exception as e:
-                    st.error(f"Erro no processamento visual da IA: {e}")
-else:
-    st.info("👈 Insira sua Gemini API Key na barra lateral para ativar o modo de análise avançada.")
+                    st.error(f"Erro ao processar a imagem: {e}")
