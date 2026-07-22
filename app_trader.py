@@ -19,7 +19,7 @@ lista_de_chaves = [chave.strip() for chave in chaves_input.split(";") if chave.s
 # Seletor com as nomenclaturas oficiais corretas do Google AI Studio
 modelo_selecionado = st.sidebar.selectbox(
     "🤖 Versão do Motor Gemini:",
-    ["gemini-2.5-flash", "gemini-2.5-pro", "gemini-2.0-flash"]
+    ["gemini-2.0-flash", "gemini-2.5-flash", "gemini-2.5-pro"]
 )
 
 # 3. Definição Limpa do Prompt Mestre
@@ -50,7 +50,7 @@ PROMPT_TRADER = (
     "[PASSO 7: PROTOCOLO DE BLOQUEIO]\n"
     "Bloqueie reversões precoces fora da região demarcada. Aborte se o fluxo momentâneo estiver sem volume ou sem alvo claro.\n\n"
     "[PASSO 8: CRONOMETRAGEM E GESTÃO]\n"
-    "Projete o clique entre 3 a 10 minutos à frente baseando-se estritamente no HORÁRIO ATUAL DO SISTEMA fornecido. Taxa de acerto de 80% a 95% ou Abortada (0%).\n\n"
+    "Projete o clique entre 3 a 10 minutos à frente baseando-se estritamente no HORÁRIO ATUAL DO SISTEMA fornecido. Taxa de acerto of 80% a 95% ou Abortada (0%).\n\n"
     "Retorne o diagnóstico estruturado exatamente neste formato markdown:\n\n"
     "🎯 PORCENTAGEM DE ACERTO DA ENTRADA: [Resultado]\n"
     "⏰ HORÁRIO DO CLIQUE (ENTRADA): [HH:MM:00]\n"
@@ -82,7 +82,6 @@ def executar_chamada_gemini(chave_api, imagem_objeto, prompt_comando, modelo):
     try:
         client = genai.Client(api_key=chave_api)
         
-        # CORREÇÃO CRÍTICA: Converte RGBA para RGB removendo a transparência antes de salvar em JPEG
         if imagem_objeto.mode in ("RGBA", "P"):
             imagem_objeto = imagem_objeto.convert("RGB")
             
@@ -111,7 +110,7 @@ uploaded_file = st.file_uploader("📷 Faça o upload do Print do seu Gráfico (
 
 botao_analise = st.button("🧠 Iniciar Análise Avançada por IA")
 
-# 5. Execução Lógica Controlled pós-Clique
+# 5. Execução Lógica Controlada pós-Clique
 if botao_analise:
     if not uploaded_file:
         st.error("⚠️ Por favor, faça o upload de uma imagem do gráfico antes de iniciar a análise.")
@@ -133,11 +132,16 @@ if botao_analise:
                     sucesso = True
                     break
                 else:
-                    st.error(f"❌ Falha na Chave {i+1}. Detalhe técnico: {resultado.replace('ERRO_API:', '')}")
+                    erro_limpo = resultado.replace('ERRO_API:', '')
+                    if "429" in erro_limpo or "RESOURCE_EXHAUSTED" in erro_limpo:
+                        st.error(f"❌ Falha na Chave {i+1}: Limite de cota esgotado para o modelo '{modelo_selecionado}'.")
+                        st.info("💡 Dica: Mude para 'gemini-2.0-flash' no menu lateral para usar a cota gratuita.")
+                    else:
+                        st.error(f"❌ Falha na Chave {i+1}. Detalhe técnico: {erro_limpo}")
                     st.warning("Tentando próxima chave da lista...")
             
             if not sucesso:
-                st.error("🚨 Todas as chaves falharam. Selecione outro modelo na barra lateral ou gere chaves atualizadas no Google AI Studio.")
+                st.error("🚨 Todas as chaves falharam. Altere o modelo na barra lateral esquerda e tente novamente.")
 
 if not lista_de_chaves:
     st.info("💡 Lembrete: Insira as chaves de API na barra lateral esquerda para liberar o processamento.")
