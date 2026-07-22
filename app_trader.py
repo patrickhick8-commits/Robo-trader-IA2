@@ -19,7 +19,6 @@ API_KEY = st.sidebar.text_input("Cole sua Gemini API Key aqui:", type="password"
 st.sidebar.markdown("---")
 st.sidebar.subheader("⏱️ Configuração de Latência")
 
-# Seleção do tempo de reação estimado do trader/infraestrutura
 tempo_reacao_segundos = st.sidebar.slider(
     "Tempo de Reação Estimado (em segundos):",
     min_value=1,
@@ -28,17 +27,16 @@ tempo_reacao_segundos = st.sidebar.slider(
     help="Tempo que você leva para ver o sinal, abrir a corretora e clicar (incluindo delay da internet)."
 )
 
+# ==============================================================================
+# 3. VERIFICAÇÃO DE AUTENTICAÇÃO E EXECUÇÃO PRINCIPAL
+# ==============================================================================
 if API_KEY:
     try:
-        # Inicializa o cliente com a nova biblioteca oficial do Google
         client = genai.Client(api_key=API_KEY)
     except Exception as e:
         st.error(f"Erro ao inicializar o cliente Gemini: {e}")
         st.stop()
 
-    # ==============================================================================
-    # 3. CAMPO DE UPLOAD E VISUALIZAÇÃO DO PRINT
-    # ==============================================================================
     uploaded_file = st.file_uploader(
         "Arraste o print completo do gráfico M1 (inclua Velas, RSI e Relógio):", 
         type=["png", "jpg", "jpeg"]
@@ -48,16 +46,11 @@ if API_KEY:
         image = Image.open(uploaded_file)
         st.image(image, caption="Gráfico M1 Carregado para Análise", use_container_width=True)
         
-        # ==============================================================================
-        # 4. DISPARO E PROCESSAMENTO DA ANÁLISE
-        # ==============================================================================
         if st.button("🚀 EXECUTAR ANÁLISE AVANÇADA DE SINAL"):
-            # Captura o horário exato em que o botão foi clicado no servidor
             horario_clique_botao = datetime.datetime.now()
             
             with st.spinner("IA escaneando padrões de velas, volume implícito e mercado..."):
                 
-                # Injeta as variáveis de tempo reais do sistema diretamente no prompt
                 prompt = f"""
                 [SYSTEM_ROLE] Você é um robô de trading institucional de alta performance, programado para operar com frieza milimétrica e precisão cirúrgica. Sua missão é caçar apenas a oportunidade perfeita, garantindo uma assertividade absurda baseada em confluências técnicas avançadas.
                 
@@ -72,7 +65,7 @@ if API_KEY:
                 2. OPERACIONAL DE REVERSÃO EM REGIÃO (SUPORTE DE FUNDO RECENTE / TAXA DE DEFESA): Se você detectar que o preço atingiu a exaustão visual (corpos decrescentes e esticada de 3 a 5 velas consecutivas) e tocou uma região de suporte ou resistência micro de até 2 horas atrás, ative este modo de contra-ataque. Para este cenário de proteção e reversão, ajuste o tempo de expiração dinamicamente para 3 minutos à frente, projetando o repique e o isolamento seguro da zona de liquidez.
                 
                 [ANTI_NOISE_&_FALSE_BREAKOUT_FILTERS]
-                Aplique filtros severos para blindar a operação contra armanilhas comuns de mercado:
+                Aplique filtros severos para blindar a operação contra armadilhas comuns de mercado:
                 1. FILTRO DE FALSO ROMPIMENTO: Descarte rompimentos feitos por velas espremidas, sem expressão ou com pavios longos de prevenção na direção do rompimento. Valide o rompimento apenas se a vela romper com mais de 50% do seu corpo de forma cheia e expressiva (Marubozu), demonstrando volume institucional real e intenção de romper a zona.
                 2. FILTRO DE FALSO PULLBACK: Bloqueie entradas de pullback se a vela que retorna para testar a região rompida demonstrar força extrema contrária (corpo muito grande). O pullback legítimo deve ser testado por velas de exaustão (corpos decrescentes) e deixar pavio de rejeição exatamente ao tocar a zona rompida.
                 3. FILTRO DE RUÍDO: Se as últimas 5 velas apresentarem alternância constante de cores (verde-vermelho-verde) sem direção definida ou acúmulo de Dojis seguidos, ignore o gráfico por completo e aborte a operação devido ao ruído micro do mercado.
@@ -116,3 +109,4 @@ if API_KEY:
                 except Exception as e:
                     st.error(f"Ocorreu um erro ao processar a análise: {e}")
 else:
+    st.info("Por favor, insira sua Gemini API Key na barra lateral para começar.")
