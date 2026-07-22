@@ -29,7 +29,7 @@ Escaneie textualmente a imagem em busca do nome do ativo (ex: EUR/USD, BTC/USD, 
 [PASSO 2: MAPEAMENTO DA TENDÊNCIA PRINCIPAL (MACRO)]
 - Analise o quadrante geral da imagem para identificar a TENDÊNCIA PRINCIPAL (Direção majoritária do preço no gráfico visível).
 - Se a estrutura geral for de Topos e Fundos Ascendentes, determine TENDÊNCIA PRINCIPAL: ALTA.
-- Se a estrutura geral for de Topos e Fundos Descendentes, determine TENDENSIA PRINCIPAL: BAIXA.
+- Se a estrutura geral for de Topos e Fundos Descendentes, determine TENDÊNCIA PRINCIPAL: BAIXA.
 - Se o preço estiver oscilando estritamente dentro de uma faixa lateral sem direção definida, determine TENDÊNCIA PRINCIPAL: LATERAL / CONSOLIDAÇÃO.
 
 [PASSO 3: FILTROS DE TENDÊNCIA E CONFLUÊNCIA WITH EMA 9]
@@ -61,7 +61,7 @@ Não seja excessivamente rígido ao filtrar o gráfico. Só aborte a operação 
 - FILTRO ANTI-XADREZ: Aborte apenas se houver uma alternância perfeita e sem direção de cores por mais de 8 velas seguidas.
 - FILTRO DE MICRO-VELAS: Aborte apenas se houver uma sequência longa de Dojis legítimos (linhas horizontais finas).
 
-[PASSO 7: SISTEMA DE CALIBRAGEM DE ASSERTIVIDADE REALISTA]
+[PASSO 7: SYSTEM DE CALIBRAGEM DE ASSERTIVIDADE REALISTA]
 - Avalie os riscos de forma equilibrada. Quanto mais fatores confluírem juntos (ex: Tendência Principal + Toque na EMA 9 + Pavio de Retração + Zona de Suporte), maior deve ser a taxa de acerto.
 - Classifique a taxa de acerto obrigatoriamente dentro da faixa de **80% a 95%**. 
 - Se a oportunidade detectada for contra a tendência macro, emita "OPERAÇÃO ABORTADA" (e taxa 0% com justificativa de filtro de tendência ativo).
@@ -108,11 +108,13 @@ Retorne o diagnóstico estruturado exatamente neste formato markdown limpo e des
 Seja frio, preciso e direto. Velocidade e precisão salvam bancas.
 """
 
-# INTERFACE PLANÍSSIMA - Imune a bugs de reinicialização do Streamlit
+# Interface estável e plana
 upload_arquivo = st.file_uploader("Upload do Print do Gráfico (M1)", type=["png", "jpg", "jpeg"])
-
-# Botão estático fixado no corpo central da página
 botao_analise = st.button("🚀 Analisar Matriz do Gráfico")
 
 if upload_arquivo is not None:
-    imagem_aberta = Image.open(upload_arquivo)
+    imagem_render = Image.open(upload_arquivo)
+    st.image(imagem_render, caption="Gráfico Carregado com Sucesso", use_container_width=True)
+
+if botao_analise:
+    if upload_arquivo is None:
