@@ -1,6 +1,6 @@
 import streamlit as st
 from google import genai
-from google.genai import types  # Obrigatório nas versões estáveis do novo SDK
+from google.genai import types
 from PIL import Image
 import io
 import datetime
@@ -16,7 +16,7 @@ st.sidebar.markdown("### 🔑 Gerenciador de Chaves de Contingência")
 chaves_input = st.sidebar.text_input("Cole suas Gemini API Keys aqui (separadas por ponto e vírgula):", type="password")
 lista_de_chaves = [chave.strip() for chave in chaves_input.split(";") if chave.strip()]
 
-# Seletor com as strings oficiais aceitas pelos servidores da Google
+# ALTERAÇÃO CRÍTICA: gemini-2.0-flash agora é o PRIMEIRO da lista para ser o padrão do app
 modelo_selecionado = st.sidebar.selectbox(
     "🤖 Versão do Motor Gemini:",
     ["gemini-2.0-flash", "gemini-2.5-flash", "gemini-2.5-pro"]
@@ -80,10 +80,8 @@ PROMPT_TRADER = (
 
 def executar_chamada_gemini(chave_api, imagem_objeto, prompt_comando, modelo):
     try:
-        # Padrão de inicialização exigido pelo SDK 3.x
         client = genai.Client(api_key=chave_api)
         
-        # Elimina o canal alpha caso o usuário suba prints PNG transparentes
         if imagem_objeto.mode in ("RGBA", "P"):
             imagem_objeto = imagem_objeto.convert("RGB")
             
@@ -91,7 +89,6 @@ def executar_chamada_gemini(chave_api, imagem_objeto, prompt_comando, modelo):
         imagem_objeto.save(img_byte_arr, format='JPEG')
         img_bytes = img_byte_arr.getvalue()
         
-        # Estrutura estrita de partes multimídia da versão 3.x
         imagem_part = types.Part.from_bytes(data=img_bytes, mime_type='image/jpeg')
         
         hora_atual = datetime.datetime.now().strftime("%H:%M:%S")
@@ -138,7 +135,7 @@ if botao_analise:
                     erro_limpo = resultado.replace('ERRO_API:', '')
                     if "429" in erro_limpo or "RESOURCE_EXHAUSTED" in erro_limpo:
                         st.error(f"❌ Falha na Chave {i+1}: Cota esgotada para o modelo '{modelo_selecionado}'.")
-                        st.info("💡 Sugestão: Altere para 'gemini-2.0-flash' no menu lateral para operar sem custos.")
+                        st.info("💡 Sugestão: Certifique-se de escolher 'gemini-2.0-flash' no menu lateral para operar gratuitamente.")
                     else:
                         st.error(f"❌ Falha na Chave {i+1}. Detalhe técnico: {erro_limpo}")
                     st.warning("Tentando próxima chave da lista...")
