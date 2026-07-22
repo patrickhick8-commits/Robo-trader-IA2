@@ -1,6 +1,7 @@
 import streamlit as st
 from google import genai
 from PIL import Image
+import io
 
 # 1. Configuração da Página do Site Separado
 st.set_page_config(page_title="Agente IA Advanced - Matriz Suprema", page_icon="🤖", layout="centered")
@@ -36,7 +37,7 @@ Busque de forma ativa por confluências de Price Action em Suporte, Resistência
 1. SE O MERCADO ESTIVER EM TENDÊNCIA NÍTIDA:
    - MODO FLUXO / ROMPIMENTO EM TENDÊNCIA: Se houver rompimento de zonas de S/R ou LTA/LTB por velas institucionais cheias (Marubozu) a favor da EMA 9, opere a continuidade imediata (Fluxo).
    - MODO PULLBACK EM TENDÊNCIA: Monitore o preço testando a zona recém-rompida (antigo suporte que virou resistência ou vice-versa). O sinal deve ocorrer quando a vela de teste tocar a linha e demonstrar exaustão.
-   - MODO RETRAÇÃO EM TENDÊNCIA / LTA / LTB: Identifique toques em canais ou linhas de tendência inclinadas onde o preço deixa pavios longos de rejeição, operando a retração a favor do canal.
+   - MODO RETRAÇÃO EM TENDÊNCIA / LTA / LTB: Identifique toques em canais ou linhas de tendência inclinadas onde o preço deixa pavios longos de prevenção, operando a retração a favor do canal.
 
 2. SE O MERCADO ESTIVER EM LATERALIDADE / CONSOLIDAÇÃO:
    - MODO REVERSÃO EM LATERALIDADE (SUPORTE / RESISTÊNCIA HORIZONTAL): Opere o extremo respeito de zonas horizontais nítidas de Suporte (Fundo) e Resistência (Topo). Quando o preço testar os limites com velas de perda de pressão, opere para a reversão.
@@ -93,32 +94,41 @@ Retorne o diagnóstico estruturado exatamente neste formato markdown limpo e des
 Seja frio, preciso e direto. Velocidade e precisão salvam bancas.
 """
 
-if lista_de_chaves:
-    # Seleciona a primeira chave válida da contingência
-    chave_ativa = lista_de_chaves[0]
-    
-    # Inicializa o cliente oficial da nova SDK do Google GenAI
-    client = genai.Client(api_key=chave_ativa)
+# Interface para o upload de imagem
+upload_arquivo = st.file_uploader("Upload do Print do Gráfico (M1)", type=["png", "jpg", "jpeg"])
 
-    # 3. Campo de Upload do Print
-    uploaded_file = st.file_uploader("Arraste o print completo do gráfico M1 (Obrigatório conter o Relógio da Plataforma visível, Velas, RSI e Volume):", type=["png", "jpg", "jpeg"])
+if upload_arquivo is not None:
+    imagem = Image.open(upload_arquivo)
+    st.image(imagem, caption="Gráfico Carregado com Sucesso", use_container_width=True)
 
-    if uploaded_file is not None:
-        image = Image.open(uploaded_file)
-        st.image(image, caption="Gráfico M1 Carregado para Análise de Confluência Suprema", use_container_width=True)
-        
-        if st.button("🚀 EXECUTAR ANÁLISE SUPREMA MATRICIAL"):
-            with st.spinner("IA escaneando padrões e buscando oportunidades..."):
+    if not lista_de_chaves:
+        st.warning("⚠️ Insira pelo menos uma Gemini API Key na barra lateral para prosseguir.")
+    else:
+        if st.button("🚀 Analisar Matriz do Gráfico"):
+            sucesso = False
+            
+            # Loop de contingência real sobre a lista de chaves fornecidas
+            for i, chave_ativa in enumerate(lista_de_chaves):
                 try:
-                    # Executa a chamada utilizando o modelo multimodal
-                    response = client.models.generate_content(
-                        model='gemini-2.5-flash',
-                        contents=[image, PROMPT_TRADER]
-                    )
-                    st.success("Análise Suprema de Confluência Matricial Concluída!")
-                    st.markdown(response.text)
+                    with st.spinner(f"Analisando gráfico com a API Key {i+1}..."):
+                        # Inicializa o cliente com a chave da iteração atual
+                        client = genai.Client(api_key=chave_ativa)
+                        
+                        # Correção essencial: chamada explícita para o modelo de produção estável 'gemini-2.5-flash'
+                        resposta = client.models.generate_content(
+                            model='gemini-2.5-flash',
+                            contents=[imagem, PROMPT_TRADER]
+                        )
+                        
+                        st.success(f"✅ Análise executada com sucesso usando a Chave {i+1}!")
+                        st.markdown(resposta.text)
+                        sucesso = True
+                        break  # Interrompe o loop de contingência ao obter sucesso
+                        
                 except Exception as e:
-                    st.error(f"Erro ao processar com a chave atual: {str(e)}")
-                    st.warning("Verifique suas chaves de contingência na barra lateral.")
-else:
-    st.warning("Insira pelo menos uma Gemini API Key válida na barra lateral para ativar o Agente.")
+                    st.error(f"❌ Erro na Chave {i+1}: {str(e)}")
+                    if i < len(lista_de_chaves) - 1:
+                        st.info("🔄 Rotacionando para a próxima chave de contingência...")
+            
+            if not sucesso:
+                st.error("🚨 Todas as chaves enviadas falharam. Certifique-se de que os tokens copiados do Google AI Studio estão ativos.")
