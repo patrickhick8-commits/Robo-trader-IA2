@@ -54,7 +54,7 @@ if API_KEY:
                 
                 [ANTI_NOISE_&_FALSE_BREAKOUT_FILTERS]
                 Aplique filtros severos para blindar a operação contra armadilhas comuns de mercado:
-                1. FILTRO DE FALSO ROMPIMENTO: Descarte rompimentos feitos por velas espremidas, sem expressão ou com pavios longos de rejeição na direção do rompimento. Valide o rompimento apenas se a vela romper com mais de 50% do seu corpo de forma cheia e expressiva (Marubozu), demonstrando volume institucional real e intenção de romper a zona.
+                1. FILTRO DE FALSO ROMPIMENTO: Descarte rompimentos feitos por velas espremidas, sem expressão ou com pavios longos de prevenção na direção do rompimento. Valide o rompimento apenas se a vela romper com mais de 50% do seu corpo de forma cheia e expressiva (Marubozu), demonstrando volume institucional real e intenção de romper a zona.
                 2. FILTRO DE FALSO PULLBACK: Bloqueie entradas de pullback se a vela que retorna para testar a região rompida demonstrar força extrema contrária (corpo muito grande). O pullback legítimo deve ser testado por velas de exaustão (corpos decrescentes) e deixar pavio de rejeição exatamente ao tocar a zona rompida.
                 3. FILTRO DE RUÍDO: Se as últimas 5 velas apresentarem alternância constante de cores (verde-vermelho-verde) sem direção definida ou acúmulo de Dojis seguidos, ignore o gráfico por completo e aborte a operação devido ao ruído micro do mercado.
                 
@@ -90,18 +90,16 @@ if API_KEY:
                 Seja frio, direto e puramente matemático.
                 """
                 
-                # Lista de modelos de Fallback para prevenir o erro 503 UNAVAILABLE
-                modelos_fallback = ['gemini-2.5-flash', 'gemini-2.5-pro', 'gemini-1.5-flash']
                 response = None
                 erro_final = ""
-
-                # Sistema de loop de tentativas (Retry/Fallback)
-                for modelo_atual in modelos_fallback:
+                
+                # Execução Direta e Segura com Fallback Linear Individual para evitar erros de indentação profunda
+                try:
+                    response = client.models.generate_content(model='gemini-2.5-flash', contents=[image, prompt])
+                except Exception as e1:
+                    erro_final = str(e1)
+                    st.sidebar.warning("Servidor Flash 2.5 ocupado. Tentando o Pro...")
                     try:
-                        response = client.models.generate_content(
-                            model=modelo_atual,
-                            contents=[image, prompt]
-                        )
-                        if response and response.text:
-                            break # Conseguiu resposta com sucesso, sai do loop.
-                    except Exception as e:
+                        response = client.models.generate_content(model='gemini-2.5-pro', contents=[image, prompt])
+                    except Exception as e2:
+                        erro_final = str(e2)
