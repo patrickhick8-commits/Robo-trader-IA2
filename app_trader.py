@@ -14,6 +14,12 @@ st.sidebar.markdown("### 🔑 Gerenciador de Chaves de Contingência")
 chaves_input = st.sidebar.text_input("Cole suas Gemini API Keys aqui (separadas por ponto e vírgula):", type="password")
 lista_de_chaves = [chave.strip() for chave in chaves_input.split(";") if chave.strip()]
 
+# Seletor de Modelo para evitar problemas de obsolescência futura
+modelo_selecionado = st.sidebar.selectbox(
+    "🤖 Versão do Motor Gemini:",
+    ["gemini-1.5-flash", "gemini-2.5-flash"]
+)
+
 # 3. Definição Limpa do Prompt Mestre
 PROMPT_TRADER = (
     "[SYSTEM_ROLE] Você é um algoritmo de trading quantitativo focado em Opções Binárias. "
@@ -70,18 +76,15 @@ PROMPT_TRADER = (
     "- Gestão de Lote\n"
 )
 
-def executar_chamada_gemini(chave_api, imagem_objeto, prompt_comando):
+def executar_chamada_gemini(chave_api, imagem_objeto, prompt_comando, modelo):
     try:
-        # Inicializa o cliente com a chave fornecida
         client = genai.Client(api_key=chave_api)
         
-        # Injeta o horário atual do sistema
         hora_atual = datetime.datetime.now().strftime("%H:%M:%S")
         prompt_sincronizado = f"[INFORMAÇÃO DE CONTEXTO] HORÁRIO ATUAL DO SISTEMA DO TRADER: {hora_atual}\n\n{prompt_comando}"
         
-        # Configuração simplificada via dicionário para evitar conflitos de versão do SDK
         response = client.models.generate_content(
-            model='gemini-2.5-flash',
+            model=modelo,
             contents=[imagem_objeto, prompt_sincronizado],
             config={
                 'temperature': 0.0
@@ -89,7 +92,6 @@ def executar_chamada_gemini(chave_api, imagem_objeto, prompt_comando):
         )
         return response.text
     except Exception as e:
-        # IMPORTANTE: Retorna a string do erro real capturado do servidor
         return f"ERRO_API: {str(e)}"
 
 # 4. Interface Principal
@@ -110,22 +112,20 @@ if botao_analise:
         sucesso = False
         with st.spinner("Analisando distância da região, fluxo momentâneo e tempo futuro..."):
             for i, chave in enumerate(lista_de_chaves):
-                st.write(f"Tentando analisar com a chave de contingência {i+1}...")
-                resultado = executar_chamada_gemini(chave, imagem, PROMPT_TRADER)
+                st.write(f"Tentando analisar com a chave de contingência {i+1} usando o modelo {modelo_selecionado}...")
+                resultado = executar_chamada_gemini(chave, imagem, PROMPT_TRADER, modelo_selecionado)
                 
-                # Se não contiver a tag de erro mapeada, a chamada foi bem-sucedida
                 if "ERRO_API:" not in resultado:
                     st.success("Análise concluída com sucesso!")
                     st.markdown(resultado)
                     sucesso = True
                     break
                 else:
-                    # Mostra exatamente o motivo da rejeição da chave (Ex: API key expired, 403 Forbidden, Quota Exceeded)
                     st.error(f"❌ Falha na Chave {i+1}. Detalhe técnico: {resultado.replace('ERRO_API:', '')}")
                     st.warning("Tentando próxima chave da lista...")
             
-            if not sucesso:
-                st.error("🚨 Todas as chaves de contingência fornecidas falharam. Verifique os erros detalhados acima e suas credenciais na Google AI Studio.")
+            if not success:
+                st.error("🚨 Todas as chaves falharam. Certifique-se de escolher um modelo suportado por sua API key no menu lateral.")
 
 if not lista_de_chaves:
     st.info("💡 Lembrete: Insira as chaves de API na barra lateral esquerda para liberar o processamento.")
