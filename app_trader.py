@@ -82,12 +82,14 @@ def executar_chamada_gemini(chave_api, imagem_objeto, prompt_comando, modelo):
     try:
         client = genai.Client(api_key=chave_api)
         
-        # Converte a imagem Pillow para bytes (JPEG) para evitar erros de serialização de objetos no SDK
+        # CORREÇÃO CRÍTICA: Converte RGBA para RGB removendo a transparência antes de salvar em JPEG
+        if imagem_objeto.mode in ("RGBA", "P"):
+            imagem_objeto = imagem_objeto.convert("RGB")
+            
         img_byte_arr = io.BytesIO()
         imagem_objeto.save(img_byte_arr, format='JPEG')
         img_bytes = img_byte_arr.getvalue()
         
-        # Cria a estrutura correta de parte de dados multimídia
         imagem_part = types.Part.from_bytes(data=img_bytes, mime_type='image/jpeg')
         
         hora_atual = datetime.datetime.now().strftime("%H:%M:%S")
@@ -109,7 +111,7 @@ uploaded_file = st.file_uploader("📷 Faça o upload do Print do seu Gráfico (
 
 botao_analise = st.button("🧠 Iniciar Análise Avançada por IA")
 
-# 5. Execução Lógica Controlada pós-Clique
+# 5. Execução Lógica Controlled pós-Clique
 if botao_analise:
     if not uploaded_file:
         st.error("⚠️ Por favor, faça o upload de uma imagem do gráfico antes de iniciar a análise.")
