@@ -1,5 +1,6 @@
 import streamlit as st
 from google import genai
+from google.genai import types  # Importação crucial para o novo padrão de configurações da Google
 from PIL import Image
 import datetime
 
@@ -19,7 +20,7 @@ PROMPT_TRADER = (
     "[SYSTEM_ROLE] Você é um algoritmo de trading quantitativo focado em Opções Binárias. "
     "Sua postura é de FRIEZA MÁXIMA, RIGOR ABSOLUTO E PRECISÃO CIRÚRGICA.\n\n"
     "[DIRETRIZ DE SEGURANÇA MÁXIMA: GATILHO DE REVERSÃO EM REGIÃO VS FLUXO MOMENTÂNEO]\n"
-    "ATENÇÃO: Mude seu comportamento dinamicamente com base na proximidade do preço em relação às zonas demarcadas. "
+    "ATENÇÃO: Mude seu comportamento dinamicamente com base na proximidade do preço em relação各自 das zonas demarcadas. "
     "Mapeie as regiões de suporte e resistência fortes. Se você detectar que o preço JÁ ESTIVER NA REGIÃO de reversão, "
     "ative o [OPERACIONAL DE REVERSÃO EM REGIÃO], projetando o enfraquecimento e a exaustão das velas dentro da zona para "
     "uma entrada contra a tendência.\n"
@@ -72,19 +73,22 @@ PROMPT_TRADER = (
 
 def executar_chamada_gemini(chave_api, imagem_objeto, prompt_comando):
     try:
-        # Inicialização usando o novo SDK padrão da Google
+        # Inicialização do cliente usando o SDK correto
         client = genai.Client(api_key=chave_api)
         
-        # Injeta o horário exato da máquina para mitigar erros cronológicos na análise da IA
+        # Injeta o horário real do sistema
         hora_atual = datetime.datetime.now().strftime("%H:%M:%S")
         prompt_sincronizado = f"[INFORMAÇÃO DE CONTEXTO] HORÁRIO ATUAL DO SISTEMA DO TRADER: {hora_atual}\n\n{prompt_comando}"
+        
+        # Configuração instanciada de forma correta pelo módulo types
+        configuracao_ia = types.GenerateContentConfig(
+            temperature=0.0  # Frieza total e consistência nas respostas técnicas
+        )
         
         response = client.models.generate_content(
             model='gemini-2.5-flash',
             contents=[imagem_objeto, prompt_sincronizado],
-            config={
-                "temperature": 0.0  # Zera a criatividade para garantir consistência puramente técnica
-            }
+            config=configuracao_ia
         )
         return response.text
     except Exception as e:
@@ -117,7 +121,7 @@ if botao_analise:
                     sucesso = True
                     break
                 else:
-                    st.warning(f"Chave {i+1} falhou ou está instável. Tentando próxima da lista...")
+                    st.warning(f"Chave {i+1} falhou ou está instável. Próxima da lista...")
             
             if not sucesso:
                 st.error("Todas as chaves de contingência fornecidas falharam. Verifique as chaves na Google AI Studio.")
