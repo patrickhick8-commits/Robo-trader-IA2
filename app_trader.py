@@ -83,12 +83,14 @@ if API_KEY:
                 """
                 
                 try:
+                    # Configurado com o modelo solicitado: gemini-3.6-flash
                     response = client.models.generate_content(
-                        model='gemini-2.5-flash',
+                        model='gemini-3.6-flash',
                         contents=[image, prompt]
                     )
                     st.markdown(response.text)
                 except Exception as e:
                     st.error(f"Erro ao processar análise: {e}")
 else:
-    st.info("Insira sua Gemini API Key na barra lateral para começar.")
+    st.info("Por favor, insira sua Gemini API Key na barra lateral para começar.")
+
