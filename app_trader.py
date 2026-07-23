@@ -87,13 +87,12 @@ if API_KEY:
                 - Leitura de Falsos Rompimentos/Pullbacks/RSI: [Explique detalhadamente o comportamento da última vela da extrema direita e a posição exata da PONTA FINAL da linha do RSI provando por que operou ou abortou]
                 """
                 
-                try:
+                               try:
+                    # Linha atualizada para utilizar a versão 3.6 Flash
                     response = client.models.generate_content(
-                        model='gemini-2.5-flash',
+                        model='gemini-3.6-flash',
                         contents=[image, prompt]
                     )
                     st.markdown(response.text)
                 except Exception as e:
                     st.error(f"Erro ao processar análise: {e}")
-else:
-    st.info("Insira sua Gemini API Key na barra lateral para começar.")
