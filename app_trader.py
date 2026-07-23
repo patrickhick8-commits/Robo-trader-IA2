@@ -52,8 +52,8 @@ if API_KEY:
                 [DIRETRIZ DE SEGURANÇA MÁXIMA: DOIS OPERACIONAIS OFICIAIS SINCRO-CALIBRADOS]
 
                 1. OPERACIONAL DE REVERSÃO EM REGIÃO (TAXA DE DEFESA / SUPORTE E RESISTÊNCIA) - DINÂMICO:
-                   - GATILHO COMPRA: O preço deve estar tocando um suporte micro (fundo recente de até 2 horas atrás) E a PONTA FINAL exata da linha roxa do RSI (14) deve estar cravada ou abaixo de 25 (Sobrevenda Extrema).
-                   - GATILHO VENDA: O preço deve estar tocando uma resistência micro (topo recente de até 2 horas atrás) E a PONTA FINAL exata da linha roxa do RSI (14) deve estar cravada ou acima de 75 (Sobrecompra Extrema).
+                   - GATILHO COMPRA: O preço deve estar tocando um suporte micro (fundo recente de até 2 hours atrás) E a PONTA FINAL exata da linha roxa do RSI (14) deve estar cravada ou abaixo de 25 (Sobrevenda Extrema).
+                   - GATILHO VENDA: O preço deve estar tocando uma resistência micro (topo recente de até 2 hours atrás) E a PONTA FINAL exata da linha roxa do RSI (14) deve estar cravada ou acima de 75 (Sobrecompra Extrema).
                    - TRAVA OPERACIONAL ANTI-MARUBOZU: Você está TERMINANTEMENTE PROIBIDO de dar sinal de reversão se a última vela fechar totalmente cheia (sem pavio de rejeição na zona, ou com pavio menor que 15% do tamanho total do corpo). Só opere se a ponta direita do gráfico já mostrar rejeição evidente por pavio de absorção institucional.
                    - REGRA DE EXPIRAÇÃO DINÂMICA PARA REVERSÃO: Defina o tempo de expiração cirurgicamente com base na anatomia e velocidade do movimento das velas anteriores:
                      * Use 2 Minutos se o preço atingiu a zona com velas pequenas ou médias e corpos visivelmente decrescentes (exaustão gradual lenta).
@@ -65,7 +65,7 @@ if API_KEY:
                    - VALIDAÇÃO DO FLUXO: Só opere fluxo se a ponta do RSI estiver em zona totalmente neutra e livre (entre 40 e 60) E a última vela romper uma zona consolidada com mais de 50% de corpo cheio (Marubozu), sem deixar pavios contra o movimento. O tempo de expiração será de exatamente 1 minuto para fechamento na mesma vela de entrada.
 
                 [ANTI_NOISE_&_FALSE_BREAKOUT_FILTERS]
-                1. FILTRO DE FALSO ROMPIMENTO: Descarte rompimentos feitos por velas espremidas, sem expressionais ou com pavios longos de rejeição na direção do rompimento. Valide o rompimento apenas se a vela romper com mais de 50% do seu corpo de forma cheia e expressiva, demonstrando volume institucional real.
+                1. FILTRO DE FALSO ROMPIMENTO: Descarte rompimentos feitos por velas espremidas, sem expressão ou com pavios longos de rejeição na direção do rompimento. Valide o rompimento apenas se a vela romper com mais de 50% do seu corpo de forma cheia e expressiva, demonstrando volume institucional real.
                 2. FILTRO DE FALSO PULLBACK: Bloqueie entradas de pullback se a vela que retorna para testar a região rompida demonstrar força extrema contrária (corpo muito grande). O pullback legítimo deve ser testado por velas de exaustão (corpos decrescentes) e deixar pavio de rejeição exatamente ao tocar a zona rompida.
                 3. FILTRO DE REVERSÃO CONTRA TENDÊNCIA MICRO: Você está PROIBIDO de passar sinais de VENDA se as últimas 5 velas apresentarem fundos ascendentes estruturados (tendência de alta micro), a menos que a ponta do RSI esteja explicitamente acima de 75/80 e a vela atual apresente esticada exaustiva com pavio longo.
                 4. FILTRO DE RUÍDO LATERAL (DENTE DE SERRA): Se as últimas 5 velas apresentarem alternância constante de cores (verde-vermelho-verde) sem direção definida ou acúmulo de Dojis seguidos, ignore o gráfico por completo e aborte a operação devido ao ruído micro do mercado.
@@ -92,7 +92,7 @@ if API_KEY:
                 """
                 
                 try:
-                    # Executa a chamada usando o modelo mais rápido e preciso para visão computacional rápida
+                    # Executa a chamada com o modelo atual estável na biblioteca oficial google-genai
                     response = client.models.generate_content(
                         model='gemini-2.5-flash',
                         contents=[image, prompt]
