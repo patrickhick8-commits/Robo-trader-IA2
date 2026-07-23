@@ -1,5 +1,6 @@
 import streamlit as st
 from google import genai
+from google.genai import types
 from PIL import Image
 import time
 
@@ -83,16 +84,24 @@ if API_KEY:
                 🧠 ESTRATÉGIA CORRETA APLICADA: [FLUXO MOMENTÂNEO EM TENDÊNCIA EM M1 ou OPERACIONAL DE REVERSÃO EM REGIÃO (Suporte de Fundo Recente)]
                 
                 🔍 DIAGNÓSTICO INSTITUCIONAL DE SINAL (PRICE ACTION EM GRÁFICO LIMPO):
-                - Lógica de Expiração Adotada: [Justifique a escolha do tempo baseado na regra de M1 informada: 1 minuto para fluxo ou 2 minutos para mitigação em reversões]
+                - Lógica de Expiração Adotada: [Justifique a escolha do tempo baseado na regra de M1 informada: 1 minuto para fluxo ou 2 minutos para mitigação in reversões]
                 - Leitura de Falsos Rompimentos/Pullbacks/RSI: [Explique detalhadamente o comportamento da última vela da extrema direita e a posição exata da PONTA FINAL da linha do RSI provando por que operou ou abortou]
                 """
                 
-                               try:
-                    # Linha atualizada para utilizar a versão 3.6 Flash
+                try:
+                    # Configuração para tornar as decisões da IA muito pragmáticas (baixa variabilidade)
+                    generation_config = types.GenerateContentConfig(
+                        temperature=0.1
+                    )
+                    
+                    # Chamada oficial atualizada para o Gemini 3.6 Flash
                     response = client.models.generate_content(
                         model='gemini-3.6-flash',
-                        contents=[image, prompt]
+                        contents=[image, prompt],
+                        config=generation_config
                     )
                     st.markdown(response.text)
                 except Exception as e:
                     st.error(f"Erro ao processar análise: {e}")
+else:
+    st.info("Insira sua Gemini API Key na barra lateral para começar.")
