@@ -65,7 +65,7 @@ if API_KEY:
                    - VALIDAÇÃO DO FLUXO: Só opere fluxo se a ponta do RSI estiver em zona totalmente neutra e livre (entre 40 e 60) E a última vela romper uma zona consolidada com mais de 50% de corpo cheio (Marubozu), sem deixar pavios contra o movimento. O tempo de expiração será de exatamente 1 minuto para fechamento na mesma vela de entrada.
 
                 [ANTI_NOISE_&_FALSE_BREAKOUT_FILTERS]
-                1. FILTRO DE FALSO ROMPIMENTO: Descarte rompimentos feitos por velas espremidas, sem expressão ou com pavios longos de rejeição na direção do rompimento. Valide o rompimento apenas se a vela romper com mais de 50% do seu corpo de forma cheia e expressiva, demonstrando volume institucional real.
+                1. FILTRO DE FALSO ROMPIMENTO: Descarte rompimentos feitos por velas espremidas, sem expressionais ou com pavios longos de rejeição na direção do rompimento. Valide o rompimento apenas se a vela romper com mais de 50% do seu corpo de forma cheia e expressiva, demonstrando volume institucional real.
                 2. FILTRO DE FALSO PULLBACK: Bloqueie entradas de pullback se a vela que retorna para testar a região rompida demonstrar força extrema contrária (corpo muito grande). O pullback legítimo deve ser testado por velas de exaustão (corpos decrescentes) e deixar pavio de rejeição exatamente ao tocar a zona rompida.
                 3. FILTRO DE REVERSÃO CONTRA TENDÊNCIA MICRO: Você está PROIBIDO de passar sinais de VENDA se as últimas 5 velas apresentarem fundos ascendentes estruturados (tendência de alta micro), a menos que a ponta do RSI esteja explicitamente acima de 75/80 e a vela atual apresente esticada exaustiva com pavio longo.
                 4. FILTRO DE RUÍDO LATERAL (DENTE DE SERRA): Se as últimas 5 velas apresentarem alternância constante de cores (verde-vermelho-verde) sem direção definida ou acúmulo de Dojis seguidos, ignore o gráfico por completo e aborte a operação devido ao ruído micro do mercado.
@@ -76,17 +76,32 @@ if API_KEY:
                 - MERCADO OTC (ALGORÍTMICO): Foque no comportamento computacional das corretoras. Priorize algoritmos de fluxo contínuo (sequências de velas de força), preenchimento milimétrico de pavios anteriores (vácuo de liquidez) e exaustão por contagem de velas.
 
                 [ORDER_FLOW_&_PURE_CANDLE_VOLUME]
-                Analise o desequilíbrio e o fluxo de ordens (Order Flow) de forma 100% implícita e exclusiva na anatomia visual das velas, SEM depender de indicadores de volume na tela:
-                - VOLUME POR CORPO: Avalie o volume financeiro real injetado pelo tamanho e expansão do corpo dos candles. Velas expressivas confirmam volume institucional empurrando o mercado.
-                - DEFESA E ABSORÇÃO POR PAVIOS: Pavios longos em zonas críticas indicam rejeição em massa, absorção de ordens e virada iminente no fluxo.
+                Analise o desequilíbrio e o fluxo de ordens (Order Flow) das velas mais recentes da direita. Avalie visualmente o volume implícito através do deslocamento do preço em relação ao tamanho dos corpos.
 
-                [TIME_RULES_M1_STRICT - PROTOCOLO DE TEMPO DE REAÇÃO HUMANA]
-                1. Localize o HORÁRIO ATUAL do sistema no canto inferior direito do print (ex: 21:37:18).
-                2. O HORÁRIO DO CLIQUE (ENTRADA) deve ser projetado para o próximo minuto redondo limpo (virada de vela), considerando uma folga mínima de 45 segundos para tempo de reação humana (ex: se o print é de 21:37:18, a entrada projetada será 21:39:00). Nunca mande uma entrada em cima da hora.
-                3. REGRA MATEMÁTICA DE FECHAMENTO: 
-                   - Se a estratégia for FLUXO MOMENTÂNEO (1 Minuto), o Horário de Fechamento deve ser exatamente o Horário do Clique + 1 minuto (ex: Entrada 21:39:00 -> Fechamento 21:40:00).
-                   - Se a estratégia for REVERSÃO EM REGIÃO (2 ou 3 Minutos conforme escolha dinâmica acima), o Horário de Fechamento deve ser rigorosamente o Horário do Clique + o tempo dinâmico adotado (ex: Entrada 21:39:00 com expiração de 3 Minutos -> Fechamento 21:42:00).
-
-                Retorne estritamente neste formato markdown limpo:
-                🎯 PORCENTAGEM DE ACERTO DA ENTRADA: [Ex: 94% - EXTREMA CONFLUÊNCIA DE FLUXO ou 0% se Abortado]
-                ⏰ HORÁRIO DO CLIQUE (ENTRADA): [HH:MM:00 exato projetado na virada de vela futura ou "N/A" se Abortado]
+                [OUTPUT_FORMAT]
+                Retorne estritamente o seu veredito técnico estruturado no seguinte padrão Markdown:
+                ### 🚨 VEREDITO DO SINAL 🚨
+                * **AÇÃO**: [COMPRA / VENDA / ABORTAR OPERAÇÃO - ALTO RISCO]
+                * **TEMPO DE EXPIRAÇÃO**: [1, 2 ou 3 Minutos / Não se aplica]
+                * **NÍVEL DE CERTEZA**: [X%]
+                
+                ### 📊 JUSTIFICATIVA TÉCNICA
+                * **Padrão de Velas**: [Descrição sucinta da anatomia dos últimos candles]
+                * **Comportamento do RSI**: [Posição exata do pixel final do indicador]
+                * **Filtros Aplicados**: [Quais travas de segurança validaram ou abortaram o sinal]
+                """
+                
+                try:
+                    # Executa a chamada usando o modelo mais rápido e preciso para visão computacional rápida
+                    response = client.models.generate_content(
+                        model='gemini-2.5-flash',
+                        contents=[image, prompt]
+                    )
+                    
+                    st.success("Análise Técnica Concluída!")
+                    st.markdown(response.text)
+                    
+                except Exception as e:
+                    st.error(f"Erro na comunicação com a API do Gemini: {e}")
+else:
+    st.sidebar.warning("Insira sua Gemini API Key para ativar o robô.")
