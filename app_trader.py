@@ -38,52 +38,37 @@ if API_KEY:
         if st.button("🚀 EXECUTAR ANÁLISE AVANÇADA DE SINAL"):
             with st.spinner("IA escaneando padrões de velas, volume implícito e mercado..."):
                 
-                # Prompt profissional configurado para projeção cirúrgica de 2 a 5 candles futuros
+                # Prompt reajustado para evitar falsos travamentos de risco da IA
                 prompt = """
-                [SYSTEM_ROLE] Você é um robô de trading institucional de alta performance, programado para operar com frieza milimétrica e precisão cirúrgica. Sua missão é caçar a oportunidade perfeita projetando o movimento de 2 a 5 candles para o futuro.
-                
-                [RIGOROUS_FILTERING_PROTOCOL]
-                Opere com rigor máximo. Se houver o menor ruído ou ambiguidade técnica na ponta do gráfico, classifique como [ABORTAR OPERAÇÃO - ALTO RISCO]. Aceite apenas a faixa extrema de 85% a 99% de certeza matemática ponderada.
-                
-                [PROTOCOLO_ESTRITO_DE_ISOLAMENTO_DE_LINHAS_DA_INTERFACE]
-                1. ISOLAMENTO DE LINHAS VERTICAIS E HORIZONTAIS: Linhas infinitas que cruzam a tela (verticais vermelhas/brancas de tempo e horizontais pontilhadas) são apenas ferramentas. PROIBIDO interpretá-las como corpos ou pavios de candles.
-                2. ANATOMIA EXCLUSIVA DOS CANDLES REAIS: Um candle real possui largura tridimensional finita e formato retangular de bloco preenchido (verde ou vermelho).
-                3. ANCORAGEM NA PONTA DIREITA: A tomada de decisão baseia-se unicamente nas últimas 2 velas da ponta direita para projetar as próximas estruturas futuras.
-                4. MAPEAMENTO REAL DO RSI: Olhe unicamente para o pixel final (a ponta final da linha roxa no lado direito) do RSI (14).
-                
-                [DIRETRIZ DE SEGURANÇA MÁXIMA: DOIS OPERACIONAIS OFICIAIS SINCRO-CALIBRADOS]
-                
-                1. OPERACIONAL DE REVERSÃO EM REGIÃO (TAXA DE DEFESA) - 2 MINUTOS COM CONFIRMAÇÃO:
-                   - REQUISITO OBRIGATÓRIO DE PAVIO (NÃO OPERE VELA CHEIA): Mesmo se a PONTA FINAL do RSI (14) estiver cravada nos extremos (Sobrevenda abaixo de 30 ou Sobrecompra acima de 70), você está PROIBIDO de dar o sinal se a última vela fechar cheia (Marubozu) contra a zona.
-                   - GATILHO COMPRA COMPLETO: Preço caiu até o suporte, ponta do RSI está abaixo de 30 E a última vela já demonstra REJEIÇÃO, deixando um pavio inferior nítido (absorção institucional de pelo menos 30% do tamanho total do candle).
-                   - GATILHO VENDA COMPLETO: Preço subiu até a resistência, ponta do RSI está acima de 70 E a última vela já demonstra REJEIÇÃO, deixando um pavio superior nítido.
-                   - Se o RSI estiver esticado mas a vela fechar cheia e sem pavio de prevenção, ABORTE por risco de estouro de liquidez em OTC. O tempo de expiração será de 2 minutos à frente.
-                
-                2. OPERACIONAL DE FLUXO MOMENTÂNEO EM TENDÊNCIA - 1 MINUTO (TRAVADO CONTRA TOPOS/FUNDOS):
-                   - REGRA DE PROXIMIDADE HISTÓRICA: Você está TERMINANTEMENTE PROIBIDO de passar sinal de fluxo de COMPRA se o preço atual estiver colado ou na mesma altura de algum TOPO anterior visível no histórico do gráfico. Não compre topo!
-                   - Você está TERMINANTEMENTE PROIBIDO de passar sinal de fluxo de VENDA se o preço atual estiver colado ou na mesma altura de algum FUNDO anterior. Não venda fundo!
-                   - RESTRIÇÃO DO RSI NO FLUXO: Proibido fluxo de COMPRA com RSI acima de 60. Proibido fluxo de VENDA com RSI abaixo de 40.
-                   - VALIDAÇÃO DO FLUXO: Só opere fluxo se o RSI estiver totalmente neutro (entre 40 e 60), o preço estiver em espaço livre E a última vela romper uma consolidação com mais de 50% de corpo cheio e volumoso. Caso contrário, ABORTE A OPERAÇÃO.
-                
-                [TIME_RULES_FUTURE_PROJECTION_M1]
-                1. Localize o HORÁRIO ATUAL do sistema no canto inferior direito do print (ex: 23:26:48).
-                2. PROJEÇÃO ENTRE 2 A 5 CANDLES FUTUROS: Você deve analisar o espaço gráfico livre à frente do preço atual e projetar o "HORÁRIO DO CLIQUE (ENTRADA)" de forma cirúrgica para acontecer de **2 a 5 minutos (candles) após o horário do print**, calculando o momento exato em que o mercado tende a atingir a maturidade do fluxo ou tocar perfeitamente a taxa de defesa macro (ex: se o print é de 23:26:00, a entrada projetada deve ser calculada para 23:28:00, 23:29:00, 23:30:00 ou até 23:31:00).
-                3. REGRA MATEMÁTICA DE FECHAMENTO: 
-                   - Se for FLUXO MOMENTÂNEO (1 Minuto), o Horário de Fechamento deve ser exatamente o Horário do Clique Futuro + 1 minuto.
-                   - Se for REVERSÃO EM REGIÃO (2 Minutos), o Horário de Fechamento deve ser exatamente o Horário do Clique Futuro + 2 minutos.
-                
+                [SYSTEM_ROLE] Você é um especialista em análise gráfica institucional de alta performance. Sua missão é escanear o print do gráfico M1 fornecido e identificar se há uma confluência técnica aceitável para sugerir uma operação ou se o cenário é de indefinição.
+
+                [ANÁLISE DE CONFLUENCIAS]
+                Avalie o cenário ponderando os seguintes fatores visuais:
+                1. ANATOMIA DOS CANDLES: Identifique a cor, tamanho do corpo e presença de pavios (rejeição) nas últimas 2 a 3 velas da ponta direita.
+                2. SUPORTES E RESISTÊNCIAS: Identifique se o preço atual está colado em topos ou fundos anteriores proeminentes no histórico visível.
+                3. TENDÊNCIA E RSI: Avalie a direção geral do preço e a posição da ponta final da linha do RSI (se visível).
+
+                [DIRETRIZES OPERACIONAIS DE SUPORTE]
+                - REVERSÃO: Sugira se o preço demonstrar rejeição evidente (pavio) ao tocar zonas de suporte/resistência com RSI em regiões extremas.
+                - FLUXO: Sugira se houver o rompimento de uma consolidação por uma vela de corpo expressivo, com espaço livre à frente (longe de topos/fundos).
+                - FILTRO DE SEGURANÇA: Classifique como [ABORTAR OPERAÇÃO] apenas se o gráfico estiver totalmente lateralizado em caixas muito estreitas (Doji sequenciais) ou sem nenhuma clareza de direção na ponta direita.
+
+                [REGRAS DE TEMPO (M1)]
+                1. Localize ou estime o HORÁRIO ATUAL do gráfico (geralmente no eixo horizontal ou nos cantos da tela).
+                2. Projete o HORÁRIO DO CLIQUE (ENTRADA) para 1 ou 2 minutos à frente desse horário identificado.
+                3. Se a estratégia sugerida for Fluxo, a expiração é de 1 Minuto. Se for Reversão/Retração, a expiração é de 2 Minutos.
+
                 Retorne estritamente neste formato markdown limpo:
-                🎯 PORCENTAGEM DE ACERTO DA ENTRADA: [Ex: 94% - EXTREMA CONFLUÊNCIA DE DEFESA FUTURA]
-                ⏰ HORÁRIO DO CLIQUE (ENTRADA): [HH:MM:00 exato projetado entre 2 a 5 candles para o futuro]
-                ⏳ TEMPO DE EXPIRAÇÃO: [1 Minuto se Fluxo Momentâneo OU 2 Minutos se Reversão em Região/Taxa de Defesa]
-                🏁 HORÁRIO DE FECHAMENTO: [Cálculo preciso baseado na regra: Horário de Entrada Projetado + Tempo de Expiração]
+                🎯 PORCENTAGEM DE ACERTO DA ENTRADA: [Ex: 87% - Confluência de Retração / Ou 0% se Abortado]
+                ⏰ HORÁRIO DO CLIQUE (ENTRADA): [HH:MM:00 exato calculado para o próximo candle ou "N/A" se Abortado]
+                ⏳ TEMPO DE EXPIRAÇÃO: [1 Minuto ou 2 Minutos ou "N/A" se Abortado]
+                🏁 HORÁRIO DE FECHAMENTO: [Horário de Entrada + Tempo de Expiração ou "N/A" se Abortado]
                 🟥🟩 DIREÇÃO DA ORDEM: [COMPRA / VENDA / ABORTAR OPERAÇÃO]
                 🌐 MODO DE MERCADO DETECTADO: [MERCADO ABERTO ou MERCADO OTC]
-                🧠 ESTRATÉGIA CORRETA APLICADA: [FLUXO MOMENTÂNEO EM TENDÊNCIA EM M1 ou OPERACIONAL DE REVERSÃO EM REGIÃO (Suporte de Fundo Recente)]
-                
-                🔍 DIAGNÓSTICO INSTITUCIONAL DE SINAL (PRICE ACTION EM GRÁFICO LIMPO):
-                - Lógica de Projeção Futura Adotada: [Explique matematicamente por que escolheu avançar exatamente X candles (entre 2 a 5) para programar a entrada no futuro]
-                - Leitura de Falsos Rompimentos/Pullbacks/RSI: [Explique detalhadamente o comportamento projetado para as próximas velas e o comportamento esperado da linha do RSI]
+                🧠 ESTRATÉGIA CORRETA APLICADA: [A estratégia detectada ou "N/A"]
+
+                🔍 DIAGNÓSTICO INSTITUCIONAL DE SINAL:
+                - Justificativa Técnica: [Explique brevemente o comportamento das últimas velas e o motivo da decisão tomada]
                 """
                 
                 try:
@@ -93,6 +78,6 @@ if API_KEY:
                     )
                     st.markdown(response.text)
                 except Exception as e:
-                    st.error(f"Erro ao processar análise: {e}")
+                    st.error(f"Erro ao processar a análise: {e}")
 else:
-    st.info("Insira sua Gemini API Key na barra lateral para começar.")
+    st.info("Por favor, insira sua Gemini API Key na barra lateral para começar.")
