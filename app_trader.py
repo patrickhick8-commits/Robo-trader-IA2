@@ -94,7 +94,7 @@ if API_KEY:
                 try:
                     # Executa a chamada com o modelo atual estável na biblioteca oficial google-genai
                     response = client.models.generate_content(
-                        model='gemini-2.5-flash',
+                        model='gemini-3.6-flash',
                         contents=[image, prompt]
                     )
                     
