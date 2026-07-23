@@ -37,7 +37,7 @@ if API_KEY:
         if st.button("🚀 EXECUTAR ANÁLISE AVANÇADA DE SINAL"):
             with st.spinner("IA escaneando padrões de velas, volume implícito e mercado..."):
                 
-                # FUSÃO DEFINITIVA COM TODOS OS PADRÕES E ESTRATÉGIAS COMPLETAS
+                # FUSÃO DEFINITIVA COM EXPIRAÇÃO DINÂMICA DE REVERSÃO (2 OU 3 MINUTOS)
                 prompt = """
                 [SYSTEM_ROLE] Você é um robô de trading institucional de alta performance, programado para operar com frieza milimétrica e precisão cirúrgica. Sua missão é caçar apenas a oportunidade perfeita na última vela da direita, garantindo uma assertividade absurdamente alta.
 
@@ -52,8 +52,8 @@ if API_KEY:
                 [DIRETRIZ DE SEGURANÇA MÁXIMA: DOIS OPERACIONAIS OFICIAIS SINCRO-CALIBRADOS]
 
                 1. OPERACIONAL DE REVERSÃO EM REGIÃO (TAXA DE DEFESA / SUPORTE E RESISTÊNCIA) - DINÂMICO:
-                   - GATILHO COMPRA: O preço deve estar tocando um suporte micro (fundo recente de até 2 horas atrás) E a PONTA FINAL exata da linha roxa do RSI (14) deve estar cravada ou abaixo de 25 (Sobrevenda Extrema).
-                   - GATILHO VENDA: O preço deve estar tocando uma resistência micro (topo recente de até 2 horas atrás) E a PONTA FINAL exata da linha roxa do RSI (14) deve estar cravada ou acima de 75 (Sobrecompra Extrema).
+                   - GATILHO COMPRA: O preço deve estar tocando um suporte micro (fundo recente de até 2 hours atrás) E a PONTA FINAL exata da linha roxa do RSI (14) deve estar cravada ou abaixo de 25 (Sobrevenda Extrema).
+                   - GATILHO VENDA: O preço deve estar tocando uma resistência micro (topo recente de até 2 hours atrás) E a PONTA FINAL exata da linha roxa do RSI (14) deve estar cravada ou acima de 75 (Sobrecompra Extrema).
                    - TRAVA OPERACIONAL ANTI-MARUBOZU: Você está TERMINANTEMENTE PROIBIDO de dar sinal de reversão se a última vela fechar totalmente cheia (sem pavio de rejeição na zona, ou com pavio menor que 15% do tamanho total do corpo). Só opere se a ponta direita do gráfico já mostrar rejeição evidente por pavio de absorção institucional.
                    - REGRA DE EXPIRAÇÃO DINÂMICA PARA REVERSÃO: Defina o tempo de expiração cirurgicamente com base na anatomia e velocidade do movimento das velas anteriores:
                      * Use 2 Minutos se o preço atingiu a zona com velas pequenas ou médias e corpos visivelmente decrescentes (exaustão gradual lenta).
@@ -76,26 +76,32 @@ if API_KEY:
                 - MERCADO OTC (ALGORÍTMICO): Foque no comportamento computacional das corretoras. Priorize algoritmos de fluxo contínuo (sequências de velas de força), preenchimento milimétrico de pavios anteriores (vácuo de liquidez) e exaustão por contagem de velas.
 
                 [ORDER_FLOW_&_PURE_CANDLE_VOLUME]
-                1. VOLUME IMPLÍCITO POR CORPO: Avalie o volume através do tamanho do corpo real da vela em relação às últimas 5 velas. Corpos progressivamente maiores indicam injeção de volume institucional.
-                2. LEITURA DE EXAUSTÃO: Se o corpo diminuir drasticamente ao tocar uma região de suporte ou resistência, interprete como exaustão de fluxo e perda de pressão institucional, validando a reversão.
+                Analise o desequilíbrio e o fluxo de ordens (Order Flow) das velas mais recentes da direita. Avalie visualmente o volume implícito através do deslocamento do preço em relação ao tamanho dos corpos.
 
-                Retorne estritamente neste formato markdown limpo:
-                🎯 PORCENTAGEM DE ACERTO DA ENTRADA: [Ex: 94% - EXTREMA CONFLUÊNCIA DE FLUXO ou 88% - CONFLUÊNCIA DE DEFESA DE SUPORTE MICRO]
-                ⏰ HORÁRIO DO CLIQUE (ENTRADA): [HH:MM:00 exato projetado com margem de segurança]
-                ⏳ TEMPO DE EXPIRAÇÃO: [1 Minuto se Fluxo Momentâneo OU Dinâmico (2 ou 3 Minutos) se Reversão conforme a anatomia das velas anteriores]
-                📈 DIREÇÃO DA ENTRADA: [COMPRA / CALL ou VENDA / PUT ou ABORTAR OPERAÇÃO]
-                🧠 JUSTIFICATIVA TÉCNICA E CONFLUÊNCIAS: [Explique de forma curta e cirúrgica os motivos baseados nos filtros acima]
+                [OUTPUT_FORMAT]
+                Retorne estritamente o seu veredito técnico estruturado no seguinte padrão Markdown:
+                ### 🚨 VEREDITO DO SINAL 🚨
+                * **AÇÃO**: [COMPRA / VENDA / ABORTAR OPERAÇÃO - ALTO RISCO]
+                * **TEMPO DE EXPIRAÇÃO**: [1, 2 ou 3 Minutos / Não se aplica]
+                * **NÍVEL DE CERTEZA**: [X%]
+                
+                ### 📊 JUSTIFICATIVA TÉCNICA
+                * **Padrão de Velas**: [Descrição sucinta da anatomia dos últimos candles]
+                * **Comportamento do RSI**: [Posição exata do pixel final do indicador]
+                * **Filtros Aplicados**: [Quais travas de segurança validaram ou abortaram o sinal]
                 """
                 
                 try:
-                    # Executa a chamada com o modelo atualizado Gemini 3.6-Flash
+                    # Executa a chamada com o modelo atual estável na biblioteca oficial google-genai
                     response = client.models.generate_content(
                         model='gemini-3.6-flash',
                         contents=[image, prompt]
                     )
-                    st.success("Análise Concluída com Gemini 3.6!")
+                    
+                    st.success("Análise Técnica Concluída!")
                     st.markdown(response.text)
+                    
                 except Exception as e:
-                    if "429" in str(e) or "RESOURCE_EXHAUSTED" in str(e):
-                        st.error("⚠️ Limite diário de requisições da sua API Key foi atingido (Cota Gratuita).")
-
+                    st.error(f"Erro na comunicação com a API do Gemini: {e}")
+else:
+    st.sidebar.warning("Insira sua Gemini API Key para ativar o robô.")
