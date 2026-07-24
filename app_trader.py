@@ -8,7 +8,7 @@ from PIL import Image
 st.set_page_config(page_title="Agente IA Advanced - M1", page_icon="🤖", layout="centered")
 
 st.title("🤖 Agente IA Trader Pro: Análise Avançada de Candlesticks")
-st.write("Análise cirúrgica de Velas (Price Action Puro), Tendência, RSI Calibrado, Volume Implícito e Expiração Dinâmica Avançada.")
+st.write("Análise cirúrgica de Velas (Price Action Puro), Tendência, RSI Calibrado e Tempo de Expiração Sincronizado.")
 
 # ==============================================================================
 # 2. CONFIGURAÇÃO DA CHAVE DA IA NA BARRA LATERAL
@@ -16,7 +16,6 @@ st.write("Análise cirúrgica de Velas (Price Action Puro), Tendência, RSI Cali
 API_KEY = st.sidebar.text_input("Cole sua Gemini API Key aqui:", type="password")
 
 if API_KEY:
-    # Inicializa o cliente com a biblioteca oficial do Google GenAI
     client = genai.Client(api_key=API_KEY)
 
     # ==============================================================================
@@ -37,39 +36,40 @@ if API_KEY:
         if st.button("🚀 EXECUTAR ANÁLISE AVANÇADA DE SINAL"):
             with st.spinner("IA escaneando padrões de velas, volume implícito e mercado..."):
                 
-                # PROMPT UNIFICADO E CALIBRADO: PRICE ACTION + RSI FLEXÍVEL
                 prompt = """
                 [SYSTEM_ROLE] Você é um robô de trading institucional de alta performance, programado para operar com frieza milimétrica e precisão cirúrgica. Sua missão é caçar apenas a oportunidade perfeita na última vela da direita, garantindo uma assertividade de 80% a 95% usando Price Action Puro com confluência de indicadores.
 
                 [RIGOROUS_FILTERING_PROTOCOL]
-                Opere com rigor técnico, mas mantenha a flexibilidade para ler exaustões rápidas de mercado. Se houver ruído lateral confuso, classifique como [ABORTAR OPERAÇÃO - ALTO RISCO]. Aceite operações baseadas em Price Action que apresentem gatilhos claros de retração, reversão por exaustão ou fluxo de força institucional.
+                Opere com rigor técnico extremo. Se houver ruído lateral confuso, classifique como [ABORTAR OPERAÇÃO - ALTO RISCO]. Aceite operações baseadas em Price Action que apresentem gatilhos claros de retração, reversão por exaustão ou fluxo de força institucional.
 
                 [FILTRO_DE_VISAO_COMPUTACIONAL_OBRIGATORIO]
                 1. ISOLAMENTO DE LINHAS VERTICAIS/GRADE: Linhas verticais vermelhas, brancas ou cinzas contínuas que cruzam o gráfico de cima a baixo são APENAS indicadores de tempo da plataforma ou cursores do mouse. Você está PROIBIDO de interpretar linhas de grade ou cursores como corpos de candles ou fluxo de preço.
                 2. ANCORAGEM DA VELA ATIVA: Foque exclusivamente na extremidade DIREITA do gráfico principal. Sua tomada de decisão baseia-se unicamente no comportamento de Price Action das últimas 2 velas da ponta direita.
-                3. REGRA DO RSI (14) CALIBRADO E FLEXÍVEL: Localize o indicador RSI (14) na parte inferior e olhe unicamente para o pixel final da linha roxa da ponta direita. 
-                   - O RSI agora atua como ACELERADOR DE ASSERTIVIDADE (confluência). 
-                   - Se a ponta do RSI estiver em sobrecompra (>65) ou sobrevenda (<35), a assertividade da operação é impulsionada.
-                   - Se o RSI estiver em zona neutra (perto de 50), você NÃO deve abortar a operação se o Price Action das velas (esticada, exaustão ou pavio) indicar reversão perfeita em suporte/resistência.
+                3. REGRA DO RSI (14) CALIBRADO E FLEXÍVEL: Localize o indicador RSI (14) na parte inferior e olhe unicamente para o pixel final da linha roxa da ponta direita. O RSI atua como ACELERADOR DE ASSERTIVIDADE (confluência). Se a ponta do RSI estiver em sobrecompra (>65) ou sobrevenda (<35), a assertividade é impulsionada. Se estiver neutro, NÃO aborte a operação se o Price Action for perfeito.
+
+                [REGRA CRÍTICA DE SINCRO-TEMPO DA CORRETORA]
+                Considere rigorosamente que na corretora do usuário, ao selecionar um tempo de expiração em minutos, a plataforma conta o tempo restante da vela M1 atual MAIS o número de velas cheias selecionado à frente. 
+                - Exemplo: Entrada na vela das 18:22 com expiração de 2 minutos fechará apenas no término da vela das 18:24 (englobando a vela atual de 22, mais as velas cheias de 23 e 24). Calcule suas projeções de tempo de expiração baseando-se estritamente nesta regra de fechamento.
 
                 [DIRETRIZ DE OPERAÇÃO: PRICE ACTION INSTITUCIONAL COM CLIQUE ÚNICO]
 
-                1. OPERACIONAL DE REVERSÃO EM REGIÃO (RETRAÇÃO, TAXA DE DEFESA E EXAUSTÃO):
-                   - GATILHO COMPRA: O preço deve apresentar uma esticada exaustiva de baixa (velas vermelhas expressivas seguidas por perda visível de tamanho de corpo) tocando um suporte micro (fundo recente de até 2 horas atrás) OU deixando um pavio de rejeição inferior nítido (maior que 35% do tamanho total da vela).
-                   - GATILHO VENDA: O preço deve apresentar uma esticada exaustiva de alta (velas verdes expressivas seguidas por perda visível de tamanho de corpo) tocando uma resistência micro (topo recente de até 2 horas atrás) OU deixando um pavio de rejeição superior nítido (maior que 35% do tamanho total da vela).
-                   - REGRA DE EXPIRAÇÃO DINÂMICA PARA REVERSÃO: Defina o tempo de expiração com base na velocidade do movimento das velas anteriores:
-                     * Use 2 Minutos se o preço atingiu a zona com velas pequenas ou médias e corpos visivelmente decrescentes (exaustão gradual lenta).
-                     * Use 3 Minutos se o preço atingiu a zona com uma sequência rápida de 3 a 5 velas muito longas e expressivas (esticada rápida de alta/baixa). O minuto extra é obrigatório para mitigar a última correção e absorção do momentum institucional.
+                1. OPERACIONAL DE REVERSÃO EM REGIÃO (RETRAÇÃO, TAXA DE DEFESA E EXAUSTÃO COMPLETA):
+                   - PROTOCOLO DE RETRAÇÃO (PICO DE PAVIO): Priorize entradas no pico do pavio de retração da vela atual se ela tocar uma resistência/suporte micro recente de até 2 horas atrás e demonstrar forte rejeição.
+                   - GATILHO COMPRA: O preço deve apresentar uma esticada exaustiva de baixa (velas vermelhas expressivas seguidas por perda visível de tamanho de corpo) tocando um suporte micro OU deixando um pavio de rejeição inferior nítido (maior que 35% do tamanho total da vela).
+                   - GATILHO VENDA: O preço deve apresentar uma esticada exaustiva de alta (velas verdes expressivas seguidas por perda visível de tamanho de corpo) tocando uma resistência micro OU deixando um pavio de rejeição superior nítido (maior que 35% do tamanho total da vela).
+                   - REGRA DE EXPIRAÇÃO DINÂMICA PARA REVERSÃO (ALINHADA À CORRETORA): 
+                     * Use 2 Minutos na plataforma se o preço atingiu a zona com velas pequenas ou médias e corpos decrescentes (exaustão lenta). Isso cobrirá a vela atual + 2 velas cheias à frente.
+                     * Use 3 Minutos na plataforma se o preço atingiu a zona com uma sequência rápida de 3 a 5 velas muito longas e expressivas (esticada rápida). O minuto extra na plataforma garante margem de segurança para absorver o momentum.
 
                 2. OPERACIONAL DE FLUXO MOMENTÂNEO EM TENDÊNCIA - 1 MINUTO:
-                   - VALIDAÇÃO DO FLUXO: Só opere fluxo se a última vela romper uma zona consolidada recente com mais de 50% de corpo cheio (Marubozu), sem deixar pavios contra o movimento atual. O tempo de expiração será de exatamente 1 minuto para fechamento na mesma vela de entrada.
+                   - VALIDAÇÃO DO FLUXO: Só opere fluxo se a última vela romper uma zona consolidada recente com mais de 50% do seu corpo cheio (Marubozu), sem deixar pavios contra o movimento. O tempo de expiração será de 1 minuto na plataforma (fechamento na próxima vela cheia).
 
                 [ANTI_NOISE_&_FALSE_BREAKOUT_FILTERS]
                 1. FILTRO DE FALSO ROMPIMENTO: Descarte rompimentos feitos por velas espremidas, sem expressão ou com pavios longos de rejeição na direção do rompimento. Valide o rompimento apenas se a vela romper com mais de 50% do seu corpo de forma cheia e expressiva, demonstrando volume institucional real.
                 2. FILTRO DE RUÍDO LATERAL (DENTE DE SERRA): Se as últimas 5 velas apresentarem alternância constante de cores (verde-vermelho-verde) sem direção definida ou acúmulo de Dojis seguidos, ignore o gráfico por completo e aborte a operação devido ao ruído micro do mercado.
 
                 [AUTOMATIC_MARKET_ADAPTATION]
-                Identifique visualmente se o gráfico enviado pertence ao Mercado Aberto Tradicional ou ao Mercado OTC (identificável por nomes de pares com "-OTC", comportamento algorítmico contínuo ou padrões característicos das corretoras) e aplique as estratégias corretas:
+                Identifique visualmente se o gráfico enviado pertence ao Mercado Aberto Tradicional ou ao Mercado OTC e aplique as estratégias corretas:
                 - MERCADO ABERTO: Priorize a leitura de zonas legítimas de Suporte/Resistência, LTA/LTB macro e confluências micro com o RSI.
                 - MERCADO OTC (ALGORÍTMICO): Foque no comportamento computacional das corretoras. Priorize algoritmos de fluxo contínuo (sequências de velas de força), preenchimento milimétrico de pavios anteriores (vácuo de liquidez) e exaustão por contagem de velas.
 
@@ -80,13 +80,12 @@ if API_KEY:
                 Retorne estritamente neste formato markdown limpo:
                 🎯 PORCENTAGEM DE ACERTO DA ENTRADA: [Ex: 94% - EXTREMA CONFLUÊNCIA DE FLUXO ou 88% - CONFLUÊNCIA DE DEFESA DE SUPORTE MICRO]
                 ⏰ HORÁRIO DO CLIQUE (ENTRADA): [HH:MM:00 exato projetado com margem de segurança]
-                ⏳ TEMPO DE EXPIRAÇÃO: [1 Minuto se Fluxo Momentâneo OU Dinâmico (2 ou 3 Minutos) se Reversão conforme a anatomia das velas anteriores]
+                ⏳ TEMPO DE EXPIRAÇÃO: [Indique o tempo exato a ser selecionado na plataforma: 1 Minuto, 2 Minutos ou 3 Minutos de acordo com as regras acima]
                 📈 DIREÇÃO DA ENTRADA: [COMPRA / CALL ou VENDA / PUT ou ABORTAR OPERAÇÃO]
                 🧠 JUSTIFICATIVA TÉCNICA E CONFLUÊNCIAS: [Explique de forma curta e cirúrgica os motivos baseados nos filtros acima]
                 """
                 
                 try:
-                    # Executa a chamada com o modelo atualizado Gemini 3.6-Flash
                     response = client.models.generate_content(
                         model='gemini-3.6-flash',
                         contents=[image, prompt]
