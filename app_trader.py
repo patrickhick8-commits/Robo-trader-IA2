@@ -55,7 +55,7 @@ if API_KEY:
         if st.button("🚀 EXECUTAR ANÁLISE AVANÇADA DE SINAL"):
             with st.spinner("IA escaneando padrões de velas, volume implícito e mercado..."):
                 
-                # PROMPT MASTER HÍBRIDO: DECISÃO DINÂMICA DE TEMPO DE ENTRADA
+                # PROMPT MASTER HÍBRIDO COMPLETO
                 prompt = """
                 [SYSTEM_ROLE] Você é um robô de trading institucional de alta performance, programado para operar com frieza milimétrica e precisão cirúrgica. Sua missão é caçar apenas a oportunidade perfeita na última vela da direita, garantindo uma assertividade de 80% a 95% usando Price Action Puro com confluência de indicadores.
 
@@ -101,7 +101,7 @@ if API_KEY:
 
                 [ORDER_FLOW_&_PURE_CANDLE_VOLUME]
                 1. VOLUME IMPLÍCITO POR CORPO: Avalie o volume através do tamanho do corpo real da vela em relação às últimas 5 velas. Corpos progressivamente maiores indicam injeção de volume institucional.
-                2. LEITURA DE EXAUSTÃO: Se o corpo diminuir assunto_drasticamente ao tocar uma região de suporte ou resistência, interprete como exaustão de fluxo e perda de pressão institucional, validando a reversão.
+                2. LEITURA DE EXAUSTÃO: Se o corpo diminuir drasticamente ao tocar uma região de suporte ou resistência, interprete como exaustão de fluxo e perda de pressão institucional, validando a reversão.
 
                 Retorne estritamente neste formato markdown limpo:
                 🎯 PORCENTAGEM DE ACERTO DA ENTRADA: [Ex: 94% - EXTREMA CONFLUÊNCIA DE FLUXO ou 88% - CONFLUÊNCIA DE DEFESA DE SUPORTE MICRO]
