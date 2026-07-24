@@ -8,7 +8,7 @@ from PIL import Image
 st.set_page_config(page_title="Agente IA Advanced - M1", page_icon="🤖", layout="centered")
 
 st.title("🤖 Agente IA Trader Pro: Análise Avançada de Candlesticks")
-st.write("Análise cirúrgica de Velas (Price Action Puro), Tendência, RSI Calibrado e Tempo de Reação com Margem de Segurança.")
+st.write("Análise cirúrgica de Velas (Price Action Puro), Tendência, RSI Calibrado e Tempo de Reação Híbrido Avançado.")
 
 # ==============================================================================
 # 2. CONFIGURAÇÃO DA CHAVE DA IA NA BARRA LATERAL
@@ -36,7 +36,7 @@ if API_KEY:
         if st.button("🚀 EXECUTAR ANÁLISE AVANÇADA DE SINAL"):
             with st.spinner("IA escaneando padrões de velas, volume implícito e mercado..."):
                 
-                # PROMPT MASTER BLINDADO: PRICE ACTION + REGRA VELA FUTURA + 1
+                # PROMPT MASTER HÍBRIDO: DECISÃO DINÂMICA DE TEMPO DE ENTRADA
                 prompt = """
                 [SYSTEM_ROLE] Você é um robô de trading institucional de alta performance, programado para operar com frieza milimétrica e precisão cirúrgica. Sua missão é caçar apenas a oportunidade perfeita na última vela da direita, garantindo uma assertividade de 80% a 95% usando Price Action Puro com confluência de indicadores.
 
@@ -48,9 +48,14 @@ if API_KEY:
                 2. ANCORAGEM DA VELA ATIVA: Foque exclusivamente na extremidade DIREITA do gráfico principal. Sua tomada de decisão baseia-se unicamente no comportamento de Price Action das últimas 2 velas da ponta direita.
                 3. REGRA DO RSI (14) CALIBRADO E FLEXÍVEL: Localize o indicador RSI (14) na parte inferior e olhe unicamente para o pixel final da linha roxa da ponta direita. O RSI atua como ACELERADOR DE ASSERTIVIDADE (confluência). Se a ponta do RSI estiver em sobrecompra (>65) ou sobrevenda (<35), a assertividade é impulsionada. Se estiver neutro, NÃO aborte a operação se o Price Action for perfeito.
 
-                [REGRA CRÍTICA DE SINCRO-TEMPO E MARGEM DE REAÇÃO]
-                1. REGRA DA VELA FUTURA + 1 (OBRIGATÓRIO PARA REVERSÃO): Identifique o horário atual pelo relógio da plataforma no print. Se o relógio indicar que o gráfico está, por exemplo, no minuto XX:21, você está TERMINANTEMENTE PROIBIDO de sugerir o horário do clique para o minuto imediatamente seguinte (XX:22:00). Projete o horário do clique obrigatoriamente para a SEGUNDA vela cheia à frente (XX:23:00). Isto é vital para dar tempo de reação humana ao usuário e permitir que o preço complete o ciclo de esticada e exaustão antes da entrada.
-                2. SINCRO-TEMPO DA CORRETORA: Considere que na corretora do usuário, ao selecionar um tempo de expiração em minutos, a plataforma conta o tempo restante da vela M1 atual MAIS o número de velas cheias selecionado à frente. Ao projetar o clique pulando uma vela conforme a regra acima (ex: clicando às 18:23:00), indique se o tempo ideal na plataforma deve ser de 2 ou 3 minutos para cobrir com segurança o ciclo de retração e derretimento.
+                [REGRA MASTER: CRITÉRIO DE PROJEÇÃO DE TEMPO HÍBRIDO]
+                Identifique o horário atual pelo relógio da plataforma no print (Ex: XX:03:29). Avalie a velocidade e a anatomia da esticada do preço na ponta direita para decidir entre dois formatos de clique único:
+                
+                - FORMATO A: PRÓXIMA VELA IMEDIATA (Sem pular vela -> Ex: XX:04:00)
+                  Use este formato se o preço atingiu a taxa/resistência através de um PICO RÁPIDO E ISOLADO com velas muito longas (esticada agressiva) E o RSI já estiver rompendo ou colado nos níveis extremos (>=70 ou <=30). Em picos rápidos, a reversão/retração ocorre imediatamente no primeiro impacto. Não pule a vela para não perder a oportunidade.
+                
+                - FORMATO B: VELA FUTURA + 1 (Com folga de tempo -> Ex: XX:05:00)
+                  Use este formato se o preço estiver subindo ou descendo de forma lenta, constante, com uma sequência de velas médias acumuladas. Isso significa que o movimento ainda tem fôlego e precisa de mais 1 vela de respiro para atingir a exaustão total e saturação antes de reverter com segurança.
 
                 [DIRETRIZ DE OPERAÇÃO: PRICE ACTION INSTITUCIONAL COM CLIQUE ÚNICO]
 
@@ -81,10 +86,10 @@ if API_KEY:
 
                 Retorne estritamente neste formato markdown limpo:
                 🎯 PORCENTAGEM DE ACERTO DA ENTRADA: [Ex: 94% - EXTREMA CONFLUÊNCIA DE FLUXO ou 88% - CONFLUÊNCIA DE DEFESA DE SUPORTE MICRO]
-                ⏰ HORÁRIO DO CLIQUE (ENTRADA): [HH:MM:00 exato projetado aplicando rigorosamente a Regra da Vela Futura + 1 para dar tempo de reação e folga total ao usuário]
+                ⏰ HORÁRIO DO CLIQUE (ENTRADA): [HH:MM:00 exato projetado aplicando a lógica híbrida do critério de projeção de tempo]
                 ⏳ TEMPO DE EXPIRAÇÃO: [Indique o tempo exato a ser selecionado na plataforma: 1 Minuto, 2 Minutos ou 3 Minutos de acordo com as regras acima]
                 📈 DIREÇÃO DA ENTRADA: [COMPRA / CALL ou VENDA / PUT ou ABORTAR OPERAÇÃO]
-                🧠 JUSTIFICATIVA TÉCNICA E CONFLUÊNCIAS: [Explique de forma curta e cirúrgica os motivos baseados nos filtros acima]
+                🧠 JUSTIFICATIVA TÉCNICA E CONFLUÊNCIAS: [Explique de forma curta e cirúrgica os motivos baseados nos filtros acima, citando se escolheu a Próxima Vela ou Vela Futura + 1]
                 """
                 
                 try:
@@ -94,5 +99,3 @@ if API_KEY:
                     )
                     st.success("Análise Concluída com Gemini 3.6!")
                     st.markdown(response.text)
-                except Exception as e:
-                    err_msg = str(e)
