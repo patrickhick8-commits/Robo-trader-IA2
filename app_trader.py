@@ -81,7 +81,7 @@ if API_KEY:
                 1. OPERACIONAL DE REVERSÃO EM REGIÃO (RETRAÇÃO, TAXA DE DEFESA E EXAUSTÃO COMPLETA):
                    - TRAVA ANTI-MARUBOZU: Você está TERMINANTEMENTE PROIBIDO de dar sinal de reversão se a última vela fechar cheia (sem pavio de prevenção na zona, ou com pavio menor que 15% do corpo). Bloqueie se o pavio for irrelevante ou um mero ruído.
                    - PROTOCOLO DE RETRAÇÃO (PICO DE PAVIO): Priorize entradas se a vela anterior demonstrar forte rejeição em suporte ou resistência micro recente de até 2 horas atrás. O pavio ideal de segurança deve ser maior que 35% do tamanho total do candle para autorizar o clique único.
-                   - GATILHO COMPRA: O preço deve apresentar uma esticada exaustiva de baixa (velas vermelhas expressivas seguidas por perda visível de tamanho de corpo) tocando um suporte micro OU deixando um pavio de prevenção inferior nítido (maior que 35% do tamanho total da vela).
+                   - GATILHO COMPRA: O preço deve apresentar uma esticada exaustiva de baixa (velas vermelhas expressivas seguidas por perda visível of tamanho de corpo) tocando um suporte micro OU deixando um pavio de prevenção inferior nítido (maior que 35% do tamanho total da vela).
                    - GATILHO VENDA: O preço deve apresentar uma esticada exaustiva de alta (velas verdes expressivas seguidas por perda visível de tamanho de corpo) tocando uma resistência micro OU deixando um pavio de rejeição superior nítido (maior que 35% do tamanho total da vela).
                    - REGRA DE EXPIRAÇÃO DINÂMICA PARA REVERSÃO (ALINHADA À CORRETORA): 
                      * Use 2 Minutos na plataforma se o preço atingiu a zona com velas pequenas ou médias e corpos decrescentes (exaustão lenta). Isso cobrirá a vela atual projetada + 2 velas cheias à frente.
@@ -104,3 +104,4 @@ if API_KEY:
                 2. LEITURA DE EXAUSTÃO: Se o corpo diminuir drasticamente ao tocar uma região de suporte ou resistência, interprete como exaustão de fluxo e perda de pressão institucional, validando a reversão.
 
                 Retorne estritamente neste formato markdown limpo:
+                🎯 PORCENTAGEM DE ACERTO DA ENTRADA: [Ex: 94% - EXTREMA CONFLUÊNCIA DE FLUXO ou 88% - CONFLUÊNCIA DE DEFESA DE SUPORTE MICRO]
