@@ -8,7 +8,7 @@ from PIL import Image
 st.set_page_config(page_title="Agente IA Advanced - M1", page_icon="🤖", layout="centered")
 
 st.title("🤖 Agente IA Trader Pro: Análise Avançada de Candlesticks")
-st.write("Análise cirúrgica de Velas (Price Action Puro), Tendência, RSI Calibrado e Tempo de Expiração Sincronizado.")
+st.write("Análise cirúrgica de Velas (Price Action Puro), Tendência, RSI Calibrado e Tempo de Reação com Margem de Segurança.")
 
 # ==============================================================================
 # 2. CONFIGURAÇÃO DA CHAVE DA IA NA BARRA LATERAL
@@ -16,6 +16,7 @@ st.write("Análise cirúrgica de Velas (Price Action Puro), Tendência, RSI Cali
 API_KEY = st.sidebar.text_input("Cole sua Gemini API Key aqui:", type="password")
 
 if API_KEY:
+    # Inicializa o cliente com a biblioteca oficial do Google GenAI
     client = genai.Client(api_key=API_KEY)
 
     # ==============================================================================
@@ -36,6 +37,7 @@ if API_KEY:
         if st.button("🚀 EXECUTAR ANÁLISE AVANÇADA DE SINAL"):
             with st.spinner("IA escaneando padrões de velas, volume implícito e mercado..."):
                 
+                # PROMPT MASTER: PRICE ACTION + RSI + MARGEM DE TEMPO DE REAÇÃO
                 prompt = """
                 [SYSTEM_ROLE] Você é um robô de trading institucional de alta performance, programado para operar com frieza milimétrica e precisão cirúrgica. Sua missão é caçar apenas a oportunidade perfeita na última vela da direita, garantindo uma assertividade de 80% a 95% usando Price Action Puro com confluência de indicadores.
 
@@ -47,18 +49,20 @@ if API_KEY:
                 2. ANCORAGEM DA VELA ATIVA: Foque exclusivamente na extremidade DIREITA do gráfico principal. Sua tomada de decisão baseia-se unicamente no comportamento de Price Action das últimas 2 velas da ponta direita.
                 3. REGRA DO RSI (14) CALIBRADO E FLEXÍVEL: Localize o indicador RSI (14) na parte inferior e olhe unicamente para o pixel final da linha roxa da ponta direita. O RSI atua como ACELERADOR DE ASSERTIVIDADE (confluência). Se a ponta do RSI estiver em sobrecompra (>65) ou sobrevenda (<35), a assertividade é impulsionada. Se estiver neutro, NÃO aborte a operação se o Price Action for perfeito.
 
-                [REGRA CRÍTICA DE SINCRO-TEMPO DA CORRETORA]
-                Considere rigorosamente que na corretora do usuário, ao selecionar um tempo de expiração em minutos, a plataforma conta o tempo restante da vela M1 atual MAIS o número de velas cheias selecionado à frente. 
-                - Exemplo: Entrada na vela das 18:22 com expiração de 2 minutos fechará apenas no término da vela das 18:24 (englobando a vela atual de 22, mais as velas cheias de 23 e 24). Calcule suas projeções de tempo de expiração baseando-se estritamente nesta regra de fechamento.
+                [REGRA CRÍTICA DE SINCRO-TEMPO E MARGEM DE REAÇÃO]
+                1. MARGEM DE REAÇÃO HUMANA (OBRIGATÓRIO): Para garantir que o usuário tenha tempo de ler esta análise na tela e executar o clique na corretora sem pressa ou delay, você está PROIBIDO de sugerir o horário do clique para a vela atual do print. Projete o horário do clique (⏰ HORÁRIO DO CLIQUE) SEMPRE para a próxima vela cheia (M1 seguinte), oferecendo uma folga de cerca de 60 segundos.
+                   * Exemplo técnico: Se o print foi gerado e enviado durante o minuto 18:22, o horário projetado para o seu sinal DEVE ser textualmente fixado para iniciar às 18:23:00.
+                2. SINCRO-TEMPO DA CORRETORA: Considere que na corretora do usuário, ao selecionar um tempo de expiração em minutos, a plataforma conta o tempo restante da vela M1 atual MAIS o número de velas cheias selecionado à frente. Calcule suas projeções baseando-se estritamente nesta regra de fechamento.
 
                 [DIRETRIZ DE OPERAÇÃO: PRICE ACTION INSTITUCIONAL COM CLIQUE ÚNICO]
 
                 1. OPERACIONAL DE REVERSÃO EM REGIÃO (RETRAÇÃO, TAXA DE DEFESA E EXAUSTÃO COMPLETA):
-                   - PROTOCOLO DE RETRAÇÃO (PICO DE PAVIO): Priorize entradas no pico do pavio de retração da vela atual se ela tocar uma resistência/suporte micro recente de até 2 horas atrás e demonstrar forte rejeição.
+                   - TRAVA ANTI-MARUBOZU: Você está TERMINANTEMENTE PROIBIDO de dar sinal de reversão se a última vela fechar cheia (sem pavio de rejeição na zona, ou com pavio menor que 15% do corpo). Bloqueie se o pavio for irrelevante ou um mero ruído.
+                   - PROTOCOLO DE RETRAÇÃO (PICO DE PAVIO): Priorize entradas se a vela anterior demonstrar forte rejeição em suporte ou resistência micro recente de até 2 horas atrás. O pavio ideal de segurança deve ser maior que 35% do tamanho total do candle para autorizar o clique único.
                    - GATILHO COMPRA: O preço deve apresentar uma esticada exaustiva de baixa (velas vermelhas expressivas seguidas por perda visível de tamanho de corpo) tocando um suporte micro OU deixando um pavio de rejeição inferior nítido (maior que 35% do tamanho total da vela).
-                   - GATILHO VENDA: O preço deve apresentar uma esticada exaustiva de alta (velas verdes expressivas seguidas por perda visível de tamanho de corpo) tocando uma resistência micro OU deixando um pavio de rejeição superior nítido (maior que 35% do tamanho total da vela).
+                   - GATILHO VENDA: O preço deve apresentar uma esticada exaustiva de alta (velas verdes expressivas seguidas por perda visível de tamanho de corpo) tocando uma resistência micro OU deixando um pavio de prevenção superior nítido (maior que 35% do tamanho total da vela).
                    - REGRA DE EXPIRAÇÃO DINÂMICA PARA REVERSÃO (ALINHADA À CORRETORA): 
-                     * Use 2 Minutos na plataforma se o preço atingiu a zona com velas pequenas ou médias e corpos decrescentes (exaustão lenta). Isso cobrirá a vela atual + 2 velas cheias à frente.
+                     * Use 2 Minutos na plataforma se o preço atingiu a zona com velas pequenas ou médias e corpos decrescentes (exaustão lenta). Isso cobrirá a vela atual projetada + 2 velas cheias à frente.
                      * Use 3 Minutos na plataforma se o preço atingiu a zona com uma sequência rápida de 3 a 5 velas muito longas e expressivas (esticada rápida). O minuto extra na plataforma garante margem de segurança para absorver o momentum.
 
                 2. OPERACIONAL DE FLUXO MOMENTÂNEO EM TENDÊNCIA - 1 MINUTO:
@@ -79,13 +83,14 @@ if API_KEY:
 
                 Retorne estritamente neste formato markdown limpo:
                 🎯 PORCENTAGEM DE ACERTO DA ENTRADA: [Ex: 94% - EXTREMA CONFLUÊNCIA DE FLUXO ou 88% - CONFLUÊNCIA DE DEFESA DE SUPORTE MICRO]
-                ⏰ HORÁRIO DO CLIQUE (ENTRADA): [HH:MM:00 exato projetado com margem de segurança]
+                ⏰ HORÁRIO DO CLIQUE (ENTRADA): [HH:MM:00 exato projetado obrigatoriamente para a próxima vela M1 para dar tempo de reação ao usuário]
                 ⏳ TEMPO DE EXPIRAÇÃO: [Indique o tempo exato a ser selecionado na plataforma: 1 Minuto, 2 Minutos ou 3 Minutos de acordo com as regras acima]
                 📈 DIREÇÃO DA ENTRADA: [COMPRA / CALL ou VENDA / PUT ou ABORTAR OPERAÇÃO]
                 🧠 JUSTIFICATIVA TÉCNICA E CONFLUÊNCIAS: [Explique de forma curta e cirúrgica os motivos baseados nos filtros acima]
                 """
                 
                 try:
+                    # Executa a chamada oficial com o modelo Gemini 3.6-Flash
                     response = client.models.generate_content(
                         model='gemini-3.6-flash',
                         contents=[image, prompt]
@@ -93,10 +98,3 @@ if API_KEY:
                     st.success("Análise Concluída com Gemini 3.6!")
                     st.markdown(response.text)
                 except Exception as e:
-                    if "429" in str(e) or "RESOURCE_EXHAUSTED" in str(e):
-                        st.error("⚠️ Limite diário de requisições da sua API Key foi atingido (Cota Gratuita).")
-                        st.info("💡 **Dica:** Ative o faturamento 'Pay-as-you-go' no Google AI Studio para liberar o poder total do Gemini 3.6 de forma ilimitada.")
-                    else:
-                        st.error(f"Erro ao processar a análise com o Gemini: {e}")
-else:
-    st.info("Por favor, insira sua Gemini API Key na barra lateral para começar.")
