@@ -53,7 +53,7 @@ def executar_analise_ia(client, image, prompt):
     try:
         # Utiliza o modelo estável multimodal com a nova biblioteca google-genai
         response = client.models.generate_content(
-            model='gemini-3.6-flash',
+            model='gemini-3.5-flash',
             contents=[image, prompt]
         )
         st.success("Análise Concluída com Sucesso!")
