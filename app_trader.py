@@ -3,7 +3,7 @@ from google import genai
 from PIL import Image
 
 # ==============================================================================
-# 1. FUNÇÃO ISOLADA PARA PROCESSAMENTO DA IA (EVITA ERROS DE INDENTAÇÃO)
+# 1. FUNÇÃO ISOLADA PARA PROCESSAMENTO DA IA (CORRIGIDA COM O SEU PROMPT FORMATADO)
 # ==============================================================================
 def executar_analise_ia(client, image, prompt):
     try:
@@ -50,12 +50,12 @@ if API_KEY:
         st.image(image, caption="Gráfico M1 Carregado para Análise", use_container_width=True)
         
         # ==============================================================================
-        # 5. DISPARO E PROCESSAMENTO DA ANÁLISE MULTIMODAL
+        # 5. DISPARO E PROCESSAMENTO DA ANÁLISE MULTIMODAL (PROMPT INTEGRADO COM O FORMATO)
         # ==============================================================================
         if st.button("🚀 EXECUTAR ANÁLISE AVANÇADA DE SINAL"):
             with st.spinner("IA escaneando padrões de velas, volume implícito e mercado..."):
                 
-                # PROMPT MASTER HÍBRIDO COMPLETO COM FORMATO DE RETORNO INTEGRADO
+                # PROMPT MASTER INTEGRADO COM AS DIRETRIZES DE FORMATO DE RETORNO
                 prompt = """
                 [SYSTEM_ROLE] Você é um robô de trading institucional de alta performance, programado para operar com frieza milimétrica e precisão cirúrgica. Sua missão é caçar apenas a oportunidade perfeita na última vela da direita, garantindo uma assertividade de 80% a 95% usando Price Action Puro com confluência de indicadores.
 
@@ -80,8 +80,8 @@ if API_KEY:
 
                 1. OPERACIONAL DE REVERSÃO EM REGIÃO (RETRAÇÃO, TAXA DE DEFESA E EXAUSTÃO COMPLETA):
                    - TRAVA ANTI-MARUBOZU: Você está TERMINANTEMENTE PROIBIDO de dar sinal de reversão se a última vela fechar cheia (sem pavio de prevenção na zona, ou com pavio menor que 15% do corpo). Bloqueie se o pavio for irrelevante ou um mero ruído.
-                   - PROTOCOLO DE RETRAÇÃO (PICO DE PAVIO): Priorize entradas se a vela anterior demonstrar forte rejeição em suporte ou resistência micro recente de até 2 horas atrás. O pavio ideal de segurança deve ser maior que 35% do tamanho total do candle para autorizar o clique único.
-                   - GATILHO COMPRA: O preço deve apresentar uma esticada exaustiva de baixa (velas vermelhas expressivas seguidas por perda visível of tamanho de corpo) tocando um suporte micro OU deixando um pavio de prevenção inferior nítido (maior que 35% do tamanho total da vela).
+                   - PROTOCOLO DE RETRAÇÃO (PICO DE PAVIO): Priorize entradas se a vela anterior demonstrar forte rejeição em suporte ou resistência micro recente de até 2 hours atrás. O pavio ideal de segurança deve ser maior que 35% do tamanho total do candle para autorizar o clique único.
+                   - GATILHO COMPRA: O preço deve apresentar uma esticada exaustiva de baixa (velas vermelhas expressivas seguidas por perda visível de tamanho de corpo) tocando um suporte micro OU deixando um pavio de prevenção inferior nítido (maior que 35% do tamanho total da vela).
                    - GATILHO VENDA: O preço deve apresentar uma esticada exaustiva de alta (velas verdes expressivas seguidas por perda visível de tamanho de corpo) tocando uma resistência micro OU deixando um pavio de rejeição superior nítido (maior que 35% do tamanho total da vela).
                    - REGRA DE EXPIRAÇÃO DINÂMICA PARA REVERSÃO (ALINHADA À CORRETORA): 
                      * Use 2 Minutos na plataforma se o preço atingiu a zona com velas pequenas ou médias e corpos decrescentes (exaustão lenta). Isso cobrirá a vela atual projetada + 2 velas cheias à frente.
@@ -91,17 +91,18 @@ if API_KEY:
                    - VALIDAÇÃO DO FLUXO: Só opere fluxo se a última vela romper uma zona consolidada recente com mais de 50% do seu corpo cheio (Marubozu), sem deixar pavios contra o movimento. O tempo de expiração será de 1 minuto na plataforma (fechamento na próxima vela cheia).
 
                 [ANTI_NOISE_&_FALSE_BREAKOUT_FILTERS]
-                1. FILTRO DE FALSO ROMPIMENTO: Descarte rompimentos feitos por velas espremidas, sem expressão ou com pavios longos de rejeição na direção do rompimento. Valide o rompimento apenas se a vela romper com mais de 50% do seu corpo de forma cheia e expressiva, demonstrando volume institucional real.
-                2. FILTRO DE RUÍDO LATERAL (DENTE DE SERRA): Se as últimas 5 velas apresentarem alternância constante de cores (verde-vermelho-verde) sem direção definida ou acúmulo de Dojis seguidos, ignore o gráfico por completo e aborte a operação devido ao ruído micro do mercado.
+                1. FILTRO DE FALSO ROMPIMENTO: Descarte rompimentos feitos por velas expressivas sem volume ou sem confirmação na zona micro.
 
-                [AUTOMATIC_MARKET_ADAPTATION]
-                Identifique visualmente se o gráfico enviado pertence ao Mercado Aberto Tradicional ou ao Mercado OTC e aplique as estratégias corretas:
-                - MERCADO ABERTO: Priorize a leitura de zonas legítimas de Suporte/Resistência, LTA/LTB macro e confluências micro com o RSI.
-                - MERCADO OTC (ALGORÍTMICO): Foque no comportamento computacional das corretoras. Priorize algoritmos de fluxo contínuo (sequências de velas de força), preenchimento milimétrico de pavios anteriores (vácuo de liquidez) e exaustão por contagem de velas.
-
-                [ORDER_FLOW_&_PURE_CANDLE_VOLUME]
-                1. VOLUME IMPLÍCITO POR CORPO: Avalie o volume através do tamanho do corpo real da vela em relação às últimas 5 velas. Corpos progressivamente maiores indicam injeção de volume institucional.
-                2. LEITURA DE EXAUSTÃO: Se o corpo diminuir drasticamente ao tocar uma região de suporte ou resistência, interprete como exaustão de fluxo e perda de pressão institucional, validando a reversão.
-
+                [FORMATO_DE_RETORNO_OBRIGATORIO]
                 Retorne estritamente neste formato markdown limpo:
                 🎯 PORCENTAGEM DE ACERTO DA ENTRADA: [Ex: 94% - EXTREMA CONFLUÊNCIA DE FLUXO ou 88% - CONFLUÊNCIA DE DEFESA DE SUPORTE MICRO]
+                ⏰ HORÁRIO DO CLIQUE (ENTRADA): [HH:MM:00 exato projetado com margem de segurança]
+                ⏳ TEMPO DE EXPIRAÇÃO: [1 Minuto se Fluxo Momentâneo OU 3 Minutos se Reversão / Taxa de Defesa]
+                📈 DIREÇÃO DA ENTRADA: [COMPRA / CALL ou VENDA / PUT ou ABORTAR OPERAÇÃO]
+                🧠 JUSTIFICATIVA TÉCNICA E CONFLUÊNCIAS: [Explique de forma curta e cirúrgica os motivos baseados nos filtros acima]
+                """
+                
+                # Executa a chamada chamando a função centralizada
+                executar_analise_ia(client, image, prompt)
+else:
+    st.sidebar.warning("Por favor, insira sua Gemini API Key para liberar o aplicativo.")
