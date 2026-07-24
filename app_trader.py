@@ -3,7 +3,26 @@ from google import genai
 from PIL import Image
 
 # ==============================================================================
-# 1. CONFIGURAÇÃO DA PÁGINA E INTERFACE VISUAL DO STREAMLIT
+# 1. FUNÇÃO ISOLADA PARA PROCESSAMENTO DA IA (EVITA ERROS DE INDENTAÇÃO)
+# ==============================================================================
+def executar_analise_ia(client, image, prompt):
+    try:
+        response = client.models.generate_content(
+            model='gemini-3.6-flash',
+            contents=[image, prompt]
+        )
+        st.success("Análise Concluída com Gemini 3.6!")
+        st.markdown(response.text)
+    except Exception as e:
+        err_msg = str(e)
+        if "429" in err_msg or "RESOURCE_EXHAUSTED" in err_msg:
+            st.error("⚠️ Limite diário de requisições da sua API Key foi atingido (Cota Gratuita).")
+            st.info("💡 **Dica:** Ative o faturamento 'Pay-as-you-go' no Google AI Studio para liberar o poder total do Gemini 3.6 de forma ilimitada.")
+        else:
+            st.error(f"Erro ao processar a análise com o Gemini: {e}")
+
+# ==============================================================================
+# 2. CONFIGURAÇÃO DA PÁGINA E INTERFACE VISUAL DO STREAMLIT
 # ==============================================================================
 st.set_page_config(page_title="Agente IA Advanced - M1", page_icon="🤖", layout="centered")
 
@@ -11,7 +30,7 @@ st.title("🤖 Agente IA Trader Pro: Análise Avançada de Candlesticks")
 st.write("Análise cirúrgica de Velas (Price Action Puro), Tendência, RSI Calibrado e Tempo de Reação Híbrido Avançado.")
 
 # ==============================================================================
-# 2. CONFIGURAÇÃO DA CHAVE DA IA NA BARRA LATERAL
+# 3. CONFIGURAÇÃO DA CHAVE DA IA NA BARRA LATERAL
 # ==============================================================================
 API_KEY = st.sidebar.text_input("Cole sua Gemini API Key aqui:", type="password")
 
@@ -19,7 +38,7 @@ if API_KEY:
     client = genai.Client(api_key=API_KEY)
 
     # ==============================================================================
-    # 3. CAMPO DE UPLOAD E VISUALIZAÇÃO DO PRINT DO GRÁFICO
+    # 4. CAMPO DE UPLOAD E VISUALIZAÇÃO DO PRINT DO GRÁFICO
     # ==============================================================================
     uploaded_file = st.file_uploader(
         "Arraste o print completo do gráfico M1 (inclua Velas, RSI e Relógio):", 
@@ -31,7 +50,7 @@ if API_KEY:
         st.image(image, caption="Gráfico M1 Carregado para Análise", use_container_width=True)
         
         # ==============================================================================
-        # 4. DISPARO E PROCESSAMENTO DA ANÁLISE MULTIMODAL
+        # 5. DISPARO E PROCESSAMENTO DA ANÁLISE MULTIMODAL
         # ==============================================================================
         if st.button("🚀 EXECUTAR ANÁLISE AVANÇADA DE SINAL"):
             with st.spinner("IA escaneando padrões de velas, volume implícito e mercado..."):
@@ -82,20 +101,7 @@ if API_KEY:
 
                 [ORDER_FLOW_&_PURE_CANDLE_VOLUME]
                 1. VOLUME IMPLÍCITO POR CORPO: Avalie o volume através do tamanho do corpo real da vela em relação às últimas 5 velas. Corpos progressivamente maiores indicam injeção de volume institucional.
-                2. LEITURA DE EXAUSTÃO: Se o corpo diminuir drasticamente ao tocar uma região de suporte ou resistência, interprete como exaustão de fluxo e perda de pressão institucional, validando a reversão.
+                2. LEITURA DE EXAUSTÃO: Se o corpo diminuir assunto_drasticamente ao tocar uma região de suporte ou resistência, interprete como exaustão de fluxo e perda de pressão institucional, validando a reversão.
 
                 Retorne estritamente neste formato markdown limpo:
                 🎯 PORCENTAGEM DE ACERTO DA ENTRADA: [Ex: 94% - EXTREMA CONFLUÊNCIA DE FLUXO ou 88% - CONFLUÊNCIA DE DEFESA DE SUPORTE MICRO]
-                ⏰ HORÁRIO DO CLIQUE (ENTRADA): [HH:MM:00 exato projetado aplicando a lógica híbrida do critério de projeção de tempo]
-                ⏳ TEMPO DE EXPIRAÇÃO: [Indique o tempo exato a ser selecionado na plataforma: 1 Minuto, 2 Minutos ou 3 Minutos de acordo com as regras acima]
-                📈 DIREÇÃO DA ENTRADA: [COMPRA / CALL ou VENDA / PUT ou ABORTAR OPERAÇÃO]
-                🧠 JUSTIFICATIVA TÉCNICA E CONFLUÊNCIAS: [Explique de forma curta e cirúrgica os motivos baseados nos filtros acima, citando se escolheu a Próxima Vela ou Vela Futura + 1]
-                """
-                
-                try:
-                    response = client.models.generate_content(
-                        model='gemini-3.6-flash',
-                        contents=[image, prompt]
-                    )
-                    st.success("Análise Concluída com Gemini 3.6!")
-                    st.markdown(response.text)
