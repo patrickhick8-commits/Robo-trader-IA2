@@ -52,15 +52,15 @@ if API_KEY:
                 [REGRA CRÍTICA DE SINCRO-TEMPO E MARGEM DE REAÇÃO]
                 1. MARGEM DE REAÇÃO HUMANA (OBRIGATÓRIO): Para garantir que o usuário tenha tempo de ler esta análise na tela e executar o clique na corretora sem pressa ou delay, você está PROIBIDO de sugerir o horário do clique para a vela atual do print. Projete o horário do clique (⏰ HORÁRIO DO CLIQUE) SEMPRE para a próxima vela cheia (M1 seguinte), oferecendo uma folga de cerca de 60 segundos.
                    * Exemplo técnico: Se o print foi gerado e enviado durante o minuto 18:22, o horário projetado para o seu sinal DEVE ser textualmente fixado para iniciar às 18:23:00.
-                2. SINCRO-TEMPO DA CORRETORA: Considere que na corretora do usuário, ao selecionar um tempo de expiração em minutos, a plataforma conta o tempo restante da vela M1 atual MAIS o número de velas cheias selecionado à frente. Calcule suas projeções baseando-se estritamente nesta regra de fechamento.
+                2. SINCRO-TEMPO DA CORRETORA: Considere que na corretora do usuário, ao selecionar um tempo de expiração em minutos, a plataforma conta o tempo restante da vela M1 atual MAIS o número de velas cheias selecionado à frente. Calcule suas opções baseando-se estritamente nesta regra de fechamento.
 
                 [DIRETRIZ DE OPERAÇÃO: PRICE ACTION INSTITUCIONAL COM CLIQUE ÚNICO]
 
                 1. OPERACIONAL DE REVERSÃO EM REGIÃO (RETRAÇÃO, TAXA DE DEFESA E EXAUSTÃO COMPLETA):
-                   - TRAVA ANTI-MARUBOZU: Você está TERMINANTEMENTE PROIBIDO de dar sinal de reversão se a última vela fechar cheia (sem pavio de rejeição na zona, ou com pavio menor que 15% do corpo). Bloqueie se o pavio for irrelevante ou um mero ruído.
+                   - TRAVA ANTI-MARUBOZU: Você está TERMINANTEMENTE PROIBIDO de dar sinal de reversão se a última vela fechar cheia (sem pavio de prevenção na zona, ou com pavio menor que 15% do corpo). Bloqueie se o pavio for irrelevante ou um mero ruído.
                    - PROTOCOLO DE RETRAÇÃO (PICO DE PAVIO): Priorize entradas se a vela anterior demonstrar forte rejeição em suporte ou resistência micro recente de até 2 horas atrás. O pavio ideal de segurança deve ser maior que 35% do tamanho total do candle para autorizar o clique único.
                    - GATILHO COMPRA: O preço deve apresentar uma esticada exaustiva de baixa (velas vermelhas expressivas seguidas por perda visível de tamanho de corpo) tocando um suporte micro OU deixando um pavio de rejeição inferior nítido (maior que 35% do tamanho total da vela).
-                   - GATILHO VENDA: O preço deve apresentar uma esticada exaustiva de alta (velas verdes expressivas seguidas por perda visível de tamanho de corpo) tocando uma resistência micro OU deixando um pavio de prevenção superior nítido (maior que 35% do tamanho total da vela).
+                   - GATILHO VENDA: O preço deve apresentar uma esticada exaustiva de alta (velas verdes expressivas seguidas por perda visível de tamanho de corpo) tocando uma resistência micro OU deixando um pavio de rejeição superior nítido (maior que 35% do tamanho total da vela).
                    - REGRA DE EXPIRAÇÃO DINÂMICA PARA REVERSÃO (ALINHADA À CORRETORA): 
                      * Use 2 Minutos na plataforma se o preço atingiu a zona com velas pequenas ou médias e corpos decrescentes (exaustão lenta). Isso cobrirá a vela atual projetada + 2 velas cheias à frente.
                      * Use 3 Minutos na plataforma se o preço atingiu a zona com uma sequência rápida de 3 a 5 velas muito longas e expressivas (esticada rápida). O minuto extra na plataforma garante margem de segurança para absorver o momentum.
@@ -86,11 +86,11 @@ if API_KEY:
                 ⏰ HORÁRIO DO CLIQUE (ENTRADA): [HH:MM:00 exato projetado obrigatoriamente para a próxima vela M1 para dar tempo de reação ao usuário]
                 ⏳ TEMPO DE EXPIRAÇÃO: [Indique o tempo exato a ser selecionado na plataforma: 1 Minuto, 2 Minutos ou 3 Minutos de acordo com as regras acima]
                 📈 DIREÇÃO DA ENTRADA: [COMPRA / CALL ou VENDA / PUT ou ABORTAR OPERAÇÃO]
-                🧠 JUSTIFICATIVA TÉCNICA E CONFLUÊNCIAS: [Explique de forma curta e cirúrgica os motivos baseados nos filtros acima]
+                🧠 JUSTIFICATIVA TÉCNICA E CONFLUÊNCIAS: [Explique de forma corta e cirúrgica os motivos baseados nos filtros acima]
                 """
                 
                 try:
-                    # Executa a chamada oficial com o modelo Gemini 3.6-Flash
+                    # Bloco interno do try indentado corretamente com 4 espaços extras
                     response = client.models.generate_content(
                         model='gemini-3.6-flash',
                         contents=[image, prompt]
