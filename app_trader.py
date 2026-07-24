@@ -16,7 +16,6 @@ st.write("Análise cirúrgica de Velas (Price Action Puro), Tendência, RSI Cali
 API_KEY = st.sidebar.text_input("Cole sua Gemini API Key aqui:", type="password")
 
 if API_KEY:
-    # Inicializa o cliente com a biblioteca oficial do Google GenAI
     client = genai.Client(api_key=API_KEY)
 
     # ==============================================================================
@@ -57,7 +56,7 @@ if API_KEY:
                 [DIRETRIZ DE OPERAÇÃO: PRICE ACTION INSTITUCIONAL COM CLIQUE ÚNICO]
 
                 1. OPERACIONAL DE REVERSÃO EM REGIÃO (RETRAÇÃO, TAXA DE DEFESA E EXAUSTÃO COMPLETA):
-                   - TRAVA ANTI-MARUBOZU: Você está TERMINANTEMENTE PROIBIDO de dar sinal de reversão se a última vela fechar cheia (sem pavio de prevenção na zona, ou com pavio menor que 15% do corpo). Bloqueie se o pavio for irrelevante ou um mero ruído.
+                   - TRAVA ANTI-MARUBOZU: Você está TERMINANTEMENTE PROIBIDO de dar sinal de reversão se a última vela fechar cheia (sem pavio de prevenção na zona, ou com pavio menor que 15% do corpo). Bloqueie se o pavio foi irrelevante ou um mero ruído.
                    - PROTOCOLO DE RETRAÇÃO (PICO DE PAVIO): Priorize entradas se a vela anterior demonstrar forte rejeição em suporte ou resistência micro recente de até 2 horas atrás. O pavio ideal de segurança deve ser maior que 35% do tamanho total do candle para autorizar o clique único.
                    - GATILHO COMPRA: O preço deve apresentar uma esticada exaustiva de baixa (velas vermelhas expressivas seguidas por perda visível de tamanho de corpo) tocando um suporte micro OU deixando um pavio de rejeição inferior nítido (maior que 35% do tamanho total da vela).
                    - GATILHO VENDA: O preço deve apresentar uma esticada exaustiva de alta (velas verdes expressivas seguidas por perda visível de tamanho de corpo) tocando uma resistência micro OU deixando um pavio de rejeição superior nítido (maior que 35% do tamanho total da vela).
@@ -86,11 +85,10 @@ if API_KEY:
                 ⏰ HORÁRIO DO CLIQUE (ENTRADA): [HH:MM:00 exato projetado obrigatoriamente para a próxima vela M1 para dar tempo de reação ao usuário]
                 ⏳ TEMPO DE EXPIRAÇÃO: [Indique o tempo exato a ser selecionado na plataforma: 1 Minuto, 2 Minutos ou 3 Minutos de acordo com as regras acima]
                 📈 DIREÇÃO DA ENTRADA: [COMPRA / CALL ou VENDA / PUT ou ABORTAR OPERAÇÃO]
-                🧠 JUSTIFICATIVA TÉCNICA E CONFLUÊNCIAS: [Explique de forma corta e cirúrgica os motivos baseados nos filtros acima]
+                🧠 JUSTIFICATIVA TÉCNICA E CONFLUÊNCIAS: [Explique de forma curta e cirúrgica os motivos baseados nos filtros acima]
                 """
                 
                 try:
-                    # Bloco interno do try indentado corretamente com 4 espaços extras
                     response = client.models.generate_content(
                         model='gemini-3.6-flash',
                         contents=[image, prompt]
@@ -98,3 +96,6 @@ if API_KEY:
                     st.success("Análise Concluída com Gemini 3.6!")
                     st.markdown(response.text)
                 except Exception as e:
+                    err_msg = str(e)
+                    if "429" in err_msg or "RESOURCE_EXHAUSTED" in err_msg:
+                        st.error("⚠️ Limite diário de requisições da sua API Key foi atingido (Cota Gratuita).")
