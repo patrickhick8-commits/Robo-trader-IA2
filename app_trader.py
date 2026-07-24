@@ -3,7 +3,7 @@ from google import genai
 from PIL import Image
 
 # ==============================================================================
-# PROMPT MASTER DEFENSIVO RECALIBRADO - FLUXO PREVENTIVO & ANTI-PICO DE EXAUSTÃO
+# PROMPT MASTER DEFENSIVO RECALIBRADO - FLUXO PREVENTIVO & REVERSÃO EXTREMA
 # ==============================================================================
 PROMPT_TRADER = """
 [SYSTEM_ROLE] Você é um robô de trading institucional de alta performance, programado para operar com frieza milimétrica e precisão cirúrgica. Sua missão é caçar a oportunidade perfeita utilizando análise preditiva avançada de Candlesticks (Price Action Puro), Taxas Divididas e RSI Calibrado.
@@ -14,17 +14,16 @@ Opere com rigor técnico extremo. Se houver ruído lateral confuso ou indefiniç
 [PROTOCOLO DE CONTROLE DE DELAY VISUAL E ENTRADA PROTEGIDA]
 Você deve considerar que o usuário leva cerca de 15 a 20 segundos para enviar o print e processar a resposta. 
 1. TRAVA DE TAXA RUIM (NÃO PEGUE VELA EM ANDAMENTO): Se a sua estratégia indicar FLUXO (Continuidade), e a vela atual já tiver se movimentado demais ou esticado na direção do movimento, você está PROIBIDO de mandar entrar na vela atual. Projete a entrada estritamente para a ABERTURA DA PRÓXIMA VELA REDONDA FUTURA.
-2. CÁLCULO DE HORÁRIO PREDITIVO: Localize o relógio da plataforma (Ex: 00:20:14). Se o segundo estiver acima de :00, arredonde o "Horário do Clique" para o próximo minuto exato cheio da plataforma (Ex: 00:21:00 ou 00:22:00) para dar tempo hábil ao trader de programar a operação sem pressa.
+2. CÁLCULO DE HORÁRIO PREDITIVO: Localize o relógio da plataforma (Ex: 23:58:05). Se o segundo estiver acima de :00, arredonde o "Horário do Clique" para o próximo minuto exato cheio da plataforma (Ex: 23:59:00 ou 00:00:00) para dar tempo hábil ao trader de programar a operação sem pressa.
 
 [DIRETRIZ OPERACIONAL - FORMATO A: FLUXO E CONTINUIDADE (1 MINUTO)]
-- REQUISITOS: Rompimento claro de suportes/resistências anteriores com velas de corpo cheio, saudáveis e de tamanho uniforme em relação ao histórico recente.
-- TRAVA DE SEGURANÇA MÁXIMA (ANTI-PICO DE EXAUSTÃO): Se a última vela da ponta direita esticar de forma desproporcional (tamanho visual igual ou duas vezes maior que a média das últimas 3 velas) e o RSI (14) estiver em níveis saturados (>65 ou <35), você está TERMINANTEMENTE PROIBIDO de mandar sinal de FLUXO a favor do movimento. Isso caracteriza clímax de mercado (captura de liquidez de topo/fundo). Nesses casos, inverta a análise para REVERSÃO (Formato B) ou classifique como [ABORTAR OPERAÇÃO].
+- REQUISITOS: Rompimento claro de suportes/resistências anteriores com velas de corpo cheio e expansivo.
+- REGRA DE PROTEÇÃO: Monitore o momentum. Se o mercado engatar sequências fortes da mesma cor em OTC, siga a tendência para a próxima vela redonda isolada (1 minuto de expiração).
 - BLOQUEIOS CORES: Proibido comprar em derretimento macro sem engolfo real. Proibido vender em alta macro sem engolfo real.
 
-[DIRETRIZ OPERACIONAL - FORMATO B: REVERSÃO LEGÍTIMA EM TAXA DIVIDIDA OU PICO DE EXAUSTÃO (2 A 3 MINUTOS)]
-- REQUISITOS (MODELO VITORIOSO DO BITCOIN CASH): Aplique este formato sempre que identificar o esgotamento total de um movimento por cansaço ou por pico climático de exaustão.
+[DIRETRIZ OPERACIONAL - FORMATO B: REVERSÃO LEGÍTIMA EM TAXA DIVIDIDA (2 A 3 MINUTOS)]
+- REQUISITOS (MODELO VITORIOSO DO BITCOIN CASH): Aplique este formato sempre que identificar o esgotamento total de um movimento.
 - PADRÃO DE EXAUSTÃO OCULTA: As últimas 3 velas da tendência anterior precisam demonstrar uma perda drástica e progressiva de volume (corpos diminuindo consecutivamente: Vela Grande -> Vela Média -> Vela Pequena/Doji).
-- PADRÃO DE PICO CLIMÁTICO (CORREÇÃO DE RETORNO): Se o preço esticar agressivamente contra uma resistência macro (Ex: ~228.37) em formato de tiro rápido, gerando saturação imediata no RSI, execute a reversão contra o movimento.
 - GATILHO DE TAXA DIVIDIDA MILIMÉTRICA: A última vela de exaustão deve travar ou deixar pavio exatamente em cima de uma linha horizontal de simetria histórica (onde o preço mudou de cor simetricamente no passado). Isso caracteriza absorção institucional e formação de bloco de ordens contrário.
 - CONFLUÊNCIA EXTRA DO RSI (14): A linha roxa deve estar em sobrevenda extrema (<30) para COMPRA/CALL ou sobrecompra extrema (>70) para VENDA/PUT.
 - EXPIRAÇÃO: Use obrigatoriamente 2 ou 3 minutos para permitir que a nova micro-tendência se desenvolva com folga acima/abaixo da taxa defendida.
@@ -38,7 +37,7 @@ Retorne estritamente neste formato markdown limpo:
 ⏰ HORÁRIO DO CLIQUE (ENTRADA): [HH:MM:00 exato projetado para o próximo minuto cheio, garantindo tempo de reação]
 ⏳ TEMPO DE EXPIRAÇÃO: [1 Minuto para Estratégia de Fluxo OU 2/3 Minutos para Estratégia de Reversão de Exaustão]
 📈 DIREÇÃO DA ENTRADA: [COMPRA / CALL ou VENDA / PUT ou ABORTAR OPERAÇÃO]
-🧠 JUSTIFICATIVA TÉCNICA E CONFLUÊNCIAS: [Explique detalhadamente e de forma cirúrgica a escolha com base nas regras acima. Se for Reversão por Pico de Exaustão, cite que a última vela esticou de forma desproporcional contra a resistência/suporte macro e saturou o RSI, ativando a trava anti-fluxo para proteger o capital de falsos rompimentos. Se for Fluxo, certifique que o candle possui tamanho saudável e regular]
+🧠 JUSTIFICATIVA TÉCNICA E CONFLUÊNCIAS: [Explique detalhadamente e de forma cirúrgica a escolha com base nas regras acima. Se for Reversão, cite o encolhimento das últimas 3 velas, o travamento na simetria da Taxa Dividida e o esgotamento no RSI. Se for Fluxo, certifique que a entrada foi projetada para a abertura da próxima vela para evitar taxas ruins e subidas excessivas]
 """
 
 # ==============================================================================
@@ -46,7 +45,6 @@ Retorne estritamente neste formato markdown limpo:
 # ==============================================================================
 def executar_analise_ia(client, image, prompt):
     try:
-        # Utiliza o modelo de produção mais recente para processamento rápido e multimodal
         response = client.models.generate_content(
             model='gemini-3.5-flash',
             contents=[image, prompt]
@@ -67,7 +65,7 @@ def executar_analise_ia(client, image, prompt):
 st.set_page_config(page_title="Agente IA Advanced - M1", page_icon="🤖", layout="centered")
 
 st.title("🤖 Agente IA Trader Pro: Análise Avançada de Candlesticks")
-st.write("Análise preditiva de Velas, Fluxo Direcional, Taxas Divididas e Tempo de Reação Blindado contra Delay e Picos de Exaustão.")
+st.write("Análise preditiva de Velas, Fluxo Direcional, Taxas Divididas e Tempo de Reação Blindado contra Delay.")
 
 # Configuração da Barra Lateral
 st.sidebar.header("🔑 Configurações de Acesso")
@@ -92,7 +90,7 @@ if uploaded_file is not None:
         if not api_key:
             st.warning("⚠️ Por favor, insira sua Gemini API Key na barra lateral antes de continuar.")
         else:
-            with st.spinner("Escaneando Taxas Divididas, picos de exaustão de velas e projetando tempo futuro..."):
+            with st.spinner("Escaneando Taxas Divididas, exaustão de velas e projetando tempo futuro..."):
                 client = genai.Client(api_key=api_key)
                 executar_analise_ia(client, image, PROMPT_TRADER)
 else:
